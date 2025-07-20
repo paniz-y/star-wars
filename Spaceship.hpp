@@ -1,19 +1,29 @@
 #ifndef SPACESHIP.HPP
-#define SPACESHIP.HPP
-#include <string> 
+#define SPACESHIP .HPP
+#include <string>
 class Spaceship
 {
-    public:
+public:
+    Spaceship(int dis , int radar , int distruct , int controlDistance ,std::string type);
     void destroy();
+    void setDistance(int dis);
+    void setRadarResistency(int radar);
+    void setDistruction(int distruct);
+    void setControlLessDictance(int controlDictance);
+    void setTypeOfSpaceship(std::string type);
+    
+    int getDistance();
+    int setRadarResistency();
+    int setDistruction();
+    int setControlLessDictance();
+    std::string setTypeOfSpaceship();
 
 
-
-    private:
-        int distance;
-        int radarResistency;
-        int distruction;
-        int controllessDictance;
-        std :: string type;
-
+protected:
+    int distance;
+    int radarResistency;
+    int distruction;
+    int controlLessDictance;
+    std ::string TypeOfSpaceship;
 };
 #endif
