@@ -1,7 +1,7 @@
-#ifndef DEATHSTAR.HPP
-#define DEATHSTAR.HPP
+#ifndef DEATHSTAR_HPP
+#define DEATHSTAR_HPP
 #include "Spaceship.hpp"
-
+#include <climits>
 class DeathStar : public Spaceship
 {
     DeathStar(int dis, int radar, int distruct, int controlDictance, std::string type);
