@@ -3,8 +3,8 @@ std::vector<std::pair<std::shared_ptr<City>, double>> Map::getNeighbors(std::sha
 {
     return locationsGraph[city];
 }
-void Map::addEdge(std::shared_ptr<City> a, std::shared_ptr<City> b, double weight)
+void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex, double weight)
 {
-    locationsGraph[a].emplace_back(b, weight);
-    locationsGraph[b].emplace_back(a, weight);
+    locationsGraph[firstVertex].emplace_back(secondVertex, weight);
+    locationsGraph[secondVertex].emplace_back(firstVertex, weight);
 }
