@@ -1,11 +1,44 @@
 #include "Control.hpp"
 
+void Control::readMapFromFile()
+{
+    std::fstream mapFile("Map.txt", std::ios::in);
+    if (!mapFile.is_open())
+    {
+        std::cerr << "Unable to open file" << std::endl;
+        return;
+    }
+    std::string numberOfBaseCitysFromFile;
+    mapFile << numberOfBaseCitysFromFile << numOfBaseCitys;
+    std::vector<std::pair<int, int>> baseCityCoodinatesFromFile(numOfBaseCitys);
+    for (int i = 0; i < numOfBaseCitys; i++)
+    {
+        mapFile << baseCityCoodinatesFromFile[i].first << baseCityCoodinatesFromFile[i].second;
+    }
+    std::string numberOfCivilCitysFromFile;
+    mapFile << numberOfCivilCitysFromFile << numOfCivilCitys;
+    std::vector<std::pair<int, int>> civilCityCoodinatesFromFile(numOfCivilCitys);
+    for (int i = 0; i < numOfCivilCitys; i++)
+    {
+        mapFile << civilCityCoodinatesFromFile[i].first << civilCityCoodinatesFromFile[i].second;
+    }
+    std::string numberOfEnemyCitysFromFile;
+    mapFile << numberOfEnemyCitysFromFile << numOfEnemyCitys;
+    std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile(numOfEnemyCitys);
+    for (int i = 0; i < numOfEnemyCitys; i++)
+    {
+        mapFile << enemyCityCoodinatesFromFile[i].first << enemyCityCoodinatesFromFile[i].second;
+    }
+    mapFile.close();
+
+}
+
 std::vector<int> Control::AStarRouting(const std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> &map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination) // uses A* search algorithm for routing
 {
 
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> previousNodes; // for each node stores the previous node that has been visited
     std::unordered_map<std::shared_ptr<City>, double> shortestDistance;             // for each node stores the shortest distance required to reach it
-    std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> neighbor;          // stores each node and its previous one for backtracking the path
+    std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> neighbor;      // stores each node and its previous one for backtracking the path
 
     previousNodes.push({start, nullptr, 0, heuristic(start, destination)});
     shortestDistance[start] = 0;
