@@ -30,6 +30,9 @@ class Control
 
 public:
     void readMapFromFile();
+    void readBaseCitysFromFile();
+    void readCivilCitysFromFile();
+    void readEnemyCitysFromFile();
     std::vector<int> AStarRouting(const std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> &map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination); // uses A* search algorithm for routing
 
 private:
@@ -38,6 +41,7 @@ private:
     int numOfBaseCitys;
     int numOfCivilCitys;
     int numOfEnemyCitys;
+    std::fstream mapFile;
     std::vector<std::pair<int, int>> baseCityCoodinates;
     std::vector<std::pair<int, int>> civilCityCoodinates;
     std::vector<std::pair<int, int>> enemyCityCoodinates;

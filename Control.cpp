@@ -1,14 +1,7 @@
 #include "Control.hpp"
 
-void Control::readMapFromFile()
+void Control::readBaseCitysFromFile()
 {
-    std::fstream mapFile("Map.txt", std::ios::in);
-    if (!mapFile.is_open())
-    {
-        std::cerr << "Unable to open file" << std::endl;
-        return;
-    }
-
     std::string numberOfBaseCitysFromFile;
     mapFile >> numberOfBaseCitysFromFile >> numOfBaseCitys;
 
@@ -21,7 +14,12 @@ void Control::readMapFromFile()
     {
         mapFile >> baseCityCoodinatesFromFile[i].first >> baseCityCoodinatesFromFile[i].second;
     }
+    baseCityCoodinates.resize(numOfBaseCitys);
+    baseCityCoodinates = baseCityCoodinatesFromFile;
+}
 
+void Control::readCivilCitysFromFile()
+{
     std::string numberOfCivilCitysFromFile;
     mapFile >> numberOfCivilCitysFromFile >> numOfCivilCitys;
 
@@ -34,7 +32,11 @@ void Control::readMapFromFile()
     {
         mapFile >> civilCityCoodinatesFromFile[i].first >> civilCityCoodinatesFromFile[i].second;
     }
-
+    civilCityCoodinates.resize(numOfCivilCitys);
+    civilCityCoodinates = civilCityCoodinatesFromFile;
+}
+void Control::readEnemyCitysFromFile()
+{
     std::string numberOfEnemyCitysFromFile;
     mapFile >> numberOfEnemyCitysFromFile >> numOfEnemyCitys;
 
@@ -46,10 +48,24 @@ void Control::readMapFromFile()
     {
         mapFile >> enemyCityCoodinatesFromFile[i].first >> enemyCityCoodinatesFromFile[i].second;
     }
+    enemyCityCoodinates.resize(numOfEnemyCitys);
+    enemyCityCoodinates = enemyCityCoodinatesFromFile;
+}
+void Control::readMapFromFile()
+{
+    mapFile.open("Map.txt", std::ios::in);
+    if (!mapFile.is_open())
+    {
+        std::cerr << "Unable to open file" << std::endl;
+        return;
+    }
+
+    readBaseCitysFromFile();
+    readCivilCitysFromFile();
+    readEnemyCitysFromFile();
 
     mapFile.close();
 }
-
 double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b) // calculates heuristic for A* search algorithm
 {
     std::pair<int, int> firstCityCoordinates = a->getCoordinates();
