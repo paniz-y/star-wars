@@ -1,5 +1,5 @@
-#ifndef CONTROL.HPP
-#define CONTROL .HPP
+#ifndef CONTROL_HPP
+#define CONTROL_HPP
 #include <memory>
 #include <vector>
 #include <unordered_map>
@@ -25,7 +25,7 @@ struct Node
         return calculateF() > node.calculateF();
     }
 };
-class Control : public Spaceship
+class Control
 {
 
 public:

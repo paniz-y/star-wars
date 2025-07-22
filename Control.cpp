@@ -8,31 +8,55 @@ void Control::readMapFromFile()
         std::cerr << "Unable to open file" << std::endl;
         return;
     }
+
     std::string numberOfBaseCitysFromFile;
-    mapFile << numberOfBaseCitysFromFile << numOfBaseCitys;
+    mapFile >> numberOfBaseCitysFromFile >> numOfBaseCitys;
+
+    std::string baseCityCoordinatesFromFile;
+    mapFile >> baseCityCoordinatesFromFile;
+
     std::vector<std::pair<int, int>> baseCityCoodinatesFromFile(numOfBaseCitys);
+
     for (int i = 0; i < numOfBaseCitys; i++)
     {
-        mapFile << baseCityCoodinatesFromFile[i].first << baseCityCoodinatesFromFile[i].second;
+        mapFile >> baseCityCoodinatesFromFile[i].first >> baseCityCoodinatesFromFile[i].second;
     }
+
     std::string numberOfCivilCitysFromFile;
-    mapFile << numberOfCivilCitysFromFile << numOfCivilCitys;
+    mapFile >> numberOfCivilCitysFromFile >> numOfCivilCitys;
+
     std::vector<std::pair<int, int>> civilCityCoodinatesFromFile(numOfCivilCitys);
+
+    std::string civilCityCoordinatesFromFile;
+    mapFile >> civilCityCoordinatesFromFile;
+
     for (int i = 0; i < numOfCivilCitys; i++)
     {
-        mapFile << civilCityCoodinatesFromFile[i].first << civilCityCoodinatesFromFile[i].second;
+        mapFile >> civilCityCoodinatesFromFile[i].first >> civilCityCoodinatesFromFile[i].second;
     }
+
     std::string numberOfEnemyCitysFromFile;
-    mapFile << numberOfEnemyCitysFromFile << numOfEnemyCitys;
+    mapFile >> numberOfEnemyCitysFromFile >> numOfEnemyCitys;
+
+    std::string enemyCityCoordinatesFromFile;
+    mapFile >> enemyCityCoordinatesFromFile;
+
     std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile(numOfEnemyCitys);
     for (int i = 0; i < numOfEnemyCitys; i++)
     {
-        mapFile << enemyCityCoodinatesFromFile[i].first << enemyCityCoodinatesFromFile[i].second;
+        mapFile >> enemyCityCoodinatesFromFile[i].first >> enemyCityCoodinatesFromFile[i].second;
     }
-    mapFile.close();
 
+    mapFile.close();
 }
 
+double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b) // calculates heuristic for A* search algorithm
+{
+    std::pair<int, int> firstCityCoordinates = a->getCoordinates();
+    std::pair<int, int> secondCityCoordinates = b->getCoordinates();
+    double distance = sqrt(pow(firstCityCoordinates.first - secondCityCoordinates.first, 2) + pow(firstCityCoordinates.first - secondCityCoordinates.second, 2));
+    return distance;
+}
 std::vector<int> Control::AStarRouting(const std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> &map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination) // uses A* search algorithm for routing
 {
 
@@ -43,10 +67,8 @@ std::vector<int> Control::AStarRouting(const std::unordered_map<std::shared_ptr<
     previousNodes.push({start, nullptr, 0, heuristic(start, destination)});
     shortestDistance[start] = 0;
 }
-double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b) // calculates heuristic for A* search algorithm
+int main()
 {
-    std::pair<int, int> firstCityCoordinates = a->getCoordinates();
-    std::pair<int, int> secondCityCoordinates = b->getCoordinates();
-    double distance = sqrt(pow(firstCityCoordinates.first - secondCityCoordinates.first, 2) + pow(firstCityCoordinates.first - secondCityCoordinates.second, 2));
-    return distance;
+    Control c;
+    c.readMapFromFile();
 }
