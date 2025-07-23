@@ -5,18 +5,17 @@
 class City
 {
 public:
+    City(std::pair<int, int> coords, int spy);
     void setCoordinates(int x, int y);
 
     std::pair<int, int> getCoordinates();
 
-    void setSpyExists();
+    void setNumOfSpys(int spys);
 
-    void setSpyDoesNotExist();
-
-    bool getSpyExistence();
+    int getNumOfSpys();
 
 protected:
     std::pair<int, int> coordinates;
-    bool spyExistence;
+    int numOfSpys;
 };
 #endif

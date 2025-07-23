@@ -1,5 +1,11 @@
 #include "City.hpp"
 
+City::City(std::pair<int, int> coords, int spy)
+{
+    coordinates = coords;
+    numOfSpys = spy;
+}
+
 void City::setCoordinates(int x, int y)
 {
     coordinates.first = x;
@@ -9,15 +15,12 @@ std::pair<int, int> City::getCoordinates()
 {
     return coordinates;
 }
-void City::setSpyExists()
+void City::setNumOfSpys(int spys)
 {
-    spyExistence = true;
+    numOfSpys = spys;
 }
-void City::setSpyDoesNotExist()
+
+int City::getNumOfSpys()
 {
-    spyExistence = false;
-}
-bool City::getSpyExistence()
-{
-    return spyExistence;
+    return numOfSpys;
 }
