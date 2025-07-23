@@ -3,10 +3,18 @@ base_city_coordinates:
 0 0
 2 4
 4 1
+number_of_spys_in_each_base_city:
+2
+1
+0
 number_of_civil_citys: 2
 civil_city_coordinates: 
 5 3
 5 4
+number_of_spys_in_each_civil_city:
+0 
+0 
+1
 number_of_enemy_citys: 6
 enemy_city_coordinates:
 2 7
@@ -15,6 +23,8 @@ enemy_city_coordinates:
 9 3
 9 6
 9 7
-
-
+number_of_spys_in_each_enemy_city:
+0
+0
+0
 
