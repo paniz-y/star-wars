@@ -21,8 +21,9 @@ void Control::readBaseCitysFromFile()
     {
         mapFile >> baseCityNumOfSpyFromFile;
     }
-    baseCityCoodinates.resize(numOfBaseCitys);
-    baseCityCoodinates = baseCityCoodinatesFromFile;
+    //baseCityCoodinates.resize(numOfBaseCitys);
+    //baseCityCoodinates = baseCityCoodinatesFromFile;
+    
 }
 
 void Control::readCivilCitysFromFile()
@@ -46,8 +47,8 @@ void Control::readCivilCitysFromFile()
     {
         mapFile >> civilCityNumOfSpyFromFile;
     }
-    civilCityCoodinates.resize(numOfCivilCitys);
-    civilCityCoodinates = civilCityCoodinatesFromFile;
+    // civilCityCoodinates.resize(numOfCivilCitys);
+    // civilCityCoodinates = civilCityCoodinatesFromFile;
 }
 void Control::readEnemyCitysFromFile()
 {
@@ -69,16 +70,16 @@ void Control::readEnemyCitysFromFile()
     {
         mapFile >> enemyCityNumOfSpyFromFile;
     }
-    enemyCityCoodinates.resize(numOfEnemyCitys);
-    enemyCityCoodinates = enemyCityCoodinatesFromFile;
+    // enemyCityCoodinates.resize(numOfEnemyCitys);
+    // enemyCityCoodinates = enemyCityCoodinatesFromFile;
 }
-void Control::initializeCitys()
-{
-    // for (int i = 0; i < baseCityCoodinates.size(); i++)
-    // {
-    //     BaseCity base(baseCityCoodinates[i], )
-    // }
-}
+// void Control::initializeCitys()
+// {
+//     // for (int i = 0; i < baseCityCoodinates.size(); i++)
+//     // {
+//     //     BaseCity base(baseCityCoodinates[i], )
+//     // }
+// }
 void Control::readMapFromFile()
 {
     mapFile.open("Map.txt", std::ios::in);
