@@ -14,6 +14,13 @@ void Control::readBaseCitysFromFile()
     {
         mapFile >> baseCityCoodinatesFromFile[i].first >> baseCityCoodinatesFromFile[i].second;
     }
+    std::string baseCitySpysFromFile;
+    int baseCityNumOfSpyFromFile;
+    mapFile >> baseCitySpysFromFile;
+    for(int i = 0; i < numOfBaseCitys; i++)
+    {
+        mapFile >> baseCityNumOfSpyFromFile;
+    }
     baseCityCoodinates.resize(numOfBaseCitys);
     baseCityCoodinates = baseCityCoodinatesFromFile;
 }
@@ -32,6 +39,13 @@ void Control::readCivilCitysFromFile()
     {
         mapFile >> civilCityCoodinatesFromFile[i].first >> civilCityCoodinatesFromFile[i].second;
     }
+    std::string civilCitySpysFromFile;
+    int civilCityNumOfSpyFromFile;
+    mapFile >> civilCitySpysFromFile;
+    for(int i = 0; i < numOfBaseCitys; i++)
+    {
+        mapFile >> civilCityNumOfSpyFromFile;
+    }
     civilCityCoodinates.resize(numOfCivilCitys);
     civilCityCoodinates = civilCityCoodinatesFromFile;
 }
@@ -48,8 +62,22 @@ void Control::readEnemyCitysFromFile()
     {
         mapFile >> enemyCityCoodinatesFromFile[i].first >> enemyCityCoodinatesFromFile[i].second;
     }
+    std::string enemyCitySpysFromFile;
+    int enemyCityNumOfSpyFromFile;
+    mapFile >> enemyCitySpysFromFile;
+    for(int i = 0; i < numOfBaseCitys; i++)
+    {
+        mapFile >> enemyCityNumOfSpyFromFile;
+    }
     enemyCityCoodinates.resize(numOfEnemyCitys);
     enemyCityCoodinates = enemyCityCoodinatesFromFile;
+}
+void Control::initializeCitys()
+{
+    // for (int i = 0; i < baseCityCoodinates.size(); i++)
+    // {
+    //     BaseCity base(baseCityCoodinates[i], )
+    // }
 }
 void Control::readMapFromFile()
 {
