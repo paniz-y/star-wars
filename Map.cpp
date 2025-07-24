@@ -11,18 +11,21 @@ void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secon
 
 void Map::graphBaseCitys(std::vector<std::pair<int, int>> baseCityCoodinates, int baseCityNumOfSpys, std::vector<Spaceship> baseCitySpaceships)
 {
-    for(int i = 0; i < baseCityCoodinates.size(); i++)
+    for (int i = 0; i < baseCityCoodinates.size(); i++)
     {
-        std::shared_ptr<BaseCity> base = std::make_shared<BaseCity> (baseCityCoodinates, baseCityNumOfSpys, baseCitySpaceships);
-        
+        std::shared_ptr<BaseCity> base = std::make_shared<BaseCity>(baseCityCoodinates, baseCityNumOfSpys, baseCitySpaceships);
     }
+}
+std::vector<std::pair<std::shared_ptr<City>, double>> Map::getNeighbors(std::shared_ptr<City> city)
+{
+    return locationsGraph[city];
 }
 
 // void Map::graphMap(std::vector<std::pair<int, int>> baseCityCoodinates, std::vector<std::pair<int, int>> civilCityCoodinates, std::vector<std::pair<int, int>> enemyCityCoodinates)
 // {
-    // for (int i = 0; i < baseCityCoodinates.size(); i++)
-    // {
-        
-    //     addEdge(city)
-    // }
+// for (int i = 0; i < baseCityCoodinates.size(); i++)
+// {
+
+//     addEdge(city)
+// }
 //}
