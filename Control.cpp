@@ -17,13 +17,12 @@ void Control::readBaseCitysFromFile()
     std::string baseCitySpysFromFile;
     int baseCityNumOfSpyFromFile;
     mapFile >> baseCitySpysFromFile;
-    for(int i = 0; i < numOfBaseCitys; i++)
+    for (int i = 0; i < numOfBaseCitys; i++)
     {
         mapFile >> baseCityNumOfSpyFromFile;
     }
-    //baseCityCoodinates.resize(numOfBaseCitys);
-    //baseCityCoodinates = baseCityCoodinatesFromFile;
-    
+    // baseCityCoodinates.resize(numOfBaseCitys);
+    // baseCityCoodinates = baseCityCoodinatesFromFile;
 }
 
 void Control::readCivilCitysFromFile()
@@ -43,7 +42,7 @@ void Control::readCivilCitysFromFile()
     std::string civilCitySpysFromFile;
     int civilCityNumOfSpyFromFile;
     mapFile >> civilCitySpysFromFile;
-    for(int i = 0; i < numOfBaseCitys; i++)
+    for (int i = 0; i < numOfBaseCitys; i++)
     {
         mapFile >> civilCityNumOfSpyFromFile;
     }
@@ -66,7 +65,7 @@ void Control::readEnemyCitysFromFile()
     std::string enemyCitySpysFromFile;
     int enemyCityNumOfSpyFromFile;
     mapFile >> enemyCitySpysFromFile;
-    for(int i = 0; i < numOfBaseCitys; i++)
+    for (int i = 0; i < numOfBaseCitys; i++)
     {
         mapFile >> enemyCityNumOfSpyFromFile;
     }
@@ -107,10 +106,20 @@ std::vector<int> Control::AStarRouting(const std::unordered_map<std::shared_ptr<
 
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> previousNodes; // for each node stores the previous node that has been visited
     std::unordered_map<std::shared_ptr<City>, double> shortestDistance;             // for each node stores the shortest distance required to reach it
-    std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> neighbor;      // stores each node and its previous one for backtracking the path
+                                                                                    // std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> neighbor;      // stores each node and its previous one for backtracking the path
 
     previousNodes.push({start, nullptr, 0, heuristic(start, destination)});
     shortestDistance[start] = 0;
+    while (!previousNodes.empty())
+    {
+        Node currNode = previousNodes.top();
+        previousNodes.pop();
+        if (currNode.currCity == destination)
+        {
+            return;
+        }
+        //for (std::pair<std::shared_ptr<City>, double> :)
+    }
 }
 int main()
 {
