@@ -13,13 +13,10 @@ void Map::graphBaseCitys(std::vector<std::pair<int, int>> baseCityCoodinates, in
 {
     for (int i = 0; i < baseCityCoodinates.size(); i++)
     {
-        std::shared_ptr<BaseCity> base = std::make_shared<BaseCity>(baseCityCoodinates, baseCityNumOfSpys, baseCitySpaceships);
+        std::shared_ptr<BaseCity> base = std::make_shared<BaseCity>(baseCityCoodinates[i], baseCityNumOfSpys, baseCitySpaceships);
     }
 }
-std::vector<std::pair<std::shared_ptr<City>, double>> Map::getNeighbors(std::shared_ptr<City> city)
-{
-    return locationsGraph[city];
-}
+
 
 // void Map::graphMap(std::vector<std::pair<int, int>> baseCityCoodinates, std::vector<std::pair<int, int>> civilCityCoodinates, std::vector<std::pair<int, int>> enemyCityCoodinates)
 // {
