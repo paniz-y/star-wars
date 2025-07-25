@@ -1,12 +1,12 @@
-#ifndef XWINGSTARFIGHTER.HPP
-#define XWINGSTARFIGHTER .HPP
+#ifndef XWINGSTARFIGHTER_HPP
+#define XWINGSTARFIGHTER_HPP
 #include "Spaceship.hpp"
 
 class XwingStarFighter : public Spaceship
 {
-    XwingStarFighter(int dis, int radar, int distruct, int controlDictance, std::string type);
 
 public:
+    XwingStarFighter();
 private:
 };
 #endif
