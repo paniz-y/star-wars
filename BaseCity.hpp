@@ -1,12 +1,14 @@
-#ifndef BASECITY.HPP
-#define BASECITY .HPP
+#ifndef BASECITY_HPP
+#define BASECITY_HPP
+#include <vector>
 #include "City.hpp"
 #include "Spaceship.hpp"
-#include <vector>
+
 class BaseCity : public City
 {
 public:
-    BaseCity(std::pair<int, int> coordinates, bool spyExistence, std ::vector<Spaceship> listOfSpaceships);
+    // BaseCity();
+    BaseCity(std::pair<int, int> coords, bool spy, std ::vector<Spaceship> spaceships);
     void setListOfSpaceships(std::vector<Spaceship> spaceships);
     std::vector<Spaceship> getListOfSpaceships();
     int programSpaceship(Spaceship spaceship);
