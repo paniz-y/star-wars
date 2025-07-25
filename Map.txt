@@ -7,12 +7,15 @@ number_of_spys_in_each_base_city:
 1
 1
 0
+spaceships_in_each_base_city:
+number: 2 name: DeathStar
+number: 2 name: DeathStar
+number: 2 name: DeathStar
 number_of_civil_citys: 2
 civil_city_coordinates: 
 5 3
 5 4
 number_of_spys_in_each_civil_city:
-0 
 0 
 1
 number_of_enemy_citys: 6
