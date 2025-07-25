@@ -41,7 +41,7 @@ void Control::readBaseCitysFromFile()
     {
         mapFile >> numberOfSpaceships >> spaceshipsInBaseCities[i].first >> nameOfSPaceships >> spaceshipsInBaseCities[i].second;
     }
-    std::vector<BaseCity> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
+    std::vector<std::shared_ptr<BaseCity>> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
     // for (int i = 0; i < numOfBaseCitys; i++)
     // {
     //     std::cout << numberOfSpaceships << " " << spaceshipsInBaseCities[i].first << " " << nameOfSPaceships << " " << spaceshipsInBaseCities[i].second << std::endl;
@@ -127,7 +127,7 @@ void Control::readCivilCitysFromFile()
         mapFile >> civilCitySpyFromFile[i];
     }
 
-    std::vector<CivilCity> civilCitiesForTheMap = initializedCivilCities(civilCityCoodinatesFromFile, civilCitySpyFromFile);
+    std::vector<std::shared_ptr<CivilCity>> civilCitiesForTheMap = initializeCivilCities(civilCityCoodinatesFromFile, civilCitySpyFromFile);
 }
 void Control::readEnemyCitysFromFile()
 {
@@ -172,7 +172,7 @@ void Control::readEnemyCitysFromFile()
         enemyCitiesDefense[i].setRatio(enemyCityDefenseRatioFromFile[i]);
     }
 
-    std::vector<EnemyCity> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoodinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
+    std::vector<std::shared_ptr<EnemyCity>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoodinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
     // std::cout << "before object " << std::endl;
     // for (int i = 0; i < numOfEnemyCitys; i++)
     // {
@@ -182,9 +182,9 @@ void Control::readEnemyCitysFromFile()
     // enemyCityCoodinates.resize(numOfEnemyCitys);
     // enemyCityCoodinates = enemyCityCoodinatesFromFile;
 }
-std::vector<EnemyCity> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
+std::vector<std::shared_ptr<EnemyCity>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
 {
-    std::vector<EnemyCity> enemyCities;
+    std::vector<std::shared_ptr<EnemyCity>> enemyCities;
     for (int i = 0; i < enemyCityCoodinatesFromFile.size(); i++)
     {
         EnemyCity enemyTmp(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
@@ -192,9 +192,9 @@ std::vector<EnemyCity> Control::initializeEnemyCities(std::vector<std::pair<int,
     }
     return enemyCities;
 }
-std::vector<BaseCity> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
+std::vector<std::shared_ptr<BaseCity>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
 {
-    std::vector<BaseCity> baseCities;
+    std::vector<std::shared_ptr<BaseCity>> baseCities;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
     {
         std::vector<std::shared_ptr<Spaceship>> baseCitySpaceshipType = findSutableSpaceshipForBaseCities(spaceshipsInBaseCities);
@@ -203,9 +203,9 @@ std::vector<BaseCity> Control::initializeBaseCities(std::vector<std::pair<int, i
     }
     return baseCities;
 }
-std::vector<CivilCity> Control::initializedCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile)
+std::vector<std::shared_ptr<CivilCity>> Control::initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile)
 {
-    std::vector<CivilCity> civilCities;
+    std::vector<std::shared_ptr<CivilCity>> civilCities;
     for (int i = 0; i < civilCityCoodinatesFromFile.size(); i++)
     {
         CivilCity civilTmp(civilCityCoodinatesFromFile[i], civilCitySpyFromFile[i]);
