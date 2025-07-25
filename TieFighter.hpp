@@ -1,12 +1,12 @@
-#ifndef TIEFIGHTER.HPP
-#define TIEFIGHTER .HPP
+#ifndef TIEFIGHTER_HPP
+#define TIEFIGHTER_HPP
 #include "Spaceship.hpp"
 
 class TieFighter : public Spaceship
 {
-    TieFighter(int dis, int radar, int distruct, int controlDictance, std::string type);
 
 public:
+    TieFighter();
 private:
 };
 #endif
