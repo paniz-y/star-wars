@@ -191,7 +191,7 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
     std::vector<std::shared_ptr<City>> enemyCities;
     for (int i = 0; i < enemyCityCoodinatesFromFile.size(); i++)
     {
-        EnemyCity enemyTmp(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
+        std::shared_ptr<CivilCity> enemyTmp = std::make_shared<CivilCity>(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i]);
         enemyCities.emplace_back(enemyTmp);
     }
     return enemyCities;
@@ -202,7 +202,7 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
     {
         std::vector<std::shared_ptr<Spaceship>> baseCitySpaceshipType = findSutableSpaceshipForBaseCities(spaceshipsInBaseCities);
-        BaseCity baseTmp(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], baseCitySpaceshipType);
+        std::shared_ptr<CivilCity> baseTmp = std::make_shared<CivilCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i]);
         baseCities.emplace_back(baseTmp);
     }
     return baseCities;
@@ -212,7 +212,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
     std::vector<std::shared_ptr<City>> civilCities;
     for (int i = 0; i < civilCityCoodinatesFromFile.size(); i++)
     {
-        CivilCity civilTmp(civilCityCoodinatesFromFile[i], civilCitySpyFromFile[i]);
+        std::shared_ptr<CivilCity> civilTmp = std::make_shared<CivilCity>(civilCityCoodinatesFromFile[i], civilCitySpyFromFile[i]);
         civilCities.emplace_back(civilTmp);
     }
     return civilCities;
