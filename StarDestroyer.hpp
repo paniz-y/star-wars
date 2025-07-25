@@ -1,12 +1,13 @@
-#ifndef STARDESTORY.HPP
-#define STARDESTORY .HPP
+#ifndef STARDESTORY_HPP
+#define STARDESTORY_HPP
 #include "Spaceship.hpp"
 
 class StarDestroyer : public Spaceship
 {
-    StarDestroyer(int dis, int radar, int distruct, int controlDictance, std::string type);
 
 public:
+    StarDestroyer();
+
 private:
 };
 #endif
