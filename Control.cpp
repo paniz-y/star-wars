@@ -1,6 +1,6 @@
 #include "Control.hpp"
 
-void Control::readBaseCitysFromFile()
+std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
 {
     std::string numberOfBaseCitysFromFile;
     mapFile >> numberOfBaseCitysFromFile >> numOfBaseCitys;
@@ -41,13 +41,15 @@ void Control::readBaseCitysFromFile()
     {
         mapFile >> numberOfSpaceships >> spaceshipsInBaseCities[i].first >> nameOfSPaceships >> spaceshipsInBaseCities[i].second;
     }
-    std::vector<std::shared_ptr<BaseCity>> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
+
+    std::vector<std::shared_ptr<City>> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
     // for (int i = 0; i < numOfBaseCitys; i++)
     // {
     //     std::cout << numberOfSpaceships << " " << spaceshipsInBaseCities[i].first << " " << nameOfSPaceships << " " << spaceshipsInBaseCities[i].second << std::endl;
     // }
     // baseCityCoodinates.resize(numOfBaseCitys);
     // baseCityCoodinates = baseCityCoodinatesFromFile;
+    return baseCityForMap;
 }
 std::vector<std::shared_ptr<Spaceship>> Control::findSutableSpaceshipForBaseCities(std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
 {
@@ -104,7 +106,7 @@ std::vector<std::shared_ptr<Spaceship>> Control::findSutableSpaceshipForBaseCiti
     }
     return spaceshipFoundForBaseCity;
 }
-void Control::readCivilCitysFromFile()
+std::vector<std::shared_ptr<City>> Control::readCivilCitysFromFile()
 {
     std::string numberOfCivilCitysFromFile;
     mapFile >> numberOfCivilCitysFromFile >> numOfCivilCitys;
@@ -127,9 +129,10 @@ void Control::readCivilCitysFromFile()
         mapFile >> civilCitySpyFromFile[i];
     }
 
-    std::vector<std::shared_ptr<CivilCity>> civilCitiesForTheMap = initializeCivilCities(civilCityCoodinatesFromFile, civilCitySpyFromFile);
+    std::vector<std::shared_ptr<City>> civilCitiesForTheMap = initializeCivilCities(civilCityCoodinatesFromFile, civilCitySpyFromFile);
+    return civilCitiesForTheMap;
 }
-void Control::readEnemyCitysFromFile()
+std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
 {
     std::string numberOfEnemyCitysFromFile;
     mapFile >> numberOfEnemyCitysFromFile >> numOfEnemyCitys;
@@ -172,7 +175,8 @@ void Control::readEnemyCitysFromFile()
         enemyCitiesDefense[i].setRatio(enemyCityDefenseRatioFromFile[i]);
     }
 
-    std::vector<std::shared_ptr<EnemyCity>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoodinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
+    std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoodinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
+    return enemyCitiesMadeForMap;
     // std::cout << "before object " << std::endl;
     // for (int i = 0; i < numOfEnemyCitys; i++)
     // {
@@ -182,9 +186,9 @@ void Control::readEnemyCitysFromFile()
     // enemyCityCoodinates.resize(numOfEnemyCitys);
     // enemyCityCoodinates = enemyCityCoodinatesFromFile;
 }
-std::vector<std::shared_ptr<EnemyCity>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
+std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
 {
-    std::vector<std::shared_ptr<EnemyCity>> enemyCities;
+    std::vector<std::shared_ptr<City>> enemyCities;
     for (int i = 0; i < enemyCityCoodinatesFromFile.size(); i++)
     {
         EnemyCity enemyTmp(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
@@ -192,20 +196,20 @@ std::vector<std::shared_ptr<EnemyCity>> Control::initializeEnemyCities(std::vect
     }
     return enemyCities;
 }
-std::vector<std::shared_ptr<BaseCity>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
+std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
 {
-    std::vector<std::shared_ptr<BaseCity>> baseCities;
+    std::vector<std::shared_ptr<City>> baseCities;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
     {
         std::vector<std::shared_ptr<Spaceship>> baseCitySpaceshipType = findSutableSpaceshipForBaseCities(spaceshipsInBaseCities);
         BaseCity baseTmp(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], baseCitySpaceshipType);
-        baseCities.emplace_back(baseCities);
+        baseCities.emplace_back(baseTmp);
     }
     return baseCities;
 }
-std::vector<std::shared_ptr<CivilCity>> Control::initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile)
+std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile)
 {
-    std::vector<std::shared_ptr<CivilCity>> civilCities;
+    std::vector<std::shared_ptr<City>> civilCities;
     for (int i = 0; i < civilCityCoodinatesFromFile.size(); i++)
     {
         CivilCity civilTmp(civilCityCoodinatesFromFile[i], civilCitySpyFromFile[i]);
@@ -222,9 +226,11 @@ void Control::readMapFromFile()
         return;
     }
 
-    readBaseCitysFromFile();
-    readCivilCitysFromFile();
-    readEnemyCitysFromFile();
+    std::vector<std::shared_ptr<City>> baseCities = readBaseCitysFromFile();
+    std::vector<std::shared_ptr<City>> civilCities = readCivilCitysFromFile();
+    std::vector<std::shared_ptr<City>> enemyCities = readEnemyCitysFromFile();
+
+    map.graphMap(collectAllCities(baseCities, civilCities, enemyCities));
 
     mapFile.close();
 }
@@ -266,6 +272,15 @@ void Control::AStarRouting(Map map, const std::shared_ptr<City> &start, const st
             }
         }
     }
+}
+std::vector<std::shared_ptr<City>> Control::collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities)
+{
+    std::vector<std::shared_ptr<City>> allCities;
+    allCities.insert(allCities.end(), baseCities.begin(), baseCities.end());
+    allCities.insert(allCities.end(), civilCities.begin(), civilCities.end());
+    allCities.insert(allCities.end(), enemyCities.begin(), enemyCities.end());
+
+    return allCities;
 }
 int Control::CalculateDistance()
 {
