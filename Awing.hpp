@@ -1,12 +1,13 @@
-#ifndef AWING.HPP
-#define AWING .HPP
+#ifndef AWING_HPP
+#define AWING_HPP
 #include "Spaceship.hpp"
 
 class Awing : public Spaceship
 {
-    Awing(int dis, int radar, int distruct, int controlDictance, std::string type);
 
 public:
+    Awing();
+
 private:
 };
 #endif
