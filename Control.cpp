@@ -101,7 +101,7 @@ double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b)
     double distance = sqrt(pow(firstCityCoordinates.first - secondCityCoordinates.first, 2) + pow(firstCityCoordinates.first - secondCityCoordinates.second, 2));
     return distance;
 }
-std::vector<int> Control::AStarRouting(Map map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination) // uses A* search algorithm for routing
+void Control::AStarRouting(Map map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination) // uses A* search algorithm for routing
 {
 
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> previousNodes; // for each node stores the previous node that has been visited
@@ -128,7 +128,7 @@ std::vector<int> Control::AStarRouting(Map map, const std::shared_ptr<City> &sta
                 double neighborHScore = heuristic(start, neighbor.first);
                 Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
                 previousNodes.emplace(visited);
-                visitedNodeCities.emplace(neighbor);
+                visitedNodeCities.emplace(neighbor.first);
             }
         }
     }

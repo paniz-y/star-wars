@@ -37,7 +37,7 @@ public:
     void readCivilCitysFromFile();
     void readEnemyCitysFromFile();
     // void initializeCitys();
-    std::vector<int> AStarRouting(Map map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination); // uses A* search algorithm for routing
+    void AStarRouting(Map map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination); // uses A* search algorithm for routing
 
 private:
     int scenario;
