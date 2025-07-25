@@ -1,12 +1,13 @@
-#ifndef RAZORCREST.HPP
-#define RAZORCREST .HPP
+#ifndef RAZORCREST_HPP
+#define RAZORCREST_HPP
 #include "Spaceship.hpp"
 #include <climits>
 class RazorCrest : public Spaceship
 {
-    RazorCrest(int dis, int radar, int distruct, int controlDictance, std::string type);
 
 public:
+    RazorCrest();
+
 private:
 };
 #endif
