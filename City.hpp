@@ -1,7 +1,7 @@
 #ifndef CITY_HPP
 #define CITY_HPP
 #include <utility>
-
+#include <memory>
 class City
 {
 public:
