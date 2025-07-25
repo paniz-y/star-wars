@@ -3,8 +3,9 @@
 City::City(std::pair<int, int> coords, int spy)
 {
     coordinates = coords;
-    numOfSpys = spy;
+    spyExistence = spy;
 }
+// City::City(){}
 
 void City::setCoordinates(int x, int y)
 {
@@ -15,12 +16,12 @@ std::pair<int, int> City::getCoordinates()
 {
     return coordinates;
 }
-void City::setNumOfSpys(int spys)
+void City::setExistingSpys(bool spy)
 {
-    numOfSpys = spys;
+    spyExistence = spy;
 }
 
-int City::getNumOfSpys()
+bool City::getExistenceOfSpy()
 {
-    return numOfSpys;
+    return spyExistence;
 }

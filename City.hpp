@@ -1,5 +1,5 @@
-#ifndef CITY.HPP
-#define CITY .HPP
+#ifndef CITY_HPP
+#define CITY_HPP
 #include <utility>
 
 class City
@@ -10,12 +10,12 @@ public:
 
     std::pair<int, int> getCoordinates();
 
-    void setNumOfSpys(int spys);
+    void setExistingSpys(bool spy);
 
-    int getNumOfSpys();
+    bool getExistenceOfSpy();
 
 protected:
     std::pair<int, int> coordinates;
-    int numOfSpys;
+    bool spyExistence;
 };
 #endif
