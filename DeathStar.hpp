@@ -4,9 +4,10 @@
 #include <climits>
 class DeathStar : public Spaceship
 {
-    DeathStar(int dis, int radar, int distruct, int controlDictance, std::string type);
 
 public:
+    DeathStar();
+
 private:
 };
 #endif
