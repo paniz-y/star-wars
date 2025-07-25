@@ -128,6 +128,7 @@ std::vector<int> Control::AStarRouting(Map map, const std::shared_ptr<City> &sta
                 double neighborHScore = heuristic(start, neighbor.first);
                 Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
                 previousNodes.emplace(visited);
+                visitedNodeCities.emplace(neighbor);
             }
         }
     }
