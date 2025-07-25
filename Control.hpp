@@ -49,7 +49,7 @@ public:
     void readCivilCitysFromFile();
     void readEnemyCitysFromFile();
     std::vector<std::shared_ptr<Spaceship>> findSutableSpaceshipForBaseCities(std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
-    std::vector <BaseCity> initializedBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
+    std::vector <BaseCity> initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
     std::vector <CivilCity> initializedCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
     std::vector <EnemyCity> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
     int CalculateDistance();
