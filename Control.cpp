@@ -101,15 +101,17 @@ double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b)
     double distance = sqrt(pow(firstCityCoordinates.first - secondCityCoordinates.first, 2) + pow(firstCityCoordinates.first - secondCityCoordinates.second, 2));
     return distance;
 }
-std::vector<int> Control::AStarRouting(const std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> &map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination) // uses A* search algorithm for routing
+std::vector<int> Control::AStarRouting(Map map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination) // uses A* search algorithm for routing
 {
 
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> previousNodes; // for each node stores the previous node that has been visited
     std::unordered_map<std::shared_ptr<City>, double> shortestDistance;             // for each node stores the shortest distance required to reach it
                                                                                     // std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> neighbor;      // stores each node and its previous one for backtracking the path
+    std::unordered_set<std::shared_ptr<City>> visitedNodeCities;                    // stores each city that has been visited as a node
 
     previousNodes.push({start, nullptr, 0, heuristic(start, destination)});
     shortestDistance[start] = 0;
+
     while (!previousNodes.empty())
     {
         Node currNode = previousNodes.top();
@@ -118,7 +120,16 @@ std::vector<int> Control::AStarRouting(const std::unordered_map<std::shared_ptr<
         {
             return;
         }
-        //for (std::pair<std::shared_ptr<City>, double> :)
+        for (auto &neighbor : map.getNeighbors(currNode.currCity))
+        {
+            double neighborGScore = neighbor.second + currNode.g;
+            if (visitedNodeCities.find(neighbor.first) != visitedNodeCities.end() || shortestDistance[neighbor.first] < neighborGScore)
+            {
+                double neighborHScore = heuristic(start, neighbor.first);
+                Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
+                previousNodes.emplace(visited);
+            }
+        }
     }
 }
 int main()
