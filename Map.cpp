@@ -9,13 +9,13 @@ void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secon
     locationsGraph[secondVertex].emplace_back(firstVertex, weight);
 }
 
-void Map::graphBaseCitys(std::vector<std::pair<int, int>> baseCityCoodinates, int baseCityNumOfSpys, std::vector<Spaceship> baseCitySpaceships)
-{
-    for (int i = 0; i < baseCityCoodinates.size(); i++)
-    {
-        std::shared_ptr<BaseCity> base = std::make_shared<BaseCity>(baseCityCoodinates[i], baseCityNumOfSpys, baseCitySpaceships);
-    }
-}
+// void Map::graphBaseCitys(std::vector<std::pair<int, int>> baseCityCoodinates, int baseCityNumOfSpys, std::vector<Spaceship> baseCitySpaceships)
+// {
+//     for (int i = 0; i < baseCityCoodinates.size(); i++)
+//     {
+//         std::shared_ptr<BaseCity> base = std::make_shared<BaseCity>(baseCityCoodinates[i], baseCityNumOfSpys, baseCitySpaceships);
+//     }
+// }
 
 int Map::calculateWeight(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex)
 {

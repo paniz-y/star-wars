@@ -12,7 +12,7 @@ class Map
 public:
     std::vector<std::pair<std::shared_ptr<City>, double>> getNeighbors(std::shared_ptr<City> city);
     void addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex, int weight);
-    void graphBaseCitys(std::vector<std::pair<int, int>> baseCityCoodinates, int baseCityNumOfSpys, std::vector<Spaceship> baseCitySpaceships);
+    // void graphBaseCitys(std::vector<std::pair<int, int>> baseCityCoodinates, int baseCityNumOfSpys, std::vector<Spaceship> baseCitySpaceships);
     // std::vector<std::pair<std::shared_ptr<City>, double>> getNeighbors(std::shared_ptr<City> city); 
     
     void graphMap(std::vector<std::shared_ptr<City>> cities);
