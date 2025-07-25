@@ -1,12 +1,13 @@
-#ifndef MANTIS.HPP
-#define MANTIS.HPP
+#ifndef MANTIS_HPP
+#define MANTIS_HPP
 #include "Spaceship.hpp"
 
 class Mantis : public Spaceship
 {
-    Mantis(int dis, int radar, int distruct, int controlDictance, std::string type);
 
 public:
+    Mantis();
+
 private:
 };
 #endif
