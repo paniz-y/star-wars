@@ -4,7 +4,7 @@ base_city_coordinates:
 2 4
 4 1
 number_of_spys_in_each_base_city:
-2
+1
 1
 0
 number_of_civil_citys: 2
@@ -27,4 +27,13 @@ number_of_spys_in_each_enemy_city:
 0
 0
 0
-
+1
+1
+1
+number_of_ratio_each_defense_has:
+2
+1
+2
+4 
+1
+1
