@@ -13,6 +13,8 @@
 #include "City.hpp"
 #include "BaseCity.hpp"
 #include "Map.hpp"
+#include "EnemyCity.hpp"
+#include "Defense.hpp"
 struct Node
 {
     std::shared_ptr<City> currCity;
@@ -36,7 +38,9 @@ public:
     void readBaseCitysFromFile();
     void readCivilCitysFromFile();
     void readEnemyCitysFromFile();
-    // void initializeCitys();
+    void initializedBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile);
+    void initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
+    int CalculateDistance();
     void AStarRouting(Map map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination); // uses A* search algorithm for routing
 
 private:
