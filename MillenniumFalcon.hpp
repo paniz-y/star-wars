@@ -1,12 +1,12 @@
-#ifndef MILLENNIUMFALCON.HPP
-#define MILLENNIUMFALCON .HPP
+#ifndef MILLENNIUMFALCON_HPP
+#define MILLENNIUMFALCON_HPP
 #include "Spaceship.hpp"
 
 class MillenniumFalcon : public Spaceship
 {
-    MillenniumFalcon(int dis, int radar, int distruct, int controlDictance, std::string type);
-
 public:
+    MillenniumFalcon();
+
 private:
 };
 #endif
