@@ -8,13 +8,13 @@ class BaseCity : public City
 {
 public:
     // BaseCity();
-    BaseCity(std::pair<int, int> coords, bool spy, std ::vector<Spaceship> spaceships);
-    void setListOfSpaceships(std::vector<Spaceship> spaceships);
-    std::vector<Spaceship> getListOfSpaceships();
+    BaseCity(std::pair<int, int> coords, bool spy, std::vector<std::shared_ptr<Spaceship>> spaceships);
+    void setListOfSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships);
+    std::vector<std::shared_ptr <Spaceship>> getListOfSpaceships();
     int programSpaceship(Spaceship spaceship);
 
 private:
-    std ::vector<Spaceship> listOfSpaceships;
+    std ::vector<std::shared_ptr<Spaceship>> listOfSpaceships;
 };
 
 #endif

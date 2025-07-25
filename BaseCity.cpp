@@ -1,14 +1,14 @@
 #include "BaseCity.hpp"
-BaseCity::BaseCity(std::pair<int, int> coords, bool spy, std ::vector<Spaceship> spaceships): City(coords, spy)
+BaseCity::BaseCity(std::pair<int, int> coords, bool spy, std ::vector<std::shared_ptr<Spaceship>> spaceships) : City(coords, spy)
 {
     listOfSpaceships = spaceships;
 }
 // BaseCity::BaseCity(){}
-void BaseCity ::setListOfSpaceships(std::vector<Spaceship> spaceships)
+void BaseCity ::setListOfSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships)
 {
     listOfSpaceships = spaceships;
 }
-std::vector<Spaceship> BaseCity ::getListOfSpaceships()
+std::vector<std::shared_ptr <Spaceship>> BaseCity ::getListOfSpaceships()
 {
     return listOfSpaceships;
 }
