@@ -1,6 +1,7 @@
 #ifndef SPACESHIP_HPP
 #define SPACESHIP_HPP
 #include <string>
+#include <utility>
 class Spaceship
 {
 public:
@@ -11,7 +12,8 @@ public:
     void setDistruction(int distruct);
     void setControlLessDictance(int controlDictance);
     void setTypeOfSpaceship(std::string type);
-    
+    void setCoordinates(std::pair<int, int> coords);
+    std::pair<int, int> getCoordinates();
     int getDistance();
     int setRadarResistency();
     int setDistruction();
@@ -25,5 +27,6 @@ protected:
     int distruction;
     int controlLessDictance;
     std ::string TypeOfSpaceship;
+    std::pair<int, int> coordinats;
 };
 #endif

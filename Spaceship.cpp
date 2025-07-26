@@ -31,6 +31,14 @@ void Spaceship::setTypeOfSpaceship(std::string type)
     this->TypeOfSpaceship = type;
 }
 
+void Spaceship::setCoordinates(std::pair<int, int> coords)
+{
+    coordinats = coords;
+}
+std::pair<int, int> Spaceship::getCoordinates()
+{
+    return coordinats;
+}
 int Spaceship::getDistance()
 {
     return distance;
