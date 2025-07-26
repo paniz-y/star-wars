@@ -97,6 +97,7 @@ private:
         return spaceshipType::UNKNOWN;
     }
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
+    std::vector<EnemyCity> listOfEnemyCities;
     // std::vector<std::pair<int, int>> baseCityCoodinates;
     // std::vector<std::pair<int, int>> civilCityCoodinates;
     // std::vector<std::pair<int, int>> enemyCityCoodinates;
