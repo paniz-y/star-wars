@@ -48,13 +48,14 @@ public:
     std::vector <std::shared_ptr<City>> readBaseCitysFromFile();
     std::vector <std::shared_ptr<City>> readCivilCitysFromFile();
     std::vector <std::shared_ptr<City>> readEnemyCitysFromFile();
-    std::vector<std::shared_ptr<Spaceship>> findSutableSpaceshipForBaseCities(std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
+    void findSuitableSpaceshipForBaseCities(std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
     std::vector <std::shared_ptr<City>> initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
     std::vector <std::shared_ptr<City>> initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
     std::vector <std::shared_ptr<City>> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
     int CalculateDistance();
-    void AStarRouting(Map map, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination); // uses A* search algorithm for routing
+    void AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination); // uses A* search algorithm for routing
     std::vector<std::shared_ptr<City>> collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities,const std::vector<std::shared_ptr<City>> &civilCities,const std::vector<std::shared_ptr<City>> &enemyCities);
+    void routing();
 private:
     int scenario;
     int numOfCitys;
@@ -95,6 +96,7 @@ private:
             return spaceshipType::XwingStarFighter;
         return spaceshipType::UNKNOWN;
     }
+    std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     // std::vector<std::pair<int, int>> baseCityCoodinates;
     // std::vector<std::pair<int, int>> civilCityCoodinates;
     // std::vector<std::pair<int, int>> enemyCityCoodinates;
