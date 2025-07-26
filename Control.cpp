@@ -61,43 +61,43 @@ std::vector<std::shared_ptr<Spaceship>> Control::findSutableSpaceshipForBaseCiti
         {
         case spaceshipType::Awing:
         {
-            std::shared_ptr tmpSpaceship = std::make_shared<Awing>();
+            std::shared_ptr<Awing> tmpSpaceship = std::make_shared<Awing>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         }
             // return std::make_shared<Awing>();
         case spaceshipType::DeathStar:
         {
-            std::shared_ptr tmpSpaceship = std::make_shared<DeathStar>();
+            std::shared_ptr<DeathStar> tmpSpaceship = std::make_shared<DeathStar>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         }
         case spaceshipType::Mantis:
         {
-            std::shared_ptr tmpSpaceship = std::make_shared<Mantis>();
+            std::shared_ptr<Mantis> tmpSpaceship = std::make_shared<Mantis>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         }
         case spaceshipType::MillenniumFalcon:
         {
-            std::shared_ptr tmpSpaceship = std::make_shared<MillenniumFalcon>();
+            std::shared_ptr<MillenniumFalcon> tmpSpaceship = std::make_shared<MillenniumFalcon>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         }
         case spaceshipType::RazorCrest:
         {
-            std::shared_ptr tmpSpaceship = std::make_shared<RazorCrest>();
+            std::shared_ptr<RazorCrest> tmpSpaceship = std::make_shared<RazorCrest>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         }
         case spaceshipType::StarDestroyer:
         {
-            std::shared_ptr tmpSpaceship = std::make_shared<StarDestroyer>();
+            std::shared_ptr<StarDestroyer> tmpSpaceship = std::make_shared<StarDestroyer>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         }
         case spaceshipType::TieFighter:
         {
-            std::shared_ptr tmpSpaceship = std::make_shared<TieFighter>();
+            std::shared_ptr<TieFighter> tmpSpaceship = std::make_shared<TieFighter>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         }
         case spaceshipType::XwingStarFighter:
         {
-            std::shared_ptr tmpSpaceship = std::make_shared<XwingStarFighter>();
+            std::shared_ptr<XwingStarFighter> tmpSpaceship = std::make_shared<XwingStarFighter>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         }
         default:
@@ -191,7 +191,7 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
     std::vector<std::shared_ptr<City>> enemyCities;
     for (int i = 0; i < enemyCityCoodinatesFromFile.size(); i++)
     {
-        std::shared_ptr<CivilCity> enemyTmp = std::make_shared<CivilCity>(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i]);
+        std::shared_ptr<EnemyCity> enemyTmp = std::make_shared<EnemyCity>(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
         enemyCities.emplace_back(enemyTmp);
     }
     return enemyCities;
@@ -201,8 +201,9 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std
     std::vector<std::shared_ptr<City>> baseCities;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
     {
+        std::cout << "initializeBaseCities" << std::endl;
         std::vector<std::shared_ptr<Spaceship>> baseCitySpaceshipType = findSutableSpaceshipForBaseCities(spaceshipsInBaseCities);
-        std::shared_ptr<CivilCity> baseTmp = std::make_shared<CivilCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i]);
+        std::shared_ptr<BaseCity> baseTmp = std::make_shared<BaseCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], baseCitySpaceshipType);
         baseCities.emplace_back(baseTmp);
     }
     return baseCities;
@@ -226,13 +227,13 @@ void Control::readMapFromFile()
         return;
     }
 
+    std::cout << "koofttttttttttttttttttttttttttttttttttttttttttttttttttttttt" << std::endl;
     std::vector<std::shared_ptr<City>> baseCities = readBaseCitysFromFile();
     std::vector<std::shared_ptr<City>> civilCities = readCivilCitysFromFile();
     std::vector<std::shared_ptr<City>> enemyCities = readEnemyCitysFromFile();
-
-    map.graphMap(collectAllCities(baseCities, civilCities, enemyCities));
-
     mapFile.close();
+    map.graphMap(collectAllCities(baseCities, civilCities, enemyCities));
+    std::cout << "map " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().first << " " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().second << std::endl;
 }
 double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b) // calculates heuristic for A* search algorithm
 {
