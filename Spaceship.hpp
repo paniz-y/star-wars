@@ -19,6 +19,7 @@ public:
     int setDistruction();
     int setControlLessDictance();
     std::string setTypeOfSpaceship();
+    int getControlLessDictance();
 
 
 protected:

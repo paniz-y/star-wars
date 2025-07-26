@@ -59,3 +59,8 @@ std::string Spaceship::setTypeOfSpaceship()
 {
     return TypeOfSpaceship;
 }
+
+int Spaceship::getControlLessDictance()
+{
+    return controlLessDictance;
+}
