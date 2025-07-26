@@ -306,8 +306,8 @@ void Control::routing()
 
         for (auto enemy : listOfEnemyCities)
         {
-
-            AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship);
+            std::cout << "befor " << std::endl;
+            std::cout << AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship);
         }
     }
 }
@@ -318,4 +318,5 @@ int main()
 {
     Control c;
     c.readMapFromFile();
+    c.routing();
 }

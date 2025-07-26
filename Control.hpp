@@ -44,9 +44,13 @@ struct Node
 struct HashForPair {
     template <typename T1, typename T2>
     std::size_t operator()(const std::pair<T1, T2>& p) const {
-        return std::hash<decltype(std::tie(p.first, p.second))>{}(std::tie(p.first, p.second));
+        std::size_t h1 = std::hash<T1>{}(p.first);
+        std::size_t h2 = std::hash<T2>{}(p.second);
+        return h1 ^ (h2 << 1); // Combine the two hashes
     }
 };
+
+
 
 class Control
 {
