@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <unordered_set>
+#include <tuple>
 #include "Spaceship.hpp"
 #include "City.hpp"
 #include "BaseCity.hpp"
@@ -98,6 +99,7 @@ private:
     }
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     std::vector<EnemyCity> listOfEnemyCities;
+    std::unordered_map<std::tuple<int, int>,std::shared_ptr<City>> coordsToCityPtr; 
     // std::vector<std::pair<int, int>> baseCityCoodinates;
     // std::vector<std::pair<int, int>> civilCityCoodinates;
     // std::vector<std::pair<int, int>> enemyCityCoodinates;
