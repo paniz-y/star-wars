@@ -203,8 +203,8 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
         listOfEnemyCities.emplace_back(enemyCityTmp);
         std::shared_ptr<EnemyCity> enemyPtrTmp = std::make_shared<EnemyCity>(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
         enemyCities.emplace_back(enemyPtrTmp);
-        auto coordsTmp = std::make_tuple(enemyCityCoodinatesFromFile[i].first, enemyCityCoodinatesFromFile[i].second);
-        coordsToCityPtr[coordsTmp] = enemyCities.back();
+        //auto coordsTmp = std::tie(enemyCityCoodinatesFromFile[i].first, enemyCityCoodinatesFromFile[i].second);
+        coordsToCityPtr[enemyCityCoodinatesFromFile[i]] = enemyCities.back();
     }
     return enemyCities;
 }
@@ -217,8 +217,8 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std
         std::shared_ptr<BaseCity> basePtrTmp = std::make_shared<BaseCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], allSpaceships);
         baseCities.emplace_back(basePtrTmp);
         // BaseCity baseCityTmp(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], allSpaceships);
-        auto coordsTmp = std::make_tuple(baseCityCoodinatesFromFile[i].first, baseCityCoodinatesFromFile[i].second);
-        coordsToCityPtr[coordsTmp] = baseCities.back();
+        //auto coordsTmp = std::tie(baseCityCoodinatesFromFile[i].first, baseCityCoodinatesFromFile[i].second);
+        coordsToCityPtr[baseCityCoodinatesFromFile[i]] = baseCities.back();
     }
     return baseCities;
 }
@@ -229,8 +229,8 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
     {
         std::shared_ptr<CivilCity> civilPtrTmp = std::make_shared<CivilCity>(civilCityCoodinatesFromFile[i], civilCitySpyFromFile[i]);
         civilCities.emplace_back(civilPtrTmp);
-        auto coordsTmp = std::make_tuple(civilCityCoodinatesFromFile[i].first, civilCityCoodinatesFromFile[i].second);
-        coordsToCityPtr[coordsTmp] = civilCities.back();
+        //auto coordsTmp = std::tie(civilCityCoodinatesFromFile[i].first, civilCityCoodinatesFromFile[i].second);
+        coordsToCityPtr[civilCityCoodinatesFromFile[i]] = civilCities.back();
     }
     return civilCities;
 }
@@ -302,11 +302,12 @@ void Control::routing()
 {
     for (auto spaceship : allSpaceships)
     {
-        auto startCoordsTmp = std::make_tuple(spaceship->getCoordinates().first, spaceship->getCoordinates().second);
+       
+
         for (auto enemy : listOfEnemyCities)
         {
-            auto destinationCoordsTmp = std::make_tuple(enemy.getCoordinates().first, enemy.getCoordinates().second);
-            AStarRouting(coordsToCityPtr[startCoordsTmp], coordsToCityPtr[destinationCoordsTmp]);
+
+            AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()]);
         }
     }
 }

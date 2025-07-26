@@ -41,6 +41,13 @@ struct Node
         return calculateF() > node.calculateF();
     }
 };
+struct HashForPair {
+    template <typename T1, typename T2>
+    std::size_t operator()(const std::pair<T1, T2>& p) const {
+        return std::hash<decltype(std::tie(p.first, p.second))>{}(std::tie(p.first, p.second));
+    }
+};
+
 class Control
 {
 
@@ -57,6 +64,7 @@ public:
     void AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination); // uses A* search algorithm for routing
     std::vector<std::shared_ptr<City>> collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities,const std::vector<std::shared_ptr<City>> &civilCities,const std::vector<std::shared_ptr<City>> &enemyCities);
     void routing();
+    
 private:
     int scenario;
     int numOfCitys;
@@ -99,7 +107,7 @@ private:
     }
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     std::vector<EnemyCity> listOfEnemyCities;
-    std::unordered_map<std::tuple<int, int>,std::shared_ptr<City>> coordsToCityPtr; 
+    std::unordered_map<std::pair<int, int>,std::shared_ptr<City>, HashForPair> coordsToCityPtr; 
     // std::vector<std::pair<int, int>> baseCityCoodinates;
     // std::vector<std::pair<int, int>> civilCityCoodinates;
     // std::vector<std::pair<int, int>> enemyCityCoodinates;
