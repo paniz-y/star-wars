@@ -257,7 +257,7 @@ double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b)
     double distance = sqrt(pow(firstCityCoordinates.first - secondCityCoordinates.first, 2) + pow(firstCityCoordinates.first - secondCityCoordinates.second, 2));
     return distance;
 }
-void Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination) // uses A* search algorithm for routing
+int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
 {
 
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> previousNodes; // for each node stores the previous node that has been visited
@@ -274,12 +274,12 @@ void Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared
         previousNodes.pop();
         if (currNode.currCity == destination)
         {
-            return;
+            return currNode.g;
         }
         for (auto &neighbor : map.getNeighbors(currNode.currCity))
         {
             double neighborGScore = neighbor.second + currNode.g;
-            if (visitedNodeCities.find(neighbor.first) != visitedNodeCities.end() || shortestDistance[neighbor.first] < neighborGScore)
+            if (visitedNodeCities.find(neighbor.first) != visitedNodeCities.end() || shortestDistance[neighbor.first] < neighborGScore || spaceship->getControlLessDictance()<= neighborGScore)
             {
                 double neighborHScore = heuristic(start, neighbor.first);
                 Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
@@ -307,7 +307,7 @@ void Control::routing()
         for (auto enemy : listOfEnemyCities)
         {
 
-            AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()]);
+            AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship);
         }
     }
 }
