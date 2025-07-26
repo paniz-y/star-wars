@@ -274,10 +274,13 @@ int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_
         previousNodes.pop();
         if (currNode.currCity == destination)
         {
+            std::cout << currNode.g <<std::endl;
             return currNode.g;
         }
+        std::cout << "after if " << std::endl;
         for (auto &neighbor : map.getNeighbors(currNode.currCity))
         {
+            // std::cout << "currNode " << currNode.g << std::endl;
             double neighborGScore = neighbor.second + currNode.g;
             if (visitedNodeCities.find(neighbor.first) != visitedNodeCities.end() || shortestDistance[neighbor.first] < neighborGScore || spaceship->getControlLessDictance()<= neighborGScore)
             {
@@ -285,8 +288,11 @@ int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_
                 Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
                 previousNodes.emplace(visited);
                 visitedNodeCities.emplace(neighbor.first);
+                // shortestDistance[neighbor.first] = neighborGScore;
             }
+            std::cout << "after second if\n";
         }
+        std::cout << "after for \n";
     }
 }
 std::vector<std::shared_ptr<City>> Control::collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities)
@@ -318,5 +324,5 @@ int main()
 {
     Control c;
     c.readMapFromFile();
-    c.routing();
+    // c.routing();
 }
