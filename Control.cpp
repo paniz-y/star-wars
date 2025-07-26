@@ -63,42 +63,53 @@ std::vector<std::shared_ptr<Spaceship>> Control::findSutableSpaceshipForBaseCiti
         {
             std::shared_ptr<Awing> tmpSpaceship = std::make_shared<Awing>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
+            break;
         }
             // return std::make_shared<Awing>();
         case spaceshipType::DeathStar:
         {
+            std::cout << "DeathStar1" << std::endl;
             std::shared_ptr<DeathStar> tmpSpaceship = std::make_shared<DeathStar>();
+            std::cout << "DeathStar2" << std::endl;
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
+            std::cout << "DeathStar3" << std::endl;
+            break;
         }
         case spaceshipType::Mantis:
         {
             std::shared_ptr<Mantis> tmpSpaceship = std::make_shared<Mantis>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
+            break;
         }
         case spaceshipType::MillenniumFalcon:
         {
             std::shared_ptr<MillenniumFalcon> tmpSpaceship = std::make_shared<MillenniumFalcon>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
+            break;
         }
         case spaceshipType::RazorCrest:
         {
             std::shared_ptr<RazorCrest> tmpSpaceship = std::make_shared<RazorCrest>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
+            break;
         }
         case spaceshipType::StarDestroyer:
         {
             std::shared_ptr<StarDestroyer> tmpSpaceship = std::make_shared<StarDestroyer>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
+            break;
         }
         case spaceshipType::TieFighter:
         {
             std::shared_ptr<TieFighter> tmpSpaceship = std::make_shared<TieFighter>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
+            break;
         }
         case spaceshipType::XwingStarFighter:
         {
             std::shared_ptr<XwingStarFighter> tmpSpaceship = std::make_shared<XwingStarFighter>();
             spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
+            break;
         }
         default:
             throw std::invalid_argument("Unknown city type: " + spaceshipsInBaseCities[i].second);
