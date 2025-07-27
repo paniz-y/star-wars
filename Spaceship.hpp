@@ -18,8 +18,9 @@ public:
     int setRadarResistency();
     int setDistruction();
     int setControlLessDictance();
-    std::string setTypeOfSpaceship();
+    std::string getTypeOfSpaceship();
     int getControlLessDictance();
+
 
 
 protected:
