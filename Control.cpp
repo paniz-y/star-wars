@@ -1,5 +1,13 @@
 #include "Control.hpp"
 
+void Control::readMaxMapSizeFromFile()
+{
+    std::string maxOfMapString;
+    mapFile >> maxOfMapString;
+    int maxMapSize;
+    mapFile >> maxMapSize;
+    map.setMaxSize(maxMapSize);
+}
 std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
 {
     std::string numberOfBaseCitysFromFile;
@@ -51,7 +59,7 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
     // baseCityCoodinates = baseCityCoodinatesFromFile;
     return baseCityForMap;
 }
-std::vector <std::shared_ptr<Spaceship>> Control::findSuitableSpaceshipForBaseCities(std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
+std::vector<std::shared_ptr<Spaceship>> Control::findSuitableSpaceshipForBaseCities(std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
 {
     std::vector<std::shared_ptr<Spaceship>> spaceshipFoundForBaseCity;
     for (int i{}; i < spaceshipsInBaseCities.size() && i < spaceshipsInBaseCities[i].first; i++)
@@ -223,11 +231,11 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std
     std::vector<std::shared_ptr<City>> baseCities;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
     {
-        std::vector <std::shared_ptr<Spaceship>> spaceshipsFoundFromBaseCities = findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities);
+        std::vector<std::shared_ptr<Spaceship>> spaceshipsFoundFromBaseCities = findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities);
         // std::cout << "spaceshipsFoundFromBaseCities size " << spaceshipsFoundFromBaseCities.size() << std::endl;
         std::shared_ptr<BaseCity> basePtrTmp = std::make_shared<BaseCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], spaceshipsFoundFromBaseCities);
-        
-        initializeAllSpaceships(spaceshipsFoundFromBaseCities , baseCityCoodinatesFromFile[i]);   
+
+        initializeAllSpaceships(spaceshipsFoundFromBaseCities, baseCityCoodinatesFromFile[i]);
         baseCities.emplace_back(basePtrTmp);
         // std::cout << "allSpaceship.size() " << i << " " << allSpaceships.size() << std::endl;
         // BaseCity baseCityTmp(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], allSpaceships);
@@ -267,6 +275,7 @@ void Control::readMapFromFile()
     std::vector<std::shared_ptr<City>> baseCities = readBaseCitysFromFile();
     std::vector<std::shared_ptr<City>> civilCities = readCivilCitysFromFile();
     std::vector<std::shared_ptr<City>> enemyCities = readEnemyCitysFromFile();
+    readMaxMapSizeFromFile();
     mapFile.close();
     map.graphMap(collectAllCities(baseCities, civilCities, enemyCities));
     std::cout << "map " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().first << " " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().second << std::endl;
@@ -290,17 +299,17 @@ void Control::initializeCorrespondentCityForEachSpaceship()
     //     std::cout << correspondentCityForEachSpaceship[i].first->getNameOfSpaceship() << " " << correspondentCityForEachSpaceship[i].second->getCoordinates().first << " " << correspondentCityForEachSpaceship[i].second->getCoordinates().second << std::endl;
     // }
 }
-void Control::initializeAllSpaceships(std::vector <std::shared_ptr<Spaceship>>spaceships,std::pair<int ,int> coordinates)
+void Control::initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates)
 {
     int allSpaceshipsSize = allSpaceships.size();
 
-    for(int i{} ;i < spaceships.size() ; i++)
+    for (int i{}; i < spaceships.size(); i++)
     {
         allSpaceships.emplace_back(spaceships[i]);
     }
-    for(int i{} ;i < spaceships.size() ; i++)
+    for (int i{}; i < spaceships.size(); i++)
     {
-        allSpaceships[allSpaceshipsSize + i]->setCoordinates(coordinates);   
+        allSpaceships[allSpaceshipsSize + i]->setCoordinates(coordinates);
     }
 }
 int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
