@@ -20,6 +20,6 @@ public:
 
 private:
     std::unordered_map<std::shared_ptr<City>, std::vector<std::pair<std::shared_ptr<City>, double>>> locationsGraph;
-    int maxSize;
+    int maxSize = 100;
 };
 #endif
