@@ -19,7 +19,7 @@ void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secon
 
 int Map::calculateWeight(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex)
 {
-    if(firstVertex->getExistenceOfSpy() || secondVertex->getExistenceOfSpy())
+    if (firstVertex->getExistenceOfSpy() || secondVertex->getExistenceOfSpy())
     {
         return maxSize * 2;
     }
@@ -36,3 +36,12 @@ void Map::graphMap(std::vector<std::shared_ptr<City>> cities)
     }
 }
 
+int Map::getMaxSize()
+{
+    return maxSize;
+}
+
+void Map::setMaxSize(int sizeOfMap)
+{
+    maxSize = sizeOfMap;
+}
