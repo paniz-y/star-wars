@@ -6,7 +6,8 @@ void Control::readMaxMapSizeFromFile()
     mapFile >> maxOfMapString;
     int maxMapSize;
     mapFile >> maxMapSize;
-    map.setMaxSize(maxMapSize);
+    mapWithSpys.setMaxSize(maxMapSize);
+    mapWithDefenses.setMaxSize(maxMapSize);
 }
 std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
 {
@@ -277,8 +278,9 @@ void Control::readMapFromFile()
     std::vector<std::shared_ptr<City>> enemyCities = readEnemyCitysFromFile();
     readMaxMapSizeFromFile();
     mapFile.close();
-    map.graphMap(collectAllCities(baseCities, civilCities, enemyCities));
-    std::cout << "map " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().first << " " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().second << std::endl;
+    mapWithSpys.graphMapWithSpys(collectAllCities(baseCities, civilCities, enemyCities));
+    mapWithDefenses.graphMapWithDefenses(collectAllCities(baseCities, civilCities, enemyCities));
+    //std::cout << "map " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().first << " " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().second << std::endl;
 }
 double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b) // calculates heuristic for A* search algorithm
 {
@@ -315,42 +317,46 @@ void Control::initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> sp
 int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
 {
 
-    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> previousNodes; // for each node stores the previous node that has been visited
-    std::unordered_map<std::shared_ptr<City>, double> shortestDistance;             // for each node stores the shortest distance required to reach it
-                                                                                    // std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> neighbor;      // stores each node and its previous one for backtracking the path
-    std::unordered_set<std::shared_ptr<City>> visitedNodeCities;                    // stores each city that has been visited as a node
+    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
+    std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
+    std::unordered_set<std::shared_ptr<City>> visitedNodeCities;            // stores each city that has been visited as a node
 
-    previousNodes.push({start, nullptr, 0, heuristic(start, destination)});
+    nodes.push({start, nullptr, 0, heuristic(start, destination)});
     shortestDistance[start] = 0;
-    for (auto &neighbor : map.getNeighbors(start))
+    for (auto &neighbor : mapWithSpys.getNeighbors(start))
     {
         shortestDistance[neighbor.first] = DBL_MAX;
     }
 
-    while (!previousNodes.empty())
+    while (!nodes.empty())
     {
-        Node currNode = previousNodes.top();
-        previousNodes.pop();
+        Node currNode = nodes.top();
+        nodes.pop();
         if (currNode.currCity == destination)
         {
             // std::cout << "final " << currNode.g << std::endl;
             return currNode.g;
         }
-        // std::cout << "after if " << std::endl;
-        for (auto &neighbor : map.getNeighbors(currNode.currCity))
+        if (isSpaceshipRadarResistant(currNode.currCity, spaceship))
         {
-            // std::cout << "currNode " << currNode.g << std::endl;
-            double neighborGScore = neighbor.second + currNode.g;
-            if (visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first] && neighborGScore <= spaceship->getControlLessDictance()))
+            // std::cout << "after if " << std::endl;
+            for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
             {
-                double neighborHScore = heuristic(neighbor.first, destination);
-                Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
-                previousNodes.emplace(visited);
-                shortestDistance[neighbor.first] = neighborGScore;
+                // std::cout << "currNode " << currNode.g << std::endl;
+                double neighborGScore = neighbor.second + currNode.g;
+
+                if (visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first] && neighborGScore <= spaceship->getControlLessDictance()))
+                {
+                    double neighborHScore = heuristic(neighbor.first, destination);
+                    Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
+                    nodes.emplace(visited);
+                    shortestDistance[neighbor.first] = neighborGScore;
+                }
+                // std::cout << "after second if\n";
             }
-            // std::cout << "after second if\n";
+            visitedNodeCities.emplace(currNode.currCity);
         }
-        visitedNodeCities.emplace(currNode.currCity);
+
         // std::cout << "after for \n";
     }
     return -1;
@@ -379,6 +385,13 @@ void Control::routing()
             std::cout << "A* " << AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship) << std::endl;
         }
     }
+}
+
+bool Control::isSpaceshipRadarResistant(std::shared_ptr<City> city, std::shared_ptr<Spaceship> spaceship)
+{
+    int resistance = city->getExistenceOfSpy() ? spaceship->detected() : spaceship->getRadarResistance();
+    bool isResistance = (resistance > 0) ? true : false;
+    return isResistance;
 }
 
 int main()
