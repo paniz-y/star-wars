@@ -3,7 +3,7 @@
 Spaceship::Spaceship(int dis, int radar, int distruct, int controlDictance, std::string type)
 {
     setDistance(dis);
-    setRadarResistency(radar);
+    setRadarResistance(radar);
     setDistruction(distruct);
     setControlLessDictance(controlDictance);
     setTypeOfSpaceship(type);
@@ -13,9 +13,9 @@ void Spaceship::setDistance(int dis)
 {
     this->distance = dis;
 }
-void Spaceship::setRadarResistency(int radar)
+void Spaceship::setRadarResistance(int radar)
 {
-    this->radarResistency = radar;
+    this->radarResistance = radar;
 }
 void Spaceship::setDistruction(int distruct)
 {
@@ -43,9 +43,9 @@ int Spaceship::getDistance()
 {
     return distance;
 }
-int Spaceship::setRadarResistency()
+int Spaceship::getRadarResistance()
 {
-    return radarResistency;
+    return radarResistance;
 }
 int Spaceship::setDistruction()
 {
@@ -73,4 +73,19 @@ std::string Spaceship::getNameOfSpaceship()
 void Spaceship::setName(std::string name)
 {
     nameOfSpaceship = name;
+}
+
+int Spaceship::detected()
+{
+    radarResistance--;
+    return radarResistance;
+}
+
+bool Spaceship::isStillResistant()
+{
+    if (radarResistance > 0)
+    {
+        return true;
+    }
+    return false;
 }
