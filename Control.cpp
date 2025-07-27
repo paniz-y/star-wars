@@ -324,13 +324,13 @@ int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_
         previousNodes.pop();
         if (currNode.currCity == destination)
         {
-            std::cout << "final " << currNode.g << std::endl;
+            // std::cout << "final " << currNode.g << std::endl;
             return currNode.g;
         }
-        std::cout << "after if " << std::endl;
+        // std::cout << "after if " << std::endl;
         for (auto &neighbor : map.getNeighbors(currNode.currCity))
         {
-            std::cout << "currNode " << currNode.g << std::endl;
+            // std::cout << "currNode " << currNode.g << std::endl;
             double neighborGScore = neighbor.second + currNode.g;
             if (visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first] && neighborGScore <= spaceship->getControlLessDictance()))
             {
@@ -339,10 +339,10 @@ int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_
                 previousNodes.emplace(visited);
                 shortestDistance[neighbor.first] = neighborGScore;
             }
-            std::cout << "after second if\n";
+            // std::cout << "after second if\n";
         }
         visitedNodeCities.emplace(currNode.currCity);
-        std::cout << "after for \n";
+        // std::cout << "after for \n";
     }
     return -1;
 }
@@ -360,23 +360,21 @@ void Control::routing()
     initializeCorrespondentCityForEachSpaceship();
     for (auto spaceship : allSpaceships)
     {
-        std::cout << "befor for" << std::endl;
+        // std::cout << "befor for" << std::endl;
         for (auto enemy : listOfEnemyCities)
         {
-            std::cout << "befor " << std::endl;
-            std::cout << "spaceship->getCoordinates()" << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
-            std::cout << "enemy.getCoordinates()" << enemy.getCoordinates().first << " " << enemy.getCoordinates().second << std::endl;
-            std::cout << "spaceship " << spaceship->getTypeOfSpaceship() << std::endl;
+            // std::cout << "befor " << std::endl;
+            // std::cout << "spaceship->getCoordinates()" << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
+            // std::cout << "enemy.getCoordinates()" << enemy.getCoordinates().first << " " << enemy.getCoordinates().second << std::endl;
+            // std::cout << "spaceship " << spaceship->getTypeOfSpaceship() << std::endl;
             std::cout << "A* " << AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship) << std::endl;
         }
     }
 }
-// int Control::CalculateDistance()
-// {
-// }
+
 int main()
 {
     Control c;
     c.readMapFromFile();
-    // c.routing();
+    c.routing();
 }
