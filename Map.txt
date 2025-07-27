@@ -23,4 +23,5 @@ number_of_spys_in_each_enemy_city:
 number_of_ratio_each_defense_has:
 2
 1
-
+max_size_of_map:
+20
