@@ -64,3 +64,13 @@ int Spaceship::getControlLessDictance()
 {
     return controlLessDictance;
 }
+
+std::string Spaceship::getNameOfSpaceship()
+{
+    return nameOfSpaceship;
+}
+
+void Spaceship::setName(std::string name)
+{
+    nameOfSpaceship = name;
+}

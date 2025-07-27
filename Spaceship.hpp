@@ -20,7 +20,8 @@ public:
     int setControlLessDictance();
     std::string getTypeOfSpaceship();
     int getControlLessDictance();
-
+    std::string getNameOfSpaceship();
+    void setName(std::string name);
 
 
 protected:
@@ -28,6 +29,7 @@ protected:
     int radarResistency;
     int distruction;
     int controlLessDictance;
+    std::string nameOfSpaceship;
     std ::string TypeOfSpaceship;
     std::pair<int, int> coordinats;
 };
