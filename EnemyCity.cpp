@@ -1,6 +1,11 @@
 #include "EnemyCity.hpp"
 
-EnemyCity::EnemyCity(std::pair<int, int> coords, bool spy, Defense defense) : City(coords, spy)
+EnemyCity::EnemyCity(std::pair<int, int> coords, bool spy, Defense defenseForEnemyCity) : City(coords, spy)
 {
-    defenseRatio = defense;
+    defense = defense;
+}
+
+Defense EnemyCity::getDefense()
+{
+    return Defense();
 }
