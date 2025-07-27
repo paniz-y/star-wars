@@ -9,7 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <unordered_set>
-//#include <tuple>
+// #include <tuple>
 #include <float.h>
 #include "Spaceship.hpp"
 #include "City.hpp"
@@ -42,34 +42,36 @@ struct Node
         return calculateF() > node.calculateF();
     }
 };
-struct HashForPair {
+struct HashForPair
+{
     template <typename T1, typename T2>
-    std::size_t operator()(const std::pair<T1, T2>& p) const {
+    std::size_t operator()(const std::pair<T1, T2> &p) const
+    {
         std::size_t h1 = std::hash<T1>{}(p.first);
         std::size_t h2 = std::hash<T2>{}(p.second);
         return h1 ^ (h2 << 1); // Combine the two hashes
     }
 };
 
-
-
 class Control
 {
 
 public:
     void readMapFromFile();
-    std::vector <std::shared_ptr<City>> readBaseCitysFromFile();
-    std::vector <std::shared_ptr<City>> readCivilCitysFromFile();
-    std::vector <std::shared_ptr<City>> readEnemyCitysFromFile();
-    void findSuitableSpaceshipForBaseCities(std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
-    std::vector <std::shared_ptr<City>> initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
-    std::vector <std::shared_ptr<City>> initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
-    std::vector <std::shared_ptr<City>> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
+    std::vector<std::shared_ptr<City>> readBaseCitysFromFile();
+    std::vector<std::shared_ptr<City>> readCivilCitysFromFile();
+    std::vector<std::shared_ptr<City>> readEnemyCitysFromFile();
+    std::vector<std::shared_ptr<Spaceship>> findSuitableSpaceshipForBaseCities(std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
+    std::vector<std::shared_ptr<City>> initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
+    std::vector<std::shared_ptr<City>> initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
+    std::vector<std::shared_ptr<City>> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
     int CalculateDistance();
+    void initializeCorrespondentCityForEachSpaceship();
+    void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
     int AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship); // uses A* search algorithm for routing
-    std::vector<std::shared_ptr<City>> collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities,const std::vector<std::shared_ptr<City>> &civilCities,const std::vector<std::shared_ptr<City>> &enemyCities);
+    std::vector<std::shared_ptr<City>> collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
     void routing();
-    
+
 private:
     int scenario;
     int numOfCitys;
@@ -112,7 +114,8 @@ private:
     }
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     std::vector<EnemyCity> listOfEnemyCities;
-    std::unordered_map<std::pair<int, int>,std::shared_ptr<City>, HashForPair> coordsToCityPtr; 
+    std::unordered_map<std::pair<int, int>, std::shared_ptr<City>, HashForPair> coordsToCityPtr;
+    std::vector<std::pair<std::shared_ptr<Spaceship>, std::shared_ptr<City>>> correspondentCityForEachSpaceship;
     // std::vector<std::pair<int, int>> baseCityCoodinates;
     // std::vector<std::pair<int, int>> civilCityCoodinates;
     // std::vector<std::pair<int, int>> enemyCityCoodinates;
