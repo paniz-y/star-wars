@@ -1,0 +1,21 @@
+number_of_base_citys: 1
+base_city_coordinates:
+0 0
+number_of_spys_in_each_base_city:
+0
+spaceships_in_each_base_city:
+number: 2 name: DeathStar
+number_of_civil_citys: 1
+civil_city_coordinates: 
+200 200
+number_of_spys_in_each_civil_city:
+1
+number_of_enemy_citys: 1
+enemy_city_coordinates:
+400 400
+number_of_spys_in_each_enemy_city:
+0
+number_of_ratio_each_defense_has:
+2
+max_size_of_map:
+1000
