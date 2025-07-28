@@ -23,6 +23,6 @@ public:
 protected:
     std::pair<int, int> coordinates;
     bool spyExistence;
-    bool hasDefence;
+    bool hasDefense;
 };
 #endif

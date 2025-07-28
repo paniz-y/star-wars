@@ -28,9 +28,9 @@ bool City::getExistenceOfSpy()
 
 bool City::getHasDefence()
 {
-    return hasDefence;
+    return hasDefense;
 }
 void City::setDefence(bool defence)
 {
-    hasDefence = defence;
+    hasDefense = defence;
 }
