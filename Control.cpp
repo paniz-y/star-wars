@@ -315,19 +315,20 @@ void Control::initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> sp
         allSpaceships[allSpaceshipsSize + i]->setCoordinates(coordinates);
     }
 }
-int Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
+std::pair<int, int> Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
 {
 
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
     std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities;            // stores each city that has been visited as a node
-
     nodes.push({start, nullptr, 0, heuristic(start, destination)});
     shortestDistance[start] = 0;
     for (auto &neighbor : mapWithSpys.getNeighbors(start))
     {
         shortestDistance[neighbor.first] = DBL_MAX;
     }
+    int radarResistanceTmp = spaceship->getRadarResistance();
+    int radarResistanceSoFar = radarResistanceTmp;
 
     while (!nodes.empty())
     {
@@ -336,9 +337,12 @@ int Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::
         if (currNode.currCity == destination)
         {
             // std::cout << "final " << currNode.g << std::endl;
-            return currNode.g;
+            return std::make_pair(currNode.g, radarResistanceSoFar);
         }
-        if (isSpaceshipRadarResistant(currNode.currCity, spaceship))
+
+        radarResistanceTmp = decreaseRadarResistant(currNode.currCity, radarResistanceTmp);
+        std::cout << "after decreaseRadarResistant " << radarResistanceTmp << std::endl;
+        if (isSpaceshipRadarResistant(radarResistanceTmp))
         {
             // std::cout << "after if " << std::endl;
             for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
@@ -352,19 +356,22 @@ int Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::
                     Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
                     nodes.emplace(visited);
                     shortestDistance[neighbor.first] = neighborGScore;
+                    radarResistanceSoFar = radarResistanceTmp;
+                    std::cout << "radarResistanceSoFar " << radarResistanceSoFar << std::endl;
                 }
                 // std::cout << "after second if\n";
             }
+
             visitedNodeCities.emplace(currNode.currCity);
         }
         else
         {
-            return -2;
+            return std::make_pair(-2, radarResistanceSoFar);
         }
 
         // std::cout << "after for \n";
     }
-    return -1;
+    return std::make_pair(-1, radarResistanceSoFar);
 }
 int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
 {
@@ -432,7 +439,9 @@ void Control::routing()
             std::cout << "spaceship->getCoordinates()" << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
             std::cout << "enemy.getCoordinates()" << enemy.getCoordinates().first << " " << enemy.getCoordinates().second << std::endl;
             std::cout << "spaceship " << spaceship->getTypeOfSpaceship() << std::endl;
-            std::cout << "A* for s " << AStarRoutingForSpys(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship) << std::endl;
+            std::cout << "A* for s first " << AStarRoutingForSpys(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship).first << std::endl;
+            std::cout << "A* for s second " << AStarRoutingForSpys(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship).second << std::endl;
+
             if (spaceship->getRadarResistance() == 0)
             {
                 std::cout << "A* for d " << AStarRoutingForDefenses(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship) << std::endl;
@@ -441,11 +450,21 @@ void Control::routing()
     }
 }
 
-bool Control::isSpaceshipRadarResistant(std::shared_ptr<City> city, std::shared_ptr<Spaceship> spaceship)
+bool Control::isSpaceshipRadarResistant(int spaceshipRadarResistance)
 {
-    int resistance = city->getExistenceOfSpy() ? spaceship->detected() : spaceship->getRadarResistance();
-    bool isResistance = (resistance > 0) ? true : false;
+    bool isResistance = (spaceshipRadarResistance > 0) ? true : false;
     return isResistance;
+}
+
+int Control::decreaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance)
+{
+    // int resistance = city->getExistenceOfSpy() ? (spaceshipRadarResistance--) : spaceshipRadarResistance;
+    // return resistance;
+    if(city->getExistenceOfSpy())
+    {
+        spaceshipRadarResistance--;
+    }
+    return spaceshipRadarResistance;
 }
 
 int main()
