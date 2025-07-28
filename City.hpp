@@ -13,6 +13,8 @@ public:
     void setExistingSpys(bool spy);
 
     bool getExistenceOfSpy();
+    bool getHasDefence();
+    void setDefence(bool);
     // bool operator==(const City& otherCity) const 
     // {
     //     return coordinates == otherCity.coordinates && spyExistence == otherCity.spyExistence;
@@ -21,5 +23,6 @@ public:
 protected:
     std::pair<int, int> coordinates;
     bool spyExistence;
+    bool hasDefence;
 };
 #endif

@@ -25,3 +25,12 @@ bool City::getExistenceOfSpy()
 {
     return spyExistence;
 }
+
+bool City::getHasDefence()
+{
+    return hasDefence;
+}
+void City::setDefence(bool defence)
+{
+    hasDefence = defence;
+}
