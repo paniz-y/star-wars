@@ -9,9 +9,10 @@ class EnemyCity : public City
 {
 public:
     // BaseCity();
-    EnemyCity(std::pair<int, int> coords, bool spy, Defense defense);
+    EnemyCity(std::pair<int, int> coords, bool spy, Defense defense,bool defenceCheck);
     Defense getDefense();
-    
+
+    // bool hasDefence() override;
     // void setListOfSpaceships(std::vector<Spaceship> spaceships);
     // std::vector<Spaceship> getListOfSpaceships();
     // int programSpaceship(Spaceship spaceship);
@@ -22,7 +23,7 @@ public:
     // {
     //     return std::tie(coordinates, spyExistence, defense) == std::tie(otherEnemyCity.coordinates, otherEnemyCity.spyExistence, otherEnemyCity.defense);
     // }
-    // bool operator==(const EnemyCity& otherEnemyCity) const 
+    // bool operator==(const EnemyCity& otherEnemyCity) const
     // {
     //     return City::operator==(otherEnemyCity)  && defense == otherEnemyCity.defense;
     // }
