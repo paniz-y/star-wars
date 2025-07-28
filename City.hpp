@@ -13,8 +13,8 @@ public:
     void setExistingSpys(bool spy);
 
     bool getExistenceOfSpy();
-    bool getHasDefence();
-    void setDefence(bool);
+    virtual bool getHasDefense() const;
+    virtual void setDefense(bool);
     // bool operator==(const City& otherCity) const 
     // {
     //     return coordinates == otherCity.coordinates && spyExistence == otherCity.spyExistence;
