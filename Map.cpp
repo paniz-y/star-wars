@@ -1,9 +1,9 @@
 #include "Map.hpp"
-std::vector<std::pair<std::shared_ptr<City>, double>> Map::getNeighbors(std::shared_ptr<City> city)
+std::vector<std::pair<std::shared_ptr<City>, std::pair<double, double>>> Map::getNeighbors(std::shared_ptr<City> city)
 {
     return locationsGraph[city];
 }
-void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex, int weight)
+void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex, std::pair<double, double> weight)
 {
     locationsGraph[firstVertex].emplace_back(secondVertex, weight);
     locationsGraph[secondVertex].emplace_back(firstVertex, weight);
@@ -37,26 +37,34 @@ int Map::calculateWeightForDefenses(std::shared_ptr<City> firstVertex, std::shar
     }
     return 0;
 }
-void Map::graphMapWithSpys(std::vector<std::shared_ptr<City>> cities)
+
+// std::pair<double, double> Map::pairWeightForSpysAndWeightForDefenses(double weightForSpys, double weightForDefenses)
+// {
+//     std::make_pair()
+//     return std::pair<double, double>();
+// }
+
+void Map::graphMap(std::vector<std::shared_ptr<City>> cities)
 {
     for (int i = 0; i < cities.size() - 1; i++)
     {
         for (int j = i + 1; j < cities.size(); j++)
         {
-            addEdge(cities[i], cities[j], calculateWeightForSpys(cities[i], cities[j]));
+            std::pair<double, double> WeightForSpysAndWeightForDefenses = std::make_pair(calculateWeightForSpys(cities[i], cities[j]), calculateWeightForDefenses(cities[i], cities[j]));
+            addEdge(cities[i], cities[j], WeightForSpysAndWeightForDefenses);
         }
     }
 }
-void Map::graphMapWithDefenses(std::vector<std::shared_ptr<City>> cities)
-{
-    for (int i = 0; i < cities.size() - 1; i++)
-    {
-        for (int j = i + 1; j < cities.size(); j++)
-        {
-            addEdge(cities[i], cities[j], calculateWeightForDefenses(cities[i], cities[j]));
-        }
-    }
-}
+// void Map::graphMapWithDefenses(std::vector<std::shared_ptr<City>> cities)
+// {
+//     for (int i = 0; i < cities.size() - 1; i++)
+//     {
+//         for (int j = i + 1; j < cities.size(); j++)
+//         {
+//             addEdge(cities[i], cities[j], calculateWeightForDefenses(cities[i], cities[j]));
+//         }
+//     }
+// }
 
 int Map::getMaxSize()
 {
