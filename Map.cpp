@@ -27,14 +27,18 @@ int Map::calculateWeightForSpys(std::shared_ptr<City> firstVertex, std::shared_p
 }
 int Map::calculateWeightForDefenses(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex)
 {
-    if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(firstVertex))
+    if(firstVertex->getHasDefence() || secondVertex->getHasDefence())
     {
         return maxSize * 2;
     }
-    if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(secondVertex))
-    {
-        return maxSize * 2;
-    }
+    // if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(firstVertex))
+    // {
+    //     return maxSize * 2;
+    // }
+    // if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(secondVertex))
+    // {
+    //     return maxSize * 2;
+    // }
     return 0;
 }
 
