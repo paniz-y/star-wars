@@ -217,9 +217,9 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
     std::vector<std::shared_ptr<City>> enemyCities;
     for (int i = 0; i < enemyCityCoodinatesFromFile.size(); i++)
     {
-        EnemyCity enemyCityTmp(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
+        EnemyCity enemyCityTmp(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i],true);
         listOfEnemyCities.emplace_back(enemyCityTmp);
-        std::shared_ptr<EnemyCity> enemyPtrTmp = std::make_shared<EnemyCity>(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
+        std::shared_ptr<EnemyCity> enemyPtrTmp = std::make_shared<EnemyCity>(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i],true);
         enemyCities.emplace_back(enemyPtrTmp);
         // auto coordsTmp = std::tie(enemyCityCoodinatesFromFile[i].first, enemyCityCoodinatesFromFile[i].second);
         coordsToCityPtr[enemyCityCoodinatesFromFile[i]] = enemyCities.back();
@@ -278,9 +278,10 @@ void Control::readMapFromFile()
     std::vector<std::shared_ptr<City>> enemyCities = readEnemyCitysFromFile();
     readMaxMapSizeFromFile();
     mapFile.close();
-    mapWithSpys.graphMapWithSpys(collectAllCities(baseCities, civilCities, enemyCities));
-    mapWithDefenses.graphMapWithDefenses(collectAllCities(baseCities, civilCities, enemyCities));
-    //std::cout << "map " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().first << " " << map.getNeighbors(baseCities[0])[0].first->getCoordinates().second << std::endl;
+    mapWithSpys.graphMap(collectAllCities(baseCities, civilCities, enemyCities));
+    // mapWithDefenses.graphMapWithDefenses(collectAllCities(baseCities, civilCities, enemyCities));
+    // std::cout << "map " << mapWithSpys.getNeighbors(baseCities[0])[0].first->getCoordinates().first << " " << mapWithSpys.getNeighbors(baseCities[0])[0].first->getCoordinates().second << std::endl;
+    // std::cout <<"eki " << mapWithSpys.getNeighbors(baseCities[0])[0].second.first << " " <<mapWithSpys.getNeighbors(baseCities[0])[0].second.second << std::endl;
 }
 double heuristic(const std::shared_ptr<City> &a, const std::shared_ptr<City> &b) // calculates heuristic for A* search algorithm
 {
@@ -314,53 +315,53 @@ void Control::initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> sp
         allSpaceships[allSpaceshipsSize + i]->setCoordinates(coordinates);
     }
 }
-int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
-{
+// int Control::AStarRouting(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
+// {
 
-    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
-    std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
-    std::unordered_set<std::shared_ptr<City>> visitedNodeCities;            // stores each city that has been visited as a node
+//     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
+//     std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
+//     std::unordered_set<std::shared_ptr<City>> visitedNodeCities;            // stores each city that has been visited as a node
 
-    nodes.push({start, nullptr, 0, heuristic(start, destination)});
-    shortestDistance[start] = 0;
-    for (auto &neighbor : mapWithSpys.getNeighbors(start))
-    {
-        shortestDistance[neighbor.first] = DBL_MAX;
-    }
+//     nodes.push({start, nullptr, 0, heuristic(start, destination)});
+//     shortestDistance[start] = 0;
+//     for (auto &neighbor : mapWithSpys.getNeighbors(start))
+//     {
+//         shortestDistance[neighbor.first] = DBL_MAX;
+//     }
 
-    while (!nodes.empty())
-    {
-        Node currNode = nodes.top();
-        nodes.pop();
-        if (currNode.currCity == destination)
-        {
-            // std::cout << "final " << currNode.g << std::endl;
-            return currNode.g;
-        }
-        if (isSpaceshipRadarResistant(currNode.currCity, spaceship))
-        {
-            // std::cout << "after if " << std::endl;
-            for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
-            {
-                // std::cout << "currNode " << currNode.g << std::endl;
-                double neighborGScore = neighbor.second + currNode.g;
+//     while (!nodes.empty())
+//     {
+//         Node currNode = nodes.top();
+//         nodes.pop();
+//         if (currNode.currCity == destination)
+//         {
+//             // std::cout << "final " << currNode.g << std::endl;
+//             return currNode.g;
+//         }
+//         if (isSpaceshipRadarResistant(currNode.currCity, spaceship))
+//         {
+//             // std::cout << "after if " << std::endl;
+//             for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
+//             {
+//                 // std::cout << "currNode " << currNode.g << std::endl;
+//                 double neighborGScore = neighbor.second + currNode.g;
 
-                if (visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first] && neighborGScore <= spaceship->getControlLessDictance()))
-                {
-                    double neighborHScore = heuristic(neighbor.first, destination);
-                    Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
-                    nodes.emplace(visited);
-                    shortestDistance[neighbor.first] = neighborGScore;
-                }
-                // std::cout << "after second if\n";
-            }
-            visitedNodeCities.emplace(currNode.currCity);
-        }
+//                 if (visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first] && neighborGScore <= spaceship->getControlLessDictance()))
+//                 {
+//                     double neighborHScore = heuristic(neighbor.first, destination);
+//                     Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
+//                     nodes.emplace(visited);
+//                     shortestDistance[neighbor.first] = neighborGScore;
+//                 }
+//                 // std::cout << "after second if\n";
+//             }
+//             visitedNodeCities.emplace(currNode.currCity);
+//         }
 
-        // std::cout << "after for \n";
-    }
-    return -1;
-}
+//         // std::cout << "after for \n";
+//     }
+//     return -1;
+// }
 std::vector<std::shared_ptr<City>> Control::collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities)
 {
     std::vector<std::shared_ptr<City>> allCities;
@@ -382,7 +383,7 @@ void Control::routing()
             // std::cout << "spaceship->getCoordinates()" << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
             // std::cout << "enemy.getCoordinates()" << enemy.getCoordinates().first << " " << enemy.getCoordinates().second << std::endl;
             // std::cout << "spaceship " << spaceship->getTypeOfSpaceship() << std::endl;
-            std::cout << "A* " << AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship) << std::endl;
+            // std::cout << "A* " << AStarRouting(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship) << std::endl;
         }
     }
 }
@@ -398,5 +399,5 @@ int main()
 {
     Control c;
     c.readMapFromFile();
-    c.routing();
+    // c.routing();
 }
