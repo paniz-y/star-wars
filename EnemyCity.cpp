@@ -3,7 +3,7 @@
 EnemyCity::EnemyCity(std::pair<int, int> coords, bool spy, Defense defenseForEnemyCity, bool defenceCheck) : City(coords, spy)
 {
     defense = defenseForEnemyCity;
-    setDefence(defenceCheck);
+    setDefense(defenceCheck);
 }
 
 Defense EnemyCity::getDefense()
@@ -11,4 +11,12 @@ Defense EnemyCity::getDefense()
     return Defense();
 }
 
+bool EnemyCity::getHasDefense() const
+{
+    return hasDefense;
+}
 
+void EnemyCity::setDefense(bool defense)
+{
+    hasDefense = defense;
+}

@@ -12,7 +12,8 @@ public:
     EnemyCity(std::pair<int, int> coords, bool spy, Defense defense,bool defenceCheck);
     Defense getDefense();
 
-    // bool hasDefence() override;
+    bool getHasDefense() const override;
+    void setDefense(bool defense) override;
     // void setListOfSpaceships(std::vector<Spaceship> spaceships);
     // std::vector<Spaceship> getListOfSpaceships();
     // int programSpaceship(Spaceship spaceship);
