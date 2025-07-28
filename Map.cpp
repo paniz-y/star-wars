@@ -19,6 +19,10 @@ void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secon
 
 int Map::calculateWeightForSpys(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex)
 {
+    if (firstVertex->getExistenceOfSpy() && secondVertex->getExistenceOfSpy())
+    {
+        return maxSize * 4;
+    }
     if (firstVertex->getExistenceOfSpy() || secondVertex->getExistenceOfSpy())
     {
         return maxSize * 2;
