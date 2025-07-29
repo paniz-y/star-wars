@@ -9,14 +9,14 @@ public:
     void destroy();
     void setDistance(int dis);
     void setRadarResistance(int radar);
-    void setDistruction(int distruct);
+    void setDestruction(int distruct);
     void setControlLessDictance(int controlDictance);
     void setTypeOfSpaceship(std::string type);
     void setCoordinates(std::pair<int, int> coords);
     std::pair<int, int> getCoordinates();
     int getDistance();
     int getRadarResistance();
-    int setDistruction();
+    int getDestruction();
     int setControlLessDictance();
     std::string getTypeOfSpaceship();
     int getControlLessDictance();
@@ -28,7 +28,7 @@ public:
 protected:
     int distance;
     int radarResistance;
-    int distruction;
+    int Destruction;
     int controlLessDictance;
     std::string nameOfSpaceship;
     std ::string TypeOfSpaceship;
