@@ -8,6 +8,7 @@ public:
     Defense();
     void setRatio(int ratio);
     int getRatio();
+    void defend();
     // bool operator==(const Defense otherDefense) const
     // {
     //     return (coordinatesForDefense == otherDefense.coordinatesForDefense) && (defenseRatio == otherDefense.defenseRatio);

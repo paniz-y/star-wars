@@ -9,3 +9,8 @@ int Defense::getRatio()
 {
     return defenseRatio;
 }
+
+void Defense::defend()
+{
+    defenseRatio--;
+}
