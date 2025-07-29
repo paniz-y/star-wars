@@ -46,6 +46,15 @@ int Map::calculateWeightForDefenses(std::shared_ptr<City> firstVertex, std::shar
     return 0;
 }
 
+void Map::removeDefense(std::shared_ptr<City> firstVertex)
+{
+    for (auto neighbor : locationsGraph[firstVertex])
+    {
+
+       neighbor.second.second = 0;
+    }
+}
+
 // std::pair<double, double> Map::pairWeightForSpysAndWeightForDefenses(double weightForSpys, double weightForDefenses)
 // {
 //     std::make_pair()

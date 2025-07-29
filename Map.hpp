@@ -24,6 +24,7 @@ public:
     int calculateWeightForSpys(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex);     // calculates edge weights based on spys along the way
     int calculateWeightForDefenses(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex); // calculates edge weights based on defenses along the way
     //std::pair<double , double> pairWeightForSpysAndWeightForDefenses(double weightForSpys, double weightForDefenses);
+    void removeDefense(std::shared_ptr<City> firstVertex);
 private:
     std::unordered_map<std::shared_ptr<City>, std::vector<std::pair<std::shared_ptr<City>, std::pair<double, double>>>> locationsGraph;
     int maxSize;
