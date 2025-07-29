@@ -57,6 +57,7 @@ class Control
 {
 
 public:
+    Control();
     void readMapFromFile();
     std::vector<std::shared_ptr<City>> readBaseCitysFromFile();
     std::vector<std::shared_ptr<City>> readCivilCitysFromFile();
@@ -74,9 +75,11 @@ public:
     std::vector<std::shared_ptr<City>> collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
     void routing();
     bool isSpaceshipRadarResistant(int spaceshipRadarResistance);
+    void controlDestructions(int des);
     int decreaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
-    //void routing2();
+    // void routing2();
 
+    int amountOfDestruction;
 private:
     int scenario;
     int numOfCitys;

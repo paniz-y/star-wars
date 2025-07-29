@@ -1,5 +1,10 @@
 #include "Control.hpp"
 
+Control::Control()
+{
+    amountOfDestruction = 0;
+}
+
 void Control::readMaxMapSizeFromFile()
 {
     std::string maxOfMapString;
@@ -199,7 +204,10 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
     {
         enemyCitiesDefense[i].setRatio(enemyCityDefenseRatioFromFile[i]);
     }
-
+    for (int i = 0; i < numOfEnemyCitys; i++)
+    {
+    std::cout << "mannnnnnnnnnnnnnnn " << enemyCitiesDefense[i].getRatio() << std::endl;
+    }
     std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoodinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
 
     return enemyCitiesMadeForMap;
@@ -221,6 +229,8 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
         listOfEnemyCities.emplace_back(enemyCityTmp);
         std::shared_ptr<EnemyCity> enemyPtrTmp = std::make_shared<EnemyCity>(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i], true);
         enemyCities.emplace_back(enemyPtrTmp);
+        std::cout << "ratio enemy in initialize " << enemyCityTmp.getDefense().getRatio() << std::endl;
+        std::cout << "ratio enemy in initialize ptr " << enemyCitiesDefense[i].getRatio() << std::endl;
         // auto coordsTmp = std::tie(enemyCityCoodinatesFromFile[i].first, enemyCityCoodinatesFromFile[i].second);
         coordsToCityPtr[enemyCityCoodinatesFromFile[i]] = enemyCities.back();
         // std::cout << " coordsToCityPtr[enemyCityCoodinatesFromFile[i]] "<< i << " " <<  coordsToCityPtr[enemyCityCoodinatesFromFile[i]]->getCoordinates().first << " " <<  coordsToCityPtr[enemyCityCoodinatesFromFile[i]]->getCoordinates().second << std::endl;
@@ -344,9 +354,15 @@ std::pair<int, int> Control::AStarRoutingForSpys(const std::shared_ptr<City> &st
         radarResistanceSoFar = radarResistanceTmp;
         if (isSpaceshipRadarResistant(radarResistanceTmp))
         {
+            std::cout << "if enemy " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second<< std::endl;
+            if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
+            {
+                std::cout << "enemy city " << std::endl;
+                controlDestructions(spaceship->getDestruction());
+            }
             if (currNode.currCity == destination)
             {
-                // std::cout << "final " << currNode.g << std::endl;
+                std::cout << "final " << currNode.g << std::endl;
                 return std::make_pair(currNode.g, radarResistanceSoFar); // rout found
             }
 
@@ -412,7 +428,9 @@ int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const s
             return currNode.g;
         }
 
+        // std::cout << 
         // std::cout << "after if " << std::endl;
+        std::cout << "in defense curr "<<currNode.currCity->getCoordinates().first <<" " <<currNode.currCity->getCoordinates().second <<std::endl;;
         if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
         {
             // if (neighbor.second.second == mapWithDefenses.getMaxSize() * 2)
@@ -421,12 +439,18 @@ int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const s
             // }
             int defenseRatioTmp = enemy->getDefense().getRatio();
             std::cout << "defenseRatioTmpppppppppppppppppppppppp " << defenseRatioTmp << std::endl;
-            enemy->getDefense().defend();
-            std::cout << "after defenddddddddddddd " << enemy->getDefense().getRatio() << std::endl;
+                // controlDestructions(spaceship->getDestruction());
             if (enemy->getDefense().getRatio() <= 0)
             {
+                std::cout <<"jjjjjjjjjjjj" << std::endl;
                 mapWithSpys.removeDefense(currNode.currCity);
             }
+            else
+            {
+                enemy->getDefense().defend();
+                return -3; //the spaceship is missed
+            }
+            std::cout << "after defenddddddddddddd " << enemy->getDefense().getRatio() << std::endl;
         }
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
@@ -510,14 +534,14 @@ void Control::routing()
             do
             {
                 routingResultsForSpys.emplace_back(AStarRoutingForSpys(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[enemy.getCoordinates()], spaceship));
-                // std::cout << "A* for s first " << routingResults.back().first << std::endl;
-                // std::cout << "A* for s second " << routingResults.back().second << std::endl;
+                std::cout << "A* for s first " << routingResultsForSpys.back().first << std::endl;
+                std::cout << "A* for s second " << routingResultsForSpys.back().second << std::endl;
                 if (routingResultsForSpys.back().first == -1) // exceeding the controlless distance
                 {
                     // std::cout << "here in if " << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
                     for (auto civilOrBase : listOfBaseAndCivilCities)
                     {
-                        // std::cout << "civil " <<
+                        std::cout << "civil " << previouseVisitedCity->getCoordinates().first << " " << previouseVisitedCity->getCoordinates().second << std::endl;
                         routingResultsForSpys.emplace_back(AStarRoutingForSpys(previouseVisitedCity, civilOrBase, spaceship));
                     }
                 }
@@ -557,7 +581,10 @@ bool Control::isSpaceshipRadarResistant(int spaceshipRadarResistance)
     bool isResistance = (spaceshipRadarResistance > 0) ? true : false;
     return isResistance;
 }
-
+void Control::controlDestructions(int des)
+{
+    amountOfDestruction += des;
+}
 int Control::decreaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance)
 {
     // int resistance = city->getExistenceOfSpy() ? (spaceshipRadarResistance--) : spaceshipRadarResistance;
@@ -574,5 +601,6 @@ int main()
     Control c;
     c.readMapFromFile();
     c.routing();
+    std::cout << "destruction " << c.amountOfDestruction << std::endl;
     
 }
