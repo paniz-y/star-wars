@@ -349,9 +349,10 @@ std::pair<int, int> Control::AStarRoutingForSpys(const std::shared_ptr<City> &st
         nodes.pop();
         // std::cout << "previouseVisitedCity " << currNode.currCity->getCoordinates().first <<" " <<currNode.currCity->getCoordinates().second << std::endl;
         previouseVisitedCity = currNode.currCity;
-
+        std::cout << "cheking before decreaseRadarResistant "<<currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
+        
         radarResistanceTmp = decreaseRadarResistant(currNode.currCity, radarResistanceTmp);
-        radarResistanceSoFar = radarResistanceTmp;
+        // radarResistanceSoFar = radarResistanceTmp;
         if (isSpaceshipRadarResistant(radarResistanceTmp))
         {
             std::cout << "if enemy " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
@@ -363,7 +364,9 @@ std::pair<int, int> Control::AStarRoutingForSpys(const std::shared_ptr<City> &st
             if (currNode.currCity == destination)
             {
                 std::cout << "final " << currNode.g << std::endl;
-                return std::make_pair(currNode.g, radarResistanceSoFar); // rout found
+                std::cout << "radarResistanceTmp " << radarResistanceTmp << std::endl;
+                spaceship->setRadarResistance(radarResistanceTmp);
+                return std::make_pair(currNode.g, radarResistanceTmp); // rout found
             }
 
             // std::cout << "after decreaseRadarResistant " << radarResistanceTmp << std::endl;
@@ -401,6 +404,7 @@ std::pair<int, int> Control::AStarRoutingForSpys(const std::shared_ptr<City> &st
 
         // std::cout << "after for \n";
     }
+
     return std::make_pair(-1, radarResistanceSoFar); // no rout wihtout exceeding controlless distance
 }
 int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
@@ -529,7 +533,7 @@ void Control::routing()
 
     for (auto spaceship : allSpaceships)
     {
-        // std::cout << "befor for" << std::endl;
+        std::cout << "befor for spaceship" << std::endl;
         for (auto enemy : listOfEnemyCities)
         {
             do
@@ -557,8 +561,10 @@ void Control::routing()
                 std::cout << "as if bia birron " << routingResultsForSpys.back().first << std::endl;
             } while (routingResultsForSpys.back().first == -1);
             std::cout << "before A star aval \n";
-            if(routingResultsForSpys.back().first != -2)
+
+            if (routingResultsForSpys.back().first != -2)
             {
+                std::cout << "routingResultsForSpys.back().first " << routingResultsForSpys.back().first << std::endl;
                 routingResultsForSpys.emplace_back(AStarRoutingForSpys(previouseVisitedCity, coordsToCityPtr[enemy.getCoordinates()], spaceship));
             }
             // std::cout << "befor " << std::endl;
@@ -567,11 +573,12 @@ void Control::routing()
             // std::cout << "spaceship " << spaceship->getTypeOfSpaceship() << std::endl;
             else if (routingResultsForSpys.back().first == -2) //  out of radar resistant
             {
+                std::cout << "to esle if" << std::endl;
                 do
                 {
                     // std::cout << "jooda " << std::endl;
                     std::cout << "maaaaaaaaaaaaaa " << previouseVisitedCity->getCoordinates().first << " " << previouseVisitedCity->getCoordinates().second << std::endl;
-                    std::cout << "maghsad " << coordsToCityPtr[enemy.getCoordinates()]->getCoordinates().first << " " << coordsToCityPtr[enemy.getCoordinates()]->getCoordinates().second << std::endl;
+                    std::cout << "destination " << coordsToCityPtr[enemy.getCoordinates()]->getCoordinates().first << " " << coordsToCityPtr[enemy.getCoordinates()]->getCoordinates().second << std::endl;
                     int a = AStarRoutingForDefenses(previouseVisitedCity, coordsToCityPtr[enemy.getCoordinates()], spaceship);
                     std::cout << "a in defense map " << a << std::endl;
                     routingResultsForDefense.emplace_back(AStarRoutingForDefenses(previouseVisitedCity, coordsToCityPtr[enemy.getCoordinates()], spaceship));
@@ -607,6 +614,7 @@ int Control::decreaseRadarResistant(std::shared_ptr<City> city, int spaceshipRad
 {
     // int resistance = city->getExistenceOfSpy() ? (spaceshipRadarResistance--) : spaceshipRadarResistance;
     // return resistance;
+
     if (city->getExistenceOfSpy())
     {
         spaceshipRadarResistance--;
