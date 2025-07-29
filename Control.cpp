@@ -206,7 +206,7 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
     }
     for (int i = 0; i < numOfEnemyCitys; i++)
     {
-    std::cout << "mannnnnnnnnnnnnnnn " << enemyCitiesDefense[i].getRatio() << std::endl;
+        std::cout << "mannnnnnnnnnnnnnnn " << enemyCitiesDefense[i].getRatio() << std::endl;
     }
     std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoodinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
 
@@ -354,7 +354,7 @@ std::pair<int, int> Control::AStarRoutingForSpys(const std::shared_ptr<City> &st
         radarResistanceSoFar = radarResistanceTmp;
         if (isSpaceshipRadarResistant(radarResistanceTmp))
         {
-            std::cout << "if enemy " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second<< std::endl;
+            std::cout << "if enemy " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
             if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
             {
                 std::cout << "enemy city " << std::endl;
@@ -422,15 +422,10 @@ int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const s
         Node currNode = nodes.top();
         nodes.pop();
 
-        if (currNode.currCity == destination)
-        {
-            // std::cout << "final " << currNode.g << std::endl;
-            return currNode.g;
-        }
-
-        // std::cout << 
+        // std::cout <<
         // std::cout << "after if " << std::endl;
-        std::cout << "in defense curr "<<currNode.currCity->getCoordinates().first <<" " <<currNode.currCity->getCoordinates().second <<std::endl;;
+        std::cout << "in defense curr " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
+
         if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
         {
             // if (neighbor.second.second == mapWithDefenses.getMaxSize() * 2)
@@ -439,18 +434,23 @@ int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const s
             // }
             int defenseRatioTmp = enemy->getDefense().getRatio();
             std::cout << "defenseRatioTmpppppppppppppppppppppppp " << defenseRatioTmp << std::endl;
-                // controlDestructions(spaceship->getDestruction());
+            // controlDestructions(spaceship->getDestruction());
             if (enemy->getDefense().getRatio() <= 0)
             {
-                std::cout <<"jjjjjjjjjjjj" << std::endl;
+                std::cout << "jjjjjjjjjjjj" << std::endl;
                 mapWithSpys.removeDefense(currNode.currCity);
             }
             else
             {
                 enemy->getDefense().defend();
-                return -3; //the spaceship is missed
+                return -3; // the spaceship is missed
             }
             std::cout << "after defenddddddddddddd " << enemy->getDefense().getRatio() << std::endl;
+        }
+        if (currNode.currCity == destination)
+        {
+            // std::cout << "final " << currNode.g << std::endl;
+            return currNode.g;
         }
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
@@ -541,37 +541,50 @@ void Control::routing()
                     // std::cout << "here in if " << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
                     for (auto civilOrBase : listOfBaseAndCivilCities)
                     {
-                        std::cout << "civil " << previouseVisitedCity->getCoordinates().first << " " << previouseVisitedCity->getCoordinates().second << std::endl;
-                        routingResultsForSpys.emplace_back(AStarRoutingForSpys(previouseVisitedCity, civilOrBase, spaceship));
+                        if (civilOrBase != previouseVisitedCity)
+                        {
+                            std::cout << "civil " << previouseVisitedCity->getCoordinates().first << " " << previouseVisitedCity->getCoordinates().second << std::endl;
+                            std::cout << "civil or Base " << civilOrBase->getCoordinates().first << " " << civilOrBase->getCoordinates().second << std::endl;
+                            routingResultsForSpys.emplace_back(AStarRoutingForSpys(previouseVisitedCity, civilOrBase, spaceship));
+                            std::cout << "after in civil back ro cout mikonim " << routingResultsForSpys.back().first << std::endl;
+                            if (routingResultsForSpys.back().first != -1 && routingResultsForSpys.back().first != -2)
+                                break;
+                        }
                     }
+                    std::cout << "as in for dare dar miad\n";
                 }
-            } while (routingResultsForSpys.back().first != -1 && routingResultsForSpys.back().first != -2);
-            // std::cout << "before A star\n";
+                std::cout << "as if bia birron " << routingResultsForSpys.back().first << std::endl;
+            } while (routingResultsForSpys.back().first == -1);
+            std::cout << "before A star aval \n";
             // std::cout << "befor " << std::endl;
             // std::cout << "spaceship->getCoordinates()" << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
             // std::cout << "enemy.getCoordinates()" << enemy.getCoordinates().first << " " << enemy.getCoordinates().second << std::endl;
             // std::cout << "spaceship " << spaceship->getTypeOfSpaceship() << std::endl;
-            do
+            if (routingResultsForSpys.back().first == -2) //  out of radar resistant
             {
-                if (routingResultsForSpys.back().first == -2) //  out of radar resistant
+                do
                 {
                     // std::cout << "jooda " << std::endl;
-                    std::cout << "A* for d " << AStarRoutingForDefenses(previouseVisitedCity, coordsToCityPtr[enemy.getCoordinates()], spaceship) << std::endl;
+                    std::cout << "maaaaaaaaaaaaaa " << previouseVisitedCity->getCoordinates().first << " " << previouseVisitedCity->getCoordinates().second << std::endl;
+                    std::cout << "maghsad " << coordsToCityPtr[enemy.getCoordinates()]->getCoordinates().first << " " << coordsToCityPtr[enemy.getCoordinates()]->getCoordinates().second << std::endl;
+                    int a = AStarRoutingForDefenses(previouseVisitedCity, coordsToCityPtr[enemy.getCoordinates()], spaceship);
+                    std::cout << "a in defense map " << a << std::endl;
                     routingResultsForDefense.emplace_back(AStarRoutingForDefenses(previouseVisitedCity, coordsToCityPtr[enemy.getCoordinates()], spaceship));
+
+                    std::cout << "routingResultsForDefense " << routingResultsForDefense.back() << std::endl;
                     if (routingResultsForDefense.back() == -1) // exceeding the controlless distance
                     {
-                        // std::cout << "here in if " << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
+                        std::cout << "here in if " << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
                         for (auto civilOrBase : listOfBaseAndCivilCities)
                         {
-                            // std::cout << "civil " <<
-                            routingResultsForDefense.emplace_back(AStarRoutingForDefenses(previouseVisitedCity, civilOrBase, spaceship));
+                            std::cout << "civil " << routingResultsForDefense.emplace_back(AStarRoutingForDefenses(previouseVisitedCity, civilOrBase, spaceship));
                         }
                     }
                     else
                         break;
-                }
 
-            } while (routingResultsForDefense.back() != -1);
+                } while (routingResultsForDefense.back() != -1);
+            }
         }
     }
 }
@@ -602,5 +615,4 @@ int main()
     c.readMapFromFile();
     c.routing();
     std::cout << "destruction " << c.amountOfDestruction << std::endl;
-    
 }
