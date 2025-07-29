@@ -75,6 +75,7 @@ public:
     void routing();
     bool isSpaceshipRadarResistant(int spaceshipRadarResistance);
     int decreaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
+    //void routing2();
 
 private:
     int scenario;
@@ -122,7 +123,8 @@ private:
     std::vector<std::shared_ptr<City>> listOfBaseAndCivilCities;
     std::unordered_map<std::pair<int, int>, std::shared_ptr<City>, HashForPair> coordsToCityPtr;
     std::vector<std::pair<std::shared_ptr<Spaceship>, std::shared_ptr<City>>> correspondentCityForEachSpaceship;
-    std::vector<std::pair<int, int>> routingResults;
+    std::vector<std::pair<int, int>> routingResultsForSpys;
+    std::vector<int> routingResultsForDefense;
     std::shared_ptr<City> previouseVisitedCity;
     // std::vector<std::pair<int, int>> baseCityCoodinates;
     // std::vector<std::pair<int, int>> civilCityCoodinates;
