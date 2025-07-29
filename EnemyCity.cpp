@@ -8,7 +8,7 @@ EnemyCity::EnemyCity(std::pair<int, int> coords, bool spy, Defense defenseForEne
 
 Defense EnemyCity::getDefense()
 {
-    return Defense();
+    return defense;
 }
 
 bool EnemyCity::getHasDefense() const
