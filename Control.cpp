@@ -204,10 +204,10 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
     {
         enemyCitiesDefense[i].setRatio(enemyCityDefenseRatioFromFile[i]);
     }
-    for (int i = 0; i < numOfEnemyCitys; i++)
-    {
-        std::cout << "mannnnnnnnnnnnnnnn " << enemyCitiesDefense[i].getRatio() << std::endl;
-    }
+    // for (int i = 0; i < numOfEnemyCitys; i++)
+    // {
+    //     std::cout << "mannnnnnnnnnnnnnnn " << enemyCitiesDefense[i].getRatio() << std::endl;
+    // }
     std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoodinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
 
     return enemyCitiesMadeForMap;
@@ -229,8 +229,8 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
         listOfEnemyCities.emplace_back(enemyCityTmp);
         std::shared_ptr<EnemyCity> enemyPtrTmp = std::make_shared<EnemyCity>(enemyCityCoodinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i], true);
         enemyCities.emplace_back(enemyPtrTmp);
-        std::cout << "ratio enemy in initialize " << enemyCityTmp.getDefense().getRatio() << std::endl;
-        std::cout << "ratio enemy in initialize ptr " << enemyCitiesDefense[i].getRatio() << std::endl;
+        // std::cout << "ratio enemy in initialize " << enemyCityTmp.getDefense().getRatio() << std::endl;
+        // std::cout << "ratio enemy in initialize ptr " << enemyCitiesDefense[i].getRatio() << std::endl;
         // auto coordsTmp = std::tie(enemyCityCoodinatesFromFile[i].first, enemyCityCoodinatesFromFile[i].second);
         coordsToCityPtr[enemyCityCoodinatesFromFile[i]] = enemyCities.back();
         // std::cout << " coordsToCityPtr[enemyCityCoodinatesFromFile[i]] "<< i << " " <<  coordsToCityPtr[enemyCityCoodinatesFromFile[i]]->getCoordinates().first << " " <<  coordsToCityPtr[enemyCityCoodinatesFromFile[i]]->getCoordinates().second << std::endl;
@@ -526,6 +526,7 @@ std::vector<std::shared_ptr<City>> Control::collectAllCities(const std::vector<s
 void Control::routing()
 {
     initializeCorrespondentCityForEachSpaceship();
+
     for (auto spaceship : allSpaceships)
     {
         // std::cout << "befor for" << std::endl;
@@ -547,8 +548,8 @@ void Control::routing()
                             std::cout << "civil or Base " << civilOrBase->getCoordinates().first << " " << civilOrBase->getCoordinates().second << std::endl;
                             routingResultsForSpys.emplace_back(AStarRoutingForSpys(previouseVisitedCity, civilOrBase, spaceship));
                             std::cout << "after in civil back ro cout mikonim " << routingResultsForSpys.back().first << std::endl;
-                            if (routingResultsForSpys.back().first != -1 && routingResultsForSpys.back().first != -2)
-                                break;
+                            // if (routingResultsForSpys.back().first != -1 && routingResultsForSpys.back().first != -2)
+                            //     break;
                         }
                     }
                     std::cout << "as in for dare dar miad\n";
@@ -556,11 +557,15 @@ void Control::routing()
                 std::cout << "as if bia birron " << routingResultsForSpys.back().first << std::endl;
             } while (routingResultsForSpys.back().first == -1);
             std::cout << "before A star aval \n";
+            if(routingResultsForSpys.back().first != -2)
+            {
+                routingResultsForSpys.emplace_back(AStarRoutingForSpys(previouseVisitedCity, coordsToCityPtr[enemy.getCoordinates()], spaceship));
+            }
             // std::cout << "befor " << std::endl;
             // std::cout << "spaceship->getCoordinates()" << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << std::endl;
             // std::cout << "enemy.getCoordinates()" << enemy.getCoordinates().first << " " << enemy.getCoordinates().second << std::endl;
             // std::cout << "spaceship " << spaceship->getTypeOfSpaceship() << std::endl;
-            if (routingResultsForSpys.back().first == -2) //  out of radar resistant
+            else if (routingResultsForSpys.back().first == -2) //  out of radar resistant
             {
                 do
                 {
