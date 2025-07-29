@@ -342,16 +342,15 @@ std::pair<int, int> Control::AStarRoutingForSpys(const std::shared_ptr<City> &st
 
         radarResistanceTmp = decreaseRadarResistant(currNode.currCity, radarResistanceTmp);
         radarResistanceSoFar = radarResistanceTmp;
-        if (currNode.currCity == destination)
-        {
-            // std::cout << "final " << currNode.g << std::endl;
-            return std::make_pair(currNode.g, radarResistanceSoFar); // rout found
-        }
-
-        // radarResistanceTmp = decreaseRadarResistant(currNode.currCity, radarResistanceTmp);
-        // std::cout << "after decreaseRadarResistant " << radarResistanceTmp << std::endl;
         if (isSpaceshipRadarResistant(radarResistanceTmp))
         {
+            if (currNode.currCity == destination)
+            {
+                // std::cout << "final " << currNode.g << std::endl;
+                return std::make_pair(currNode.g, radarResistanceSoFar); // rout found
+            }
+
+            // std::cout << "after decreaseRadarResistant " << radarResistanceTmp << std::endl;
             // std::cout << "after if isSpaceshipRadarResistant(radarResistanceTmp) "<< isSpaceshipRadarResistant(radarResistanceTmp) << std::endl;
             for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
             {
@@ -427,7 +426,6 @@ int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const s
             {
                 mapWithSpys.removeDefense(currNode.currCity);
             }
-           
         }
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
