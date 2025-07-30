@@ -24,6 +24,7 @@ public:
     void setName(std::string name);
     int detected();
     bool isStillResistant();
+    virtual ~Spaceship();
 
 protected:
     int distance;

@@ -90,3 +90,5 @@ bool Spaceship::isStillResistant()
     }
     return false;
 }
+
+Spaceship::~Spaceship() = default;
