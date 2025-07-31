@@ -317,7 +317,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase3.txt", std::ios::in);
+    mapFile.open("testcase5.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -452,7 +452,7 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
     AStarRes res = {start, radarResistanceSoFar, -1};
     return res; // no rout wihtout exceeding controlless distance
 }
-int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
+AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
 {
 
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
@@ -465,7 +465,7 @@ int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const s
     {
         shortestDistance[neighbor.first] = DBL_MAX;
     }
-
+    std::shared_ptr<City> previouseVisitedCity;
     while (!nodes.empty())
     {
         Node currNode = nodes.top();
@@ -473,41 +473,51 @@ int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const s
 
         // std::cout <<
         // std::cout << "after if " << std::endl;
+        previouseVisitedCity = currNode.currCity;
         std::cout << "in defense curr " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
+        int defenseRatioSoFar = /*enemy->getDefense().getRatio()*/ 0;
+        int defenseRatioTmp = defenseRatioSoFar;
 
-        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
-        {
-            // if (neighbor.second.second == mapWithDefenses.getMaxSize() * 2)
-            // {
-            //     jgkhgj
-            // }
-            int defenseRatioTmp = enemy->getDefense().getRatio();
-            std::cout << "defenseRatioTmpppppppppppppppppppppppp " << defenseRatioTmp << std::endl;
-            // controlDestructions(spaceship->getDestruction());
-            if (enemy->getDefense().getRatio() <= 0)
-            {
-                std::cout << "jjjjjjjjjjjj" << std::endl;
-                mapWithSpys.removeDefense(currNode.currCity);
-            }
-            else
-            {
-                enemy->getDefense().defend();
-                return -3; // the spaceship is missed
-            }
-            std::cout << "after defenddddddddddddd " << enemy->getDefense().getRatio() << std::endl;
-        }
         if (currNode.currCity == destination)
         {
             // std::cout << "final " << currNode.g << std::endl;
-            return currNode.g;
+            // return currNode.g;
+            std::cout << "inja" << std::endl;
+            AStarRes res = {destination, defenseRatioSoFar, currNode.g};
+            return res; // the spaceship is missed
         }
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
             // std::cout << "currNode " << currNode.g << std::endl;
             double neighborGScore = neighbor.second.second + currNode.g;
-
-            if ((visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first]) && heuristic(start, destination) <= spaceship->getControlLessDictance()))
+            std::cout << heuristic(start, destination) << " heuristic" << std::endl;
+            if ((visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first])) && heuristic(start, destination) <= spaceship->getControlLessDictance())
             {
+                if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
+                {
+                    // if (neighbor.second.second == mapWithDefenses.getMaxSize() * 2)
+                    // {
+                    //     jgkhgj
+                    // }
+                    std::cout << "defenseRatioTmpppppppppppppppppppppppp " << defenseRatioTmp << std::endl;
+                    // controlDestructions(spaceship->getDestruction());
+                    if (/*enemy->getDefense().getRatio() <= 0*/ /*defenseRatioTmp <= 0*/ defenseRatioTmp >= enemy->getDefense().getRatio())
+                    {
+                        std::cout << "jjjjjjjjjjjj" << std::endl;
+                        // mapWithSpys.removeDefense(currNode.currCity);
+                        AStarRes res = {enemy, defenseRatioTmp, currNode.g}; // out of defense ratio
+                        return res;
+                    }
+                    else
+                    {
+                        // enemy->getDefense().defend();
+                        defenseRatioTmp++;
+                        defenseRatioSoFar = defenseRatioTmp;
+                        AStarRes res = {enemy, defenseRatioSoFar, -3};
+                        return res; // the spaceship is missed
+                    }
+                    std::cout << "after defenddddddddddddd " << enemy->getDefense().getRatio() << std::endl;
+                }
                 double neighborHScore = heuristic(neighbor.first, destination);
                 Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
                 nodes.emplace(visited);
@@ -519,7 +529,8 @@ int Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const s
 
         // std::cout << "after for \n";
     }
-    return -1; // no rout wihtout exceeding controlless distance
+    AStarRes res = {previouseVisitedCity, 0, -1};
+    return res; // no rout wihtout exceeding controlless distance
 }
 void Control::initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> baseCities, std::vector<std::shared_ptr<City>> civilCities)
 {
@@ -652,11 +663,24 @@ std::vector<std::shared_ptr<City>> Control::collectAllCities(const std::vector<s
 void Control::routing()
 {
     std::shared_ptr<City> start = coordsToCityPtr[allSpaceships[0]->getCoordinates()];
-    for(auto enemy: listOfEnemyCities)
+    for (auto enemy : listOfEnemyCities)
     {
-        AStarResults.emplace_back(AStarRoutingForSpys(start, coordsToCityPtr[enemy.getCoordinates()], allSpaceships[0])); 
+
+        AStarResults.emplace_back(AStarRoutingForSpys(start, coordsToCityPtr[enemy.getCoordinates()], allSpaceships[0]));
+
+        if (AStarResults.back().cost == -1)
+        {
+            std::cout << "defenseeeeeeeeeeeeeeeeeeeeee" << std::endl;
+            AStarResults.emplace_back(AStarRoutingForSpys(AStarResults.back().destination, coordsToCityPtr[listOfBaseAndCivilCities[0]->getCoordinates()], allSpaceships[0]));
+        }
+        if (AStarResults.back().cost == -2)
+        {
+            std::cout << "defenseeeeeeeeeeeeeeeeeeeeee2" << std::endl;
+            AStarResults.emplace_back(AStarRoutingForDefenses(AStarResults.back().destination, coordsToCityPtr[listOfBaseAndCivilCities[1]->getCoordinates()], allSpaceships[0]));
+        }
+        AStarResults.emplace_back(AStarRoutingForDefenses(AStarResults.back().destination, coordsToCityPtr[enemy.getCoordinates()], allSpaceships[0]));
     }
-    for(auto a : AStarResults)
+    for (auto a : AStarResults)
     {
         std::cout << "des f " << a.destination->getCoordinates().first << " des s " << a.destination->getCoordinates().second << " num of " << a.numOfObstacles << " cost " << a.cost << std::endl;
     }
