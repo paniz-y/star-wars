@@ -394,13 +394,16 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
 
         radarResistanceTmp = increaseRadarResistant(currNode.currCity, radarResistanceTmp);
         // radarResistanceSoFar = radarResistanceTmp;
+        AStarRes res;
         if (isSpaceshipRadarResistant(spaceship, radarResistanceTmp))
         {
             std::cout << "if enemy " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
             if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
             {
                 std::cout << "enemy city " << std::endl;
-                controlDestructions(spaceship->getDestruction());
+                //controlDestructions(spaceship->getDestruction());
+                res.isDetroyed = true;
+
             }
             if (currNode.currCity == destination)
             {
@@ -408,7 +411,7 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
                 std::cout << "radarResistanceTmp " << radarResistanceTmp << std::endl;
                 // spaceship->setRadarResistance(radarResistanceTmp);
                 radarResistanceSoFar = radarResistanceTmp;
-                AStarRes res = {destination, radarResistanceSoFar, currNode.g};
+                res = {destination, radarResistanceSoFar, currNode.g};
                 return res; // rout found
             }
 
@@ -443,13 +446,13 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
             // std::cout << "in the else " << std::endl;
             // previouseVisitedCity = currNode.currCity;
             radarResistanceSoFar = radarResistanceTmp;
-            AStarRes res = {previouseVisitedCity, radarResistanceSoFar, -2};
+            AStarRes res = {previouseVisitedCity, radarResistanceSoFar, -2, false};
             return res; // out of radar resitante
         }
 
         // std::cout << "after for \n";
     }
-    AStarRes res = {start, radarResistanceSoFar, -1};
+    AStarRes res = {start, radarResistanceSoFar, -1, false};
     return res; // no rout wihtout exceeding controlless distance
 }
 AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
@@ -483,8 +486,8 @@ AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, co
             // std::cout << "final " << currNode.g << std::endl;
             // return currNode.g;
             std::cout << "inja" << std::endl;
-            AStarRes res = {destination, defenseRatioSoFar, currNode.g};
-            return res; // the spaceship is missed
+            AStarRes res = {destination, defenseRatioSoFar, currNode.g, false};
+            return res; 
         }
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
@@ -505,7 +508,7 @@ AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, co
                     {
                         std::cout << "jjjjjjjjjjjj" << std::endl;
                         // mapWithSpys.removeDefense(currNode.currCity);
-                        AStarRes res = {enemy, defenseRatioTmp, currNode.g}; // out of defense ratio
+                        AStarRes res = {enemy, defenseRatioTmp, currNode.g, true}; // out of defense ratio
                         return res;
                     }
                     else
@@ -529,7 +532,7 @@ AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, co
 
         // std::cout << "after for \n";
     }
-    AStarRes res = {previouseVisitedCity, 0, -1};
+    AStarRes res = {previouseVisitedCity, 0, -1, false};
     return res; // no rout wihtout exceeding controlless distance
 }
 void Control::initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> baseCities, std::vector<std::shared_ptr<City>> civilCities)
