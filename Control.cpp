@@ -67,7 +67,7 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
 }
 std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(std::pair<int, std::string> spaceshipsInBaseCities)
 {
-    std::vector<std::shared_ptr<Spaceship>> spaceshipFoundForBaseCity;
+    // std::vector<std::shared_ptr<Spaceship>> spaceshipFoundForBaseCity;
     // std::cout << "spaceshipsInBaseCities " << spaceshipsInBaseCities.size() << std::endl;
     // for (int i{}; i < spaceshipsInBaseCities.size() && i < spaceshipsInBaseCities[i].first; i++)
     // {
@@ -379,7 +379,7 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
     {
         shortestDistance[neighbor.first] = DBL_MAX;
     }
-    int radarResistanceSoFar = /*spaceship->getRadarResistance()*/0;
+    int radarResistanceSoFar = /*spaceship->getRadarResistance()*/ 0;
     int radarResistanceTmp = radarResistanceSoFar;
     std::cout << "radarResistanceSoFar " << radarResistanceSoFar << std::endl;
     std::shared_ptr<City> previouseVisitedCity;
@@ -401,9 +401,10 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
             if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
             {
                 std::cout << "enemy city " << std::endl;
-                //controlDestructions(spaceship->getDestruction());
-                res.isDetroyed = true;
-
+                // controlDestructions(spaceship->getDestruction());
+                //  res.isDestroyed = true;
+                res.setDestroyed(true);
+                std::cout << "laaaaaaaaaaaaaaa4 " << res.isDestroyed << std::endl;
             }
             if (currNode.currCity == destination)
             {
@@ -411,7 +412,11 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
                 std::cout << "radarResistanceTmp " << radarResistanceTmp << std::endl;
                 // spaceship->setRadarResistance(radarResistanceTmp);
                 radarResistanceSoFar = radarResistanceTmp;
-                res = {destination, radarResistanceSoFar, currNode.g};
+                // res = {destination, radarResistanceSoFar, currNode.g};
+                res.destination = destination;
+                res.numOfObstacles = radarResistanceSoFar;
+                res.cost = currNode.g;
+                std::cout << "laaaaaaaaaaaaaaa " << res.isDestroyed << std::endl;
                 return res; // rout found
             }
 
@@ -487,7 +492,7 @@ AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, co
             // return currNode.g;
             std::cout << "inja" << std::endl;
             AStarRes res = {destination, defenseRatioSoFar, currNode.g, false};
-            return res; 
+            return res;
         }
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
@@ -685,10 +690,10 @@ void Control::routing()
     }
     for (auto a : AStarResults)
     {
-        std::cout << "des f " << a.destination->getCoordinates().first << " des s " << a.destination->getCoordinates().second << " num of " << a.numOfObstacles << " cost " << a.cost << std::endl;
+        std::cout << "des f " << a.destination->getCoordinates().first << " des s " << a.destination->getCoordinates().second << " num of " << a.numOfObstacles << " cost " << a.cost << "dstruction " << a.isDestroyed << std::endl;
     }
 }
-bool Control::isSpaceshipRadarResistant( std::shared_ptr<Spaceship> spaceship, int spaceshipRadarResistance)
+bool Control::isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int spaceshipRadarResistance)
 {
     bool isResistance = (spaceshipRadarResistance < spaceship->getRadarResistance()) ? true : false;
     return isResistance;

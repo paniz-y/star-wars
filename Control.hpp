@@ -57,7 +57,11 @@ struct AStarRes
     std::shared_ptr<City> destination;
     int numOfObstacles; // stores the number of spys or defenses along the way
     double cost;
-    bool isDetroyed = false;
+    bool isDestroyed = false;
+    void setDestroyed(bool des)
+    {
+        isDestroyed = des;
+    }
 };
 
 class Control
