@@ -317,7 +317,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase5.txt", std::ios::in);
+    mapFile.open("testcase3.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -379,7 +379,7 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
     {
         shortestDistance[neighbor.first] = DBL_MAX;
     }
-    int radarResistanceSoFar = spaceship->getRadarResistance();
+    int radarResistanceSoFar = /*spaceship->getRadarResistance()*/0;
     int radarResistanceTmp = radarResistanceSoFar;
     std::cout << "radarResistanceSoFar " << radarResistanceSoFar << std::endl;
     std::shared_ptr<City> previouseVisitedCity;
@@ -392,9 +392,9 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
         previouseVisitedCity = currNode.currCity;
         std::cout << "cheking before decreaseRadarResistant " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
 
-        radarResistanceTmp = decreaseRadarResistant(currNode.currCity, radarResistanceTmp);
+        radarResistanceTmp = increaseRadarResistant(currNode.currCity, radarResistanceTmp);
         // radarResistanceSoFar = radarResistanceTmp;
-        if (isSpaceshipRadarResistant(radarResistanceTmp))
+        if (isSpaceshipRadarResistant(spaceship, radarResistanceTmp))
         {
             std::cout << "if enemy " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
             if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
@@ -668,42 +668,42 @@ void Control::routing()
 
         AStarResults.emplace_back(AStarRoutingForSpys(start, coordsToCityPtr[enemy.getCoordinates()], allSpaceships[0]));
 
-        if (AStarResults.back().cost == -1)
-        {
-            std::cout << "defenseeeeeeeeeeeeeeeeeeeeee" << std::endl;
-            AStarResults.emplace_back(AStarRoutingForSpys(AStarResults.back().destination, coordsToCityPtr[listOfBaseAndCivilCities[0]->getCoordinates()], allSpaceships[0]));
-        }
-        if (AStarResults.back().cost == -2)
-        {
-            std::cout << "defenseeeeeeeeeeeeeeeeeeeeee2" << std::endl;
-            AStarResults.emplace_back(AStarRoutingForDefenses(AStarResults.back().destination, coordsToCityPtr[listOfBaseAndCivilCities[1]->getCoordinates()], allSpaceships[0]));
-        }
-        AStarResults.emplace_back(AStarRoutingForDefenses(AStarResults.back().destination, coordsToCityPtr[enemy.getCoordinates()], allSpaceships[0]));
+        // if (AStarResults.back().cost == -1)
+        // {
+        //     std::cout << "defenseeeeeeeeeeeeeeeeeeeeee" << std::endl;
+        //     AStarResults.emplace_back(AStarRoutingForSpys(AStarResults.back().destination, coordsToCityPtr[listOfBaseAndCivilCities[0]->getCoordinates()], allSpaceships[0]));
+        // }
+        // if (AStarResults.back().cost == -2)
+        // {
+        //     std::cout << "defenseeeeeeeeeeeeeeeeeeeeee2" << std::endl;
+        //     AStarResults.emplace_back(AStarRoutingForDefenses(AStarResults.back().destination, coordsToCityPtr[listOfBaseAndCivilCities[1]->getCoordinates()], allSpaceships[0]));
+        // }
+        // AStarResults.emplace_back(AStarRoutingForDefenses(AStarResults.back().destination, coordsToCityPtr[enemy.getCoordinates()], allSpaceships[0]));
     }
     for (auto a : AStarResults)
     {
         std::cout << "des f " << a.destination->getCoordinates().first << " des s " << a.destination->getCoordinates().second << " num of " << a.numOfObstacles << " cost " << a.cost << std::endl;
     }
 }
-bool Control::isSpaceshipRadarResistant(int spaceshipRadarResistance)
+bool Control::isSpaceshipRadarResistant( std::shared_ptr<Spaceship> spaceship, int spaceshipRadarResistance)
 {
-    bool isResistance = (spaceshipRadarResistance > 0) ? true : false;
+    bool isResistance = (spaceshipRadarResistance < spaceship->getRadarResistance()) ? true : false;
     return isResistance;
 }
 void Control::controlDestructions(int des)
 {
     amountOfDestruction += des;
 }
-int Control::decreaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance)
+int Control::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected)
 {
     // int resistance = city->getExistenceOfSpy() ? (spaceshipRadarResistance--) : spaceshipRadarResistance;
     // return resistance;
 
     if (city->getExistenceOfSpy())
     {
-        spaceshipRadarResistance--;
+        spysDetected++;
     }
-    return spaceshipRadarResistance;
+    return spysDetected;
 }
 
 int main()

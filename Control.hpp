@@ -55,9 +55,8 @@ struct HashForPair
 struct AStarRes
 {
     std::shared_ptr<City> destination;
-    int numOfObstacles; //stores the number of spys or defenses along the way
+    int numOfObstacles; // stores the number of spys or defenses along the way
     double cost;
-
 };
 
 class Control
@@ -76,17 +75,18 @@ public:
     void readMaxMapSizeFromFile();
     void initializeCorrespondentCityForEachSpaceship();
     void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
-    AStarRes AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship); // uses A* search algorithm for routing
-    AStarRes AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);             // uses A* search algorithm for routing
+    AStarRes AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);     // uses A* search algorithm for routing
+    AStarRes AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship); // uses A* search algorithm for routing
     void initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> base, std::vector<std::shared_ptr<City>> civil);
     std::vector<std::shared_ptr<City>> collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
     void routing();
-    bool isSpaceshipRadarResistant(int spaceshipRadarResistance);
+    bool isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int spaceshipRadarResistance);
     void controlDestructions(int des);
-    int decreaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
+    int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     // void routing2();
 
     int amountOfDestruction;
+
 private:
     int scenario;
     int numOfCitys;
@@ -135,10 +135,10 @@ private:
     std::vector<std::pair<std::shared_ptr<Spaceship>, std::shared_ptr<City>>> correspondentCityForEachSpaceship;
     std::vector<std::pair<int, int>> routingResultsForSpys;
     std::vector<int> routingResultsForDefense;
-    //std::shared_ptr<City> previouseVisitedCity;
-    // std::vector<std::pair<int, int>> baseCityCoodinates;
-    // std::vector<std::pair<int, int>> civilCityCoodinates;
-    // std::vector<std::pair<int, int>> enemyCityCoodinates;
+    // std::shared_ptr<City> previouseVisitedCity;
+    //  std::vector<std::pair<int, int>> baseCityCoodinates;
+    //  std::vector<std::pair<int, int>> civilCityCoodinates;
+    //  std::vector<std::pair<int, int>> enemyCityCoodinates;
     std::vector<AStarRes> AStarResults;
 
     // std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> map;
