@@ -91,8 +91,10 @@ public:
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     // void routing2();
     void findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship);
-    AStarRes chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship);
-    bool compareTwoRouts(const AStarRes &first, const AStarRes &second);
+    void chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship);
+    bool compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &second);
+    bool compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStarRes &second);
+
     int amountOfDestruction;
 
 private:
@@ -149,7 +151,6 @@ private:
     //  std::vector<std::pair<int, int>> enemyCityCoodinates;
     std::vector<AStarRes> AStarResults;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<AStarRes>> bestRoutForEachSpaceship;
-
 
     // std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> map;
 };
