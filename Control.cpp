@@ -670,23 +670,18 @@ std::vector<std::shared_ptr<City>> Control::collectAllCities(const std::vector<s
 // }
 void Control::routing()
 {
-    std::shared_ptr<City> start = coordsToCityPtr[allSpaceships[0]->getCoordinates()];
-    for (auto enemy : listOfEnemyCities)
+    for (auto spaceship : allSpaceships)
     {
+        if (findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship) >= 0)
+        {
+            return;
+        }
+        if (findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship) >= -1)
+        {
+            findBaseOrCivilCity(bestRoutForEachSpaceship[spaceship].back().destination, spaceship);
+        }
+        findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship);
 
-        AStarResults.emplace_back(AStarRoutingForSpys(start, coordsToCityPtr[enemy.getCoordinates()], allSpaceships[0]));
-
-        // if (AStarResults.back().cost == -1)
-        // {
-        //     std::cout << "defenseeeeeeeeeeeeeeeeeeeeee" << std::endl;
-        //     AStarResults.emplace_back(AStarRoutingForSpys(AStarResults.back().destination, coordsToCityPtr[listOfBaseAndCivilCities[0]->getCoordinates()], allSpaceships[0]));
-        // }
-        // if (AStarResults.back().cost == -2)
-        // {
-        //     std::cout << "defenseeeeeeeeeeeeeeeeeeeeee2" << std::endl;
-        //     AStarResults.emplace_back(AStarRoutingForDefenses(AStarResults.back().destination, coordsToCityPtr[listOfBaseAndCivilCities[1]->getCoordinates()], allSpaceships[0]));
-        // }
-        // AStarResults.emplace_back(AStarRoutingForDefenses(AStarResults.back().destination, coordsToCityPtr[enemy.getCoordinates()], allSpaceships[0]));
     }
     for (auto a : AStarResults)
     {
@@ -715,7 +710,7 @@ int Control::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected
     return spysDetected;
 }
 
-bool Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
+int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
     for (auto enemy : listOfEnemyCities)
     {
@@ -726,7 +721,7 @@ bool Control::findEnemyCity(const std::shared_ptr<City> &start, const std::share
               << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().second << " des"
               << bestRoutForEachSpaceship[spaceship][0].numOfObstacles << " obstacles" << std::endl;
 }
-bool Control::findBaseOrCivilCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
+int Control::findBaseOrCivilCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
     for (auto baseOrCivil : listOfBaseAndCivilCities)
     {
@@ -738,7 +733,7 @@ bool Control::findBaseOrCivilCity(const std::shared_ptr<City> &start, const std:
               << bestRoutForEachSpaceship[spaceship][0].numOfObstacles << " obstacles" << std::endl;
 }
 
-bool Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
+int Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
 {
     std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnCost);
     for (auto rout : AStarResults)
@@ -746,7 +741,7 @@ bool Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
         if (rout.cost >= 0) // the spaceship has reached a destination
         {
             bestRoutForEachSpaceship[spaceship].emplace_back(rout);
-            return true;
+            return rout.cost;
         }
     }
     for (auto rout : AStarResults)
@@ -754,13 +749,13 @@ bool Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
         if (rout.cost == -1) // the spaceship hasn't been able to reached a destination without exceeding the controlless distance
         {
             bestRoutForEachSpaceship[spaceship].emplace_back(rout);
-            return false;
+            return rout.cost;
         }
     }
     std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnObstacles);
 
     bestRoutForEachSpaceship[spaceship].emplace_back(AStarResults[0]);
-    return false;
+    return -2;
 }
 
 bool Control::compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &second)
