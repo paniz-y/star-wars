@@ -715,19 +715,30 @@ int Control::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected
     return spysDetected;
 }
 
-void Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
+bool Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
     for (auto enemy : listOfEnemyCities)
     {
         AStarResults.emplace_back(AStarRoutingForSpys(start, coordsToCityPtr[enemy.getCoordinates()], spaceship));
     }
-    chooseBestRoutSoFar(spaceship);
+    return chooseBestRoutSoFar(spaceship);
+    std::cout << bestRoutForEachSpaceship[spaceship][0].cost << " cost" << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().first << " des "
+              << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().second << " des"
+              << bestRoutForEachSpaceship[spaceship][0].numOfObstacles << " obstacles" << std::endl;
+}
+bool Control::findBaseOrCivilCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
+{
+    for (auto baseOrCivil : listOfBaseAndCivilCities)
+    {
+        AStarResults.emplace_back(AStarRoutingForSpys(start, baseOrCivil, spaceship));
+    }
+    return chooseBestRoutSoFar(spaceship);
     std::cout << bestRoutForEachSpaceship[spaceship][0].cost << " cost" << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().first << " des "
               << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().second << " des"
               << bestRoutForEachSpaceship[spaceship][0].numOfObstacles << " obstacles" << std::endl;
 }
 
-void Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
+bool Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
 {
     std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnCost);
     for (auto rout : AStarResults)
@@ -735,7 +746,7 @@ void Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
         if (rout.cost >= 0) // the spaceship has reached a destination
         {
             bestRoutForEachSpaceship[spaceship].emplace_back(rout);
-            return;
+            return true;
         }
     }
     for (auto rout : AStarResults)
@@ -743,12 +754,13 @@ void Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
         if (rout.cost == -1) // the spaceship hasn't been able to reached a destination without exceeding the controlless distance
         {
             bestRoutForEachSpaceship[spaceship].emplace_back(rout);
-            return;
+            return false;
         }
     }
     std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnObstacles);
 
     bestRoutForEachSpaceship[spaceship].emplace_back(AStarResults[0]);
+    return false;
 }
 
 bool Control::compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &second)

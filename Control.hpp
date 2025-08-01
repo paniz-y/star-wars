@@ -90,8 +90,9 @@ public:
     void controlDestructions(int des);
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     // void routing2();
-    void findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship);
-    void chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship);
+    bool findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship);
+    bool findBaseOrCivilCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship);
+    bool chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship);
     bool compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &second);
     bool compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStarRes &second);
 
