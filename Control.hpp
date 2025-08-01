@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <unordered_set>
+#include <algorithm>
 // #include <tuple>
 #include <float.h>
 #include "Spaceship.hpp"
@@ -89,7 +90,9 @@ public:
     void controlDestructions(int des);
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     // void routing2();
-
+    void findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship);
+    AStarRes chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship);
+    bool compareTwoRouts(const AStarRes &first, const AStarRes &second);
     int amountOfDestruction;
 
 private:
@@ -145,6 +148,8 @@ private:
     //  std::vector<std::pair<int, int>> civilCityCoodinates;
     //  std::vector<std::pair<int, int>> enemyCityCoodinates;
     std::vector<AStarRes> AStarResults;
+    std::unordered_map<std::shared_ptr<Spaceship>, std::vector<AStarRes>> bestRoutForEachSpaceship;
+
 
     // std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> map;
 };
