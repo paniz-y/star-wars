@@ -84,8 +84,9 @@ public:
     AStarRes AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);     // uses A* search algorithm for routing
     AStarRes AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship); // uses A* search algorithm for routing
     void initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> base, std::vector<std::shared_ptr<City>> civil);
-    std::vector<std::shared_ptr<City>> collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
+    void collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
     void routing();
+    void heuristicForAllCities();
     bool isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int spaceshipRadarResistance);
     void controlDestructions(int des);
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
@@ -146,13 +147,16 @@ private:
     std::vector<std::pair<std::shared_ptr<Spaceship>, std::shared_ptr<City>>> correspondentCityForEachSpaceship;
     std::vector<std::pair<int, int>> routingResultsForSpys;
     std::vector<int> routingResultsForDefense;
+    std::vector<std::shared_ptr<City>> allCities;
     // std::shared_ptr<City> previouseVisitedCity;
     //  std::vector<std::pair<int, int>> baseCityCoodinates;
     //  std::vector<std::pair<int, int>> civilCityCoodinates;
     //  std::vector<std::pair<int, int>> enemyCityCoodinates;
     std::vector<AStarRes> AStarResults;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<AStarRes>> bestRoutForEachSpaceship;
-
+    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
+    std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
+    std::unordered_map<std::shared_ptr <City> , std::vector<std::pair<std::shared_ptr <City>, double>>> eachCityHeuristics;
     // std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> map;
 };
 #endif
