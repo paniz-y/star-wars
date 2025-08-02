@@ -686,11 +686,11 @@ void Control::routing()
             if (bestRoutForEachSpaceship[spaceship].back().cost == -1)
             {
                 findBaseOrCivilCity(bestRoutForEachSpaceship[spaceship].back().destination, spaceship);
-                spaceship->setRadarResistance(spaceship->getRadarResistance() -  bestRoutForEachSpaceship[spaceship].back().numOfObstacles);
+                spaceship->setRadarResistance(spaceship->getRadarResistance() - bestRoutForEachSpaceship[spaceship].back().numOfObstacles);
                 std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance()" << std::endl;
             }
             findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship);
-            spaceship->setRadarResistance(spaceship->getRadarResistance() -  bestRoutForEachSpaceship[spaceship].back().numOfObstacles);
+            spaceship->setRadarResistance(spaceship->getRadarResistance() - bestRoutForEachSpaceship[spaceship].back().numOfObstacles);
             std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance()" << std::endl;
         }
     }
@@ -748,9 +748,19 @@ int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared
 }
 int Control::findBaseOrCivilCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
-    for (auto baseOrCivil : listOfBaseAndCivilCities)
+    if (spaceship->getRadarResistance() > 0)
     {
-        AStarResults.emplace_back(AStarRoutingForSpys(start, baseOrCivil, spaceship));
+        for (auto baseOrCivil : listOfBaseAndCivilCities)
+        {
+            AStarResults.emplace_back(AStarRoutingForSpys(start, baseOrCivil, spaceship));
+        }
+    }
+    else
+    {
+        for (auto baseOrCivil : listOfBaseAndCivilCities)
+        {
+            AStarResults.emplace_back(AStarRoutingForDefenses(start, baseOrCivil, spaceship));
+        }
     }
     return chooseBestRoutSoFar(spaceship);
     std::cout << bestRoutForEachSpaceship[spaceship][0].cost << " cost" << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().first << " des "
