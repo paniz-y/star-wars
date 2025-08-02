@@ -53,6 +53,14 @@ struct HashForPair
         return h1 ^ (h2 << 1); // Combine the two hashes
     }
 };
+struct SharedPtrPairHash
+{
+    template <typename T, typename U>
+    size_t operator()(const std::pair<std::shared_ptr<T>, std::shared_ptr<U>> &p) const
+    {
+        return std::hash<void *>{}(p.first.get()) ^ (std::hash<void *>{}(p.second.get()) << 1);
+    }
+};
 struct AStarRes
 {
     std::shared_ptr<City> destination;
@@ -81,7 +89,7 @@ public:
     void readMaxMapSizeFromFile();
     void initializeCorrespondentCityForEachSpaceship();
     void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
-    AStarRes AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);     // uses A* search algorithm for routing
+    void AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);     // uses A* search algorithm for routing
     AStarRes AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship); // uses A* search algorithm for routing
     void initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> base, std::vector<std::shared_ptr<City>> civil);
     void collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
@@ -156,7 +164,9 @@ private:
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<AStarRes>> bestRoutForEachSpaceship;
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
     std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
-    std::unordered_map<std::shared_ptr <City> , std::vector<std::pair<std::shared_ptr <City>, double>>> eachCityHeuristics;
+    // std::unordered_map<std::shared_ptr<City>, std::vector<std::pair<std::shared_ptr<City>, double>>> eachCityHeuristics;
+    std::unordered_map<std::pair<std::shared_ptr<City>, std::shared_ptr<City>>, double , SharedPtrPairHash> eachCityHeuristics;
     // std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> map;
+    std::unordered_map<std::shared_ptr<City>, std::vector<AStarRes>> AStarResultForEachCity;
 };
 #endif

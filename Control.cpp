@@ -368,14 +368,18 @@ void Control::initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> sp
         allSpaceships[allSpaceshipsSize + i]->setCoordinates(coordinates);
     }
 }
-AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
+void Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
 {
 
     // std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
     // std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
-    nodes.push({start, nullptr, 0, heuristic(start, destination)});
+
+std::cout << "eachCityHeuristics[{allCities[0], allCities[allCities.size()]}] " << eachCityHeuristics[{allCities[0], allCities[allCities.size()-1]}] << std::endl;
+    nodes.push({start, nullptr, 0, eachCityHeuristics[{allCities[0], allCities[allCities.size()-1]}]});
+
     shortestDistance[start] = 0;
+
     for (auto &neighbor : mapWithSpys.getNeighbors(start))
     {
         shortestDistance[neighbor.first] = DBL_MAX;
@@ -423,7 +427,8 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
                 res.numOfObstacles = radarResistanceSoFar;
                 res.cost = currNode.g;
                 std::cout << "laaaaaaaaaaaaaaa " << res.isDestroyed << std::endl;
-                return res; // rout found
+                AStarResultForEachCity[start].emplace_back(res); // rout found
+                // return res;
             }
 
             // std::cout << "after decreaseRadarResistant " << radarResistanceTmp << std::endl;
@@ -460,13 +465,15 @@ AStarRes Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const 
             // std::cout << "spyyyyyy else " << radarResistanceSoFar << std::endl;
             AStarRes res = {previouseVisitedCity, radarResistanceSoFar, -2, false};
             // std::cout << " res.cost " << res.cost << std::endl;
-            return res; // out of radar resitante
+            // return res;
+            AStarResultForEachCity[start].emplace_back(res); // out of radar resitante
         }
 
         // std::cout << "after for \n";
     }
     AStarRes res = {start, radarResistanceSoFar, -1, false};
-    return res; // no rout wihtout exceeding controlless distance
+    AStarResultForEachCity[start].emplace_back(res); // no rout wihtout exceeding controlless distance
+    // return res;
 }
 AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
 {
@@ -769,7 +776,7 @@ int Control::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected
     return spysDetected;
 }
 
-int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
+/*int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
     std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance() in nfind enemy func " << std::endl;
     if (spaceship->getRadarResistance() > 0)
@@ -859,7 +866,7 @@ bool Control::compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &
 bool Control::compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStarRes &second)
 {
     return first.numOfObstacles < second.numOfObstacles;
-}
+}*/
 void Control::routing()
 {
     AStarRoutingForSpys(listOfBaseAndCivilCities[0], coordsToCityPtr[listOfEnemyCities.back().getCoordinates()], allSpaceships[0]);
@@ -875,10 +882,20 @@ void Control::routing()
         std::cout << "nodes " << a.currCity->getCoordinates().first << " " << a.prevCity->getCoordinates().first << std::endl;
         nodes.pop();
     }
-    // for (auto &vis : visitedNodeCities)
-    // {
-    //     std::cout << "vis " << vis->getCoordinates().first << " " << vis->getCoordinates().second << std::endl;
-    // }
+
+    for (const auto &entry : AStarResultForEachCity)
+    {
+        // std::shared_ptr<City> city = entry.first;
+        const std::vector<AStarRes> &routes = entry.second;
+
+        std::cout << "AStarResultForEachCity " << entry.first->getCoordinates().first << " ";
+        // cout << "From City: " << city->name << endl;
+
+        for (const auto &route : routes)
+        {
+            std::cout << "  - Distance: " << route.destination->getCoordinates().first << ", Cost: " << route.cost << std::endl;
+        }
+    }
 }
 void Control::heuristicForAllCities()
 {
@@ -886,16 +903,14 @@ void Control::heuristicForAllCities()
     {
         for (int j = 0; j < allCities.size(); j++)
         {
-            std::pair<std::shared_ptr<City>, double> heuristicTmp = std::make_pair(allCities[j], heuristic(allCities[i], allCities[j]));
-            eachCityHeuristics[allCities[i]].emplace_back(heuristicTmp);
+            std::pair<std::shared_ptr<City>, std::shared_ptr<City>> heuristicTmpKey = std::make_pair(allCities[i], allCities[j]);
+            eachCityHeuristics[heuristicTmpKey] = (heuristic(allCities[i], allCities[j]));
         }
     }
     // for (auto &a : eachCityHeuristics)
     // {
-    //     for (int j{}; j < eachCityHeuristics.size(); j++)
-    //     {
-    //         std::cout << "huerstic " << a.first->getCoordinates().first <<" " <<a.second[j].first->getCoordinates().first <<" " <<a.second[j].second << std::endl;
-    //     }
+
+    //     std::cout << "huerstic " << a.first.first->getCoordinates().first << " " << a.first.second->getCoordinates().first << " " << a.second << std::endl;
     // }
 }
 int main()
@@ -903,6 +918,6 @@ int main()
     Control c;
     c.readMapFromFile();
     c.heuristicForAllCities();
-    // c.routing();
+    c.routing();
     // std::cout << "destruction " << c.amountOfDestruction << std::endl;
 }
