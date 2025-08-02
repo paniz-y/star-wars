@@ -672,16 +672,27 @@ void Control::routing()
 {
     for (auto spaceship : allSpaceships)
     {
-        if (findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship) >= 0)
+        while (true)
         {
-            return;
+            if (findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship) >= 0)
+            {
+                std::cout << bestRoutForEachSpaceship[spaceship][0].cost << " cost" << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().first << " des "
+                          << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().second << " des"
+                          << bestRoutForEachSpaceship[spaceship][0].numOfObstacles << " obstacles" << std::endl;
+                spaceship->setRadarResistance(spaceship->getRadarResistance() - bestRoutForEachSpaceship[spaceship].back().numOfObstacles);
+                std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance()" << std::endl;
+                return;
+            }
+            if (bestRoutForEachSpaceship[spaceship].back().cost == -1)
+            {
+                findBaseOrCivilCity(bestRoutForEachSpaceship[spaceship].back().destination, spaceship);
+                spaceship->setRadarResistance(spaceship->getRadarResistance() -  bestRoutForEachSpaceship[spaceship].back().numOfObstacles);
+                std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance()" << std::endl;
+            }
+            findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship);
+            spaceship->setRadarResistance(spaceship->getRadarResistance() -  bestRoutForEachSpaceship[spaceship].back().numOfObstacles);
+            std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance()" << std::endl;
         }
-        if (findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship) >= -1)
-        {
-            findBaseOrCivilCity(bestRoutForEachSpaceship[spaceship].back().destination, spaceship);
-        }
-        findEnemyCity(coordsToCityPtr[spaceship->getCoordinates()], spaceship);
-
     }
     for (auto a : AStarResults)
     {
@@ -712,14 +723,28 @@ int Control::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected
 
 int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
-    for (auto enemy : listOfEnemyCities)
+    std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance()" << std::endl;
+    if (spaceship->getRadarResistance() > 0)
     {
-        AStarResults.emplace_back(AStarRoutingForSpys(start, coordsToCityPtr[enemy.getCoordinates()], spaceship));
+        std::cout << "be defense nemirese" << std::endl;
+
+        for (auto enemy : listOfEnemyCities)
+        {
+            AStarResults.emplace_back(AStarRoutingForSpys(start, coordsToCityPtr[enemy.getCoordinates()], spaceship));
+        }
     }
+    else
+    {
+        for (auto enemy : listOfEnemyCities)
+        {
+            std::cout << "be defense mirese" << std::endl;
+            AStarResults.emplace_back(AStarRoutingForDefenses(start, coordsToCityPtr[enemy.getCoordinates()], spaceship));
+        }
+    }
+
+    std::cout << "find enemy" << std::endl;
+
     return chooseBestRoutSoFar(spaceship);
-    std::cout << bestRoutForEachSpaceship[spaceship][0].cost << " cost" << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().first << " des "
-              << bestRoutForEachSpaceship[spaceship][0].destination->getCoordinates().second << " des"
-              << bestRoutForEachSpaceship[spaceship][0].numOfObstacles << " obstacles" << std::endl;
 }
 int Control::findBaseOrCivilCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {

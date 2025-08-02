@@ -93,8 +93,8 @@ public:
     int findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship);
     int findBaseOrCivilCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship);
     int chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship);
-    bool compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &second);
-    bool compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStarRes &second);
+    static bool compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &second);
+    static bool compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStarRes &second);
 
     int amountOfDestruction;
 
