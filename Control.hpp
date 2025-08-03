@@ -64,7 +64,7 @@ struct SharedPtrPairHash
 struct AStarRes
 {
     std::shared_ptr<City> destination;
-    int numOfObstacles; // stores the number of spys or defenses along the way
+    //int numOfObstacles; // stores the number of spys or defenses along the way
     double cost;
     bool isDestroyed = false;
     void setDestroyed(bool des)
@@ -168,5 +168,6 @@ private:
     std::unordered_map<std::pair<std::shared_ptr<City>, std::shared_ptr<City>>, double , SharedPtrPairHash> eachCityHeuristics;
     // std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> map;
     std::unordered_map<std::shared_ptr<City>, std::vector<AStarRes>> AStarResultForEachCity;
+    std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackNodes;
 };
 #endif

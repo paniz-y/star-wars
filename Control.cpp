@@ -375,8 +375,8 @@ void Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std:
     // std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
 
-std::cout << "eachCityHeuristics[{allCities[0], allCities[allCities.size()]}] " << eachCityHeuristics[{allCities[0], allCities[allCities.size()-1]}] << std::endl;
-    nodes.push({start, nullptr, 0, eachCityHeuristics[{allCities[0], allCities[allCities.size()-1]}]});
+    std::cout << "eachCityHeuristics[{allCities[0], allCities[allCities.size()]}] " << eachCityHeuristics[{allCities[0], allCities[allCities.size() - 1]}] << std::endl;
+    nodes.push({start, nullptr, 0, eachCityHeuristics[{allCities[0], allCities[allCities.size() - 1]}]});
 
     shortestDistance[start] = 0;
 
@@ -385,9 +385,9 @@ std::cout << "eachCityHeuristics[{allCities[0], allCities[allCities.size()]}] " 
         shortestDistance[neighbor.first] = DBL_MAX;
     }
 
-    int radarResistanceSoFar = /*spaceship->getRadarResistance()*/ 0;
-    int radarResistanceTmp = radarResistanceSoFar;
-    std::cout << "radarResistanceSoFar " << radarResistanceSoFar << std::endl;
+    // int radarResistanceSoFar = /*spaceship->getRadarResistance()*/ 0;
+    // int radarResistanceTmp = radarResistanceSoFar;
+    // std::cout << "radarResistanceSoFar " << radarResistanceSoFar << std::endl;
     std::shared_ptr<City> previouseVisitedCity;
     while (!nodes.empty())
     {
@@ -395,167 +395,170 @@ std::cout << "eachCityHeuristics[{allCities[0], allCities[allCities.size()]}] " 
         Node currNode = nodes.top();
         nodes.pop();
         // std::cout << "destinaaaaaaaaaaaaaaaation " << destination->getCoordinates().first << " " << destination->getCoordinates().second << std::endl;
-        // std::cout << "currrrrrrrrrrrrrrrrrNodeeeeeeeeeeee " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
+        std::cout << "currrrrrrrrrrrrrrrrrNodeeeeeeeeeeee " << currNode.currCity->getCoordinates().first << " " << currNode.prevCity->getCoordinates().first << std::endl;
         previouseVisitedCity = currNode.currCity;
         // std::cout << "cheking before decreaseRadarResistant " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
 
-        radarResistanceTmp = increaseRadarResistant(currNode.currCity, radarResistanceTmp);
-        // radarResistanceSoFar = radarResistanceTmp;
+        // radarResistanceTmp = increaseRadarResistant(currNode.currCity, radarResistanceTmp);
+        //  radarResistanceSoFar = radarResistanceTmp;
         AStarRes res;
         // std::cout << "cheking before isSpaceshipRadarResistant " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
         // std::cout << "isSpaceshipRadarResistanttttttt(spaceship, radarResistanceTmp) " << isSpaceshipRadarResistant(spaceship, radarResistanceTmp) << std::endl;
-        if (isSpaceshipRadarResistant(spaceship, radarResistanceTmp))
-        {
-            std::cout << "if enemy " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
-            if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
-            {
-                std::cout << "enemy city " << std::endl;
-                // controlDestructions(spaceship->getDestruction());
-                //  res.isDestroyed = true;
-                res.setDestroyed(true);
-                std::cout << "laaaaaaaaaaaaaaa4 " << res.isDestroyed << std::endl;
-            }
-            if (currNode.currCity == destination)
-            {
-                std::cout << "to gscore " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
-                std::cout << "final " << currNode.g << std::endl;
-                std::cout << "radarResistanceTmp " << radarResistanceTmp << std::endl;
-                // spaceship->setRadarResistance(radarResistanceTmp);
-                radarResistanceSoFar = radarResistanceTmp;
-                // res = {destination, radarResistanceSoFar, currNode.g};
-                res.destination = destination;
-                res.numOfObstacles = radarResistanceSoFar;
-                res.cost = currNode.g;
-                std::cout << "laaaaaaaaaaaaaaa " << res.isDestroyed << std::endl;
-                AStarResultForEachCity[start].emplace_back(res); // rout found
-                // return res;
-            }
-
-            // std::cout << "after decreaseRadarResistant " << radarResistanceTmp << std::endl;
-            // std::cout << "after if isSpaceshipRadarResistant(radarResistanceTmp) "<< isSpaceshipRadarResistant(radarResistanceTmp) << std::endl;
-            for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
-            {
-                // std::cout << "currNode " << currNode.g << std::endl;
-
-                double neighborGScore = neighbor.second.first + currNode.g;
-                // std::cout << "nieghborGscore " << neighborGScore << std::endl;
-                // std::cout << "nieghbor in heuristic " << neighbor.first->getCoordinates().first << " " << neighbor.first->getCoordinates().second << std::endl;
-                // std::cout << "out of the if heuristic(neighbor.first, destination)" << heuristic(start, destination) << std::endl;
-                // std::cout << "spaceship->getControlLessDictance()) " <<spaceship->getControlLessDictance() << std::endl;
-
-                if ((visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || neighborGScore < shortestDistance[neighbor.first]) && heuristic(start, destination) <= spaceship->getControlLessDictance())
-                {
-                    double neighborHScore = heuristic(neighbor.first, destination);
-                    Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
-                    nodes.emplace(visited);
-                    shortestDistance[neighbor.first] = neighborGScore;
-                    radarResistanceSoFar = radarResistanceTmp;
-                    // std::cout << "radarResistanceSoFar " << radarResistanceSoFar << std::endl;
-                }
-                // std::cout << "after second if\n";
-            }
-
-            visitedNodeCities.emplace(currNode.currCity);
-        }
-        else
-        {
-            // std::cout << "in the else " << std::endl;
-            // previouseVisitedCity = currNode.currCity;
-            radarResistanceSoFar = radarResistanceTmp;
-            // std::cout << "spyyyyyy else " << radarResistanceSoFar << std::endl;
-            AStarRes res = {previouseVisitedCity, radarResistanceSoFar, -2, false};
-            // std::cout << " res.cost " << res.cost << std::endl;
-            // return res;
-            AStarResultForEachCity[start].emplace_back(res); // out of radar resitante
-        }
-
-        // std::cout << "after for \n";
-    }
-    AStarRes res = {start, radarResistanceSoFar, -1, false};
-    AStarResultForEachCity[start].emplace_back(res); // no rout wihtout exceeding controlless distance
-    // return res;
-}
-AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
-{
-
-    // std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
-    // std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
-    std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
-
-    nodes.push({start, nullptr, 0, heuristic(start, destination)});
-    shortestDistance[start] = 0;
-    for (auto &neighbor : mapWithSpys.getNeighbors(start))
-    {
-        shortestDistance[neighbor.first] = DBL_MAX;
-    }
-    std::shared_ptr<City> previouseVisitedCity;
-    while (!nodes.empty())
-    {
-        Node currNode = nodes.top();
-        nodes.pop();
-
-        // std::cout <<
-        // std::cout << "after if " << std::endl;
-        previouseVisitedCity = currNode.currCity;
-        std::cout << "in defense curr " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
-        int defenseRatioSoFar = /*enemy->getDefense().getRatio()*/ 0;
-        int defenseRatioTmp = defenseRatioSoFar;
-
+        // if (isSpaceshipRadarResistant(spaceship, radarResistanceTmp))
+        // {
+        std::cout << "if enemy " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
+        // if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
+        // {
+        //     std::cout << "enemy city " << std::endl;
+        //     // controlDestructions(spaceship->getDestruction());
+        //     //  res.isDestroyed = true;
+        //     res.setDestroyed(true);
+        //     std::cout << "laaaaaaaaaaaaaaa4 " << res.isDestroyed << std::endl;
+        // }
         if (currNode.currCity == destination)
         {
+            // std::cout << "to gscore " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
             // std::cout << "final " << currNode.g << std::endl;
-            // return currNode.g;
-            std::cout << "inja" << std::endl;
-            AStarRes res = {destination, defenseRatioSoFar, currNode.g, false};
-            return res;
+            // std::cout << "radarResistanceTmp " << radarResistanceTmp << std::endl;
+            // spaceship->setRadarResistance(radarResistanceTmp);
+            // radarResistanceSoFar = radarResistanceTmp;
+            // res = {destination, radarResistanceSoFar, currNode.g};
+            res.destination = destination;
+            // res.numOfObstacles = radarResistanceSoFar;
+            res.cost = currNode.g;
+            std::cout << "laaaaaaaaaaaaaaa " << res.isDestroyed << std::endl;
+            AStarResultForEachCity[start].emplace_back(res); // rout found
+
+            // return res;
         }
+
+        // std::cout << "after decreaseRadarResistant " << radarResistanceTmp << std::endl;
+        // std::cout << "after if isSpaceshipRadarResistant(radarResistanceTmp) "<< isSpaceshipRadarResistant(radarResistanceTmp) << std::endl;
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
             // std::cout << "currNode " << currNode.g << std::endl;
-            double neighborGScore = neighbor.second.second + currNode.g;
-            std::cout << heuristic(start, destination) << " heuristic" << std::endl;
-            if ((visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first])) && heuristic(start, destination) <= spaceship->getControlLessDictance())
+
+            double neighborGScore = neighbor.second.first + currNode.g;
+            // std::cout << "nieghborGscore " << neighborGScore << std::endl;
+            // std::cout << "nieghbor in heuristic " << neighbor.first->getCoordinates().first << " " << neighbor.first->getCoordinates().second << std::endl;
+            // std::cout << "out of the if heuristic(neighbor.first, destination)" << heuristic(start, destination) << std::endl;
+            // std::cout << "spaceship->getControlLessDictance()) " <<spaceship->getControlLessDictance() << std::endl;
+
+            if ((visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || neighborGScore < shortestDistance[neighbor.first]) /*&& heuristic(start, destination) <= spaceship->getControlLessDictance()*/)
             {
-                if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
-                {
-                    // if (neighbor.second.second == mapWithDefenses.getMaxSize() * 2)
-                    // {
-                    //     jgkhgj
-                    // }
-                    std::cout << "defenseRatioTmpppppppppppppppppppppppp " << defenseRatioTmp << std::endl;
-                    // controlDestructions(spaceship->getDestruction());
-                    if (/*enemy->getDefense().getRatio() <= 0*/ /*defenseRatioTmp <= 0*/ defenseRatioTmp >= enemy->getDefense().getRatio())
-                    {
-                        std::cout << "jjjjjjjjjjjj" << std::endl;
-                        // mapWithSpys.removeDefense(currNode.currCity);
-                        AStarRes res = {enemy, defenseRatioTmp, currNode.g, true}; // out of defense ratio
-                        return res;
-                    }
-                    else
-                    {
-                        // enemy->getDefense().defend();
-                        defenseRatioTmp++;
-                        defenseRatioSoFar = defenseRatioTmp;
-                        std::cout << "return\n";
-                        AStarRes res = {enemy, defenseRatioSoFar, -3};
-                        return res; // the spaceship is missed
-                    }
-                    std::cout << "after defenddddddddddddd " << enemy->getDefense().getRatio() << std::endl;
-                }
                 double neighborHScore = heuristic(neighbor.first, destination);
                 Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
                 nodes.emplace(visited);
                 shortestDistance[neighbor.first] = neighborGScore;
+                std::cout << neighbor.first->getCoordinates().first <<  " " << currNode.currCity->getCoordinates().first << "vvvvvvvvvvvvvvvvvvvvvv" << std::endl;
+                trackNodes[neighbor.first] = currNode.currCity;
+                // radarResistanceSoFar = radarResistanceTmp;
+                //  std::cout << "radarResistanceSoFar " << radarResistanceSoFar << std::endl;
             }
             // std::cout << "after second if\n";
         }
+
         visitedNodeCities.emplace(currNode.currCity);
+        //}
+        // else
+        // {
+        //     // std::cout << "in the else " << std::endl;
+        //     // previouseVisitedCity = currNode.currCity;
+        //     radarResistanceSoFar = radarResistanceTmp;
+        //     // std::cout << "spyyyyyy else " << radarResistanceSoFar << std::endl;
+        //     AStarRes res = {previouseVisitedCity, radarResistanceSoFar, -2, false};
+        //     // std::cout << " res.cost " << res.cost << std::endl;
+        //     // return res;
+        //     AStarResultForEachCity[start].emplace_back(res); // out of radar resitante
+        // }
 
         // std::cout << "after for \n";
     }
-    AStarRes res = {previouseVisitedCity, 0, -1, false};
-    return res; // no rout wihtout exceeding controlless distance
+    // AtStarRes res = {start, -1, false};
+    // ASarResultForEachCity[start].emplace_back(res); // no rout wihtout exceeding controlless distance
+    // return res;
 }
+// AStarRes Control::AStarRoutingForDefenses(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship) // uses A* search algorithm for routing
+// {
+
+//     // std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
+//     // std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
+//     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
+
+//     nodes.push({start, nullptr, 0, heuristic(start, destination)});
+//     shortestDistance[start] = 0;
+//     for (auto &neighbor : mapWithSpys.getNeighbors(start))
+//     {
+//         shortestDistance[neighbor.first] = DBL_MAX;
+//     }
+//     std::shared_ptr<City> previouseVisitedCity;
+//     while (!nodes.empty())
+//     {
+//         Node currNode = nodes.top();
+//         nodes.pop();
+
+//         // std::cout <<
+//         // std::cout << "after if " << std::endl;
+//         previouseVisitedCity = currNode.currCity;
+//         std::cout << "in defense curr " << currNode.currCity->getCoordinates().first << " " << currNode.currCity->getCoordinates().second << std::endl;
+//         int defenseRatioSoFar = /*enemy->getDefense().getRatio()*/ 0;
+//         int defenseRatioTmp = defenseRatioSoFar;
+
+//         if (currNode.currCity == destination)
+//         {
+//             // std::cout << "final " << currNode.g << std::endl;
+//             // return currNode.g;
+//             std::cout << "inja" << std::endl;
+//             AStarRes res = {destination, defenseRatioSoFar, currNode.g, false};
+//             return res;
+//         }
+//         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
+//         {
+//             // std::cout << "currNode " << currNode.g << std::endl;
+//             double neighborGScore = neighbor.second.second + currNode.g;
+//             std::cout << heuristic(start, destination) << " heuristic" << std::endl;
+//             if ((visitedNodeCities.find(neighbor.first) == visitedNodeCities.end() || (neighborGScore < shortestDistance[neighbor.first])) && heuristic(start, destination) <= spaceship->getControlLessDictance())
+//             {
+//                 if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity)) // defense presence
+//                 {
+//                     // if (neighbor.second.second == mapWithDefenses.getMaxSize() * 2)
+//                     // {
+//                     //     jgkhgj
+//                     // }
+//                     std::cout << "defenseRatioTmpppppppppppppppppppppppp " << defenseRatioTmp << std::endl;
+//                     // controlDestructions(spaceship->getDestruction());
+//                     if (/*enemy->getDefense().getRatio() <= 0*/ /*defenseRatioTmp <= 0*/ defenseRatioTmp >= enemy->getDefense().getRatio())
+//                     {
+//                         std::cout << "jjjjjjjjjjjj" << std::endl;
+//                         // mapWithSpys.removeDefense(currNode.currCity);
+//                         AStarRes res = {enemy, defenseRatioTmp, currNode.g, true}; // out of defense ratio
+//                         return res;
+//                     }
+//                     else
+//                     {
+//                         // enemy->getDefense().defend();
+//                         defenseRatioTmp++;
+//                         defenseRatioSoFar = defenseRatioTmp;
+//                         std::cout << "return\n";
+//                         AStarRes res = {enemy, defenseRatioSoFar, -3};
+//                         return res; // the spaceship is missed
+//                     }
+//                     std::cout << "after defenddddddddddddd " << enemy->getDefense().getRatio() << std::endl;
+//                 }
+//                 double neighborHScore = heuristic(neighbor.first, destination);
+//                 Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
+//                 nodes.emplace(visited);
+//                 shortestDistance[neighbor.first] = neighborGScore;
+//             }
+//             // std::cout << "after second if\n";
+//         }
+//         visitedNodeCities.emplace(currNode.currCity);
+
+//         // std::cout << "after for \n";
+//     }
+//     AStarRes res = {previouseVisitedCity, 0, -1, false};
+//     return res; // no rout wihtout exceeding controlless distance
+// }
 void Control::initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> baseCities, std::vector<std::shared_ptr<City>> civilCities)
 {
     listOfBaseAndCivilCities.insert(listOfBaseAndCivilCities.end(), baseCities.begin(), baseCities.end());
@@ -876,11 +879,10 @@ void Control::routing()
     {
         std::cout << "dis.first->getCoordinates().first " << dis.first->getCoordinates().first << " " << dis.first->getCoordinates().second << " " << dis.second << std::endl;
     }
-    while (!nodes.empty())
+    std::cout << trackNodes.size() << "trackNodes.size()" << std::endl;
+    for (auto um : trackNodes)
     {
-        Node a = nodes.top();
-        std::cout << "nodes " << a.currCity->getCoordinates().first << " " << a.prevCity->getCoordinates().first << std::endl;
-        nodes.pop();
+        std::cout << "track " << um.first->getCoordinates().first << um.second->getCoordinates().first << std::endl;
     }
 
     for (const auto &entry : AStarResultForEachCity)
