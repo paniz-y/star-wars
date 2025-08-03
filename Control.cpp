@@ -948,9 +948,32 @@ void Control::routing()
 {
     AStar(allCities[0], allCities[allCities.size() - 1], allSpaceships[0]);
     std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
+    std::shared_ptr<City> startValidCity = nullptr, validDestinationCity = nullptr;
+
+    std::cout << trackNodes.size() << "trackNodes.size()" << std::endl;
     for (auto um : trackNodes)
     {
-        std::cout << validateRoutBasedOnUncontrolledDistance(um.second, um.first, allSpaceships[0]) << " validateRoutBasedOnUncontrolledDistance" << std::endl;
+        std::cout << "track " << um.first->getCoordinates().first << " " << um.second->getCoordinates().first << std::endl;
+        validateRoutBasedOnUncontrolledDistance(um.second, um.first, allSpaceships[0]);
+    }
+    while (1)
+    {
+        for (auto um : trackNodes)
+        {
+            bool validRout = validateRoutBasedOnUncontrolledDistance(um.second, um.first, allSpaceships[0]);
+            if (validRout)
+            {
+
+                startValidCity = um.second;
+                validDestinationCity = um.first;
+                break;
+            }
+        }
+
+        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(validDestinationCity))
+            return;
+
+        AStar(validDestinationCity, allCities[allCities.size() - 1], allSpaceships[0]);
     }
     for (auto f : finalRes)
     {
@@ -959,11 +982,6 @@ void Control::routing()
     for (auto &dis : shortestDistance)
     {
         std::cout << "dis.first->getCoordinates().first " << dis.first->getCoordinates().first << " " << dis.first->getCoordinates().second << " " << dis.second << std::endl;
-    }
-    std::cout << trackNodes.size() << "trackNodes.size()" << std::endl;
-    for (auto um : trackNodes)
-    {
-        std::cout << "track " << um.first->getCoordinates().first << " " << um.second->getCoordinates().first << std::endl;
     }
 
     // for (const auto &entry : AStarResultForEachCity)
