@@ -450,7 +450,7 @@ void Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std:
                 Node visited = {neighbor.first, currNode.currCity, neighborGScore, neighborHScore};
                 nodes.emplace(visited);
                 shortestDistance[neighbor.first] = neighborGScore;
-                std::cout << neighbor.first->getCoordinates().first <<  " " << currNode.currCity->getCoordinates().first << "vvvvvvvvvvvvvvvvvvvvvv" << std::endl;
+                std::cout << neighbor.first->getCoordinates().first << " " << currNode.currCity->getCoordinates().first << "vvvvvvvvvvvvvvvvvvvvvv" << std::endl;
                 trackNodes[neighbor.first] = currNode.currCity;
                 // radarResistanceSoFar = radarResistanceTmp;
                 //  std::cout << "radarResistanceSoFar " << radarResistanceSoFar << std::endl;
@@ -779,6 +779,70 @@ int Control::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected
     return spysDetected;
 }
 
+int Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
+{
+    std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
+
+    nodes.push({start, nullptr, 0, heuristic(start, destination)});
+    shortestDistance[start] = 0;
+    for (auto &neighbor : mapWithSpys.getNeighbors(start))
+    {
+        shortestDistance[neighbor.first] = DBL_MAX;
+    }
+
+    while (!nodes.empty())
+    {
+        Node currNode = nodes.top();
+        nodes.pop();
+
+        if (currNode.currCity == destination)
+        {
+            return currNode.g;
+        }
+
+        if (visitedNodeCities.find(currNode.currCity) != visitedNodeCities.end())
+        {
+            continue;
+        }
+        visitedNodeCities.insert(currNode.currCity);
+
+        for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
+        {
+            double neighborGScore = neighbor.second.first + currNode.g;
+
+            if (shortestDistance.find(neighbor.first) == shortestDistance.end() || neighborGScore < shortestDistance[neighbor.first])
+            {
+                shortestDistance[neighbor.first] = neighborGScore;
+                trackNodes[neighbor.first] = currNode.currCity;
+
+                double neighborHScore = heuristic(neighbor.first, destination);
+                nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
+            }
+        }
+    }
+
+    return -1; // no rout found
+}
+std::vector<std::shared_ptr<City>> Control::backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
+{
+    std::vector<std::shared_ptr<City>> path;
+    if (trackNodes.empty() || trackNodes.find(destination) == trackNodes.end())
+    {
+        return {};
+    }
+
+    std::shared_ptr<City> current = destination;
+    while (current != nullptr && current != start)
+    { 
+        path.push_back(current);
+        current = trackNodes.at(current); 
+    }
+    path.push_back(start); 
+    std::reverse(path.begin(), path.end());
+
+    return path;
+}
+
 /*int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
     std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance() in nfind enemy func " << std::endl;
@@ -872,9 +936,12 @@ bool Control::compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStar
 }*/
 void Control::routing()
 {
-    AStarRoutingForSpys(listOfBaseAndCivilCities[0], coordsToCityPtr[listOfEnemyCities.back().getCoordinates()], allSpaceships[0]);
-    std::cout << "after a star " << allSpaceships[0]->getRadarResistance() << std::endl;
-    std::cout << "shortestDistance size " << shortestDistance.size() << std::endl;
+    AStar(allCities[0], allCities[allCities.size() - 1], allSpaceships[0]);
+    std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
+    for(auto f: finalRes)
+    {
+        std::cout << f->getCoordinates().first << " finalRes" << std::endl;
+    }
     for (auto &dis : shortestDistance)
     {
         std::cout << "dis.first->getCoordinates().first " << dis.first->getCoordinates().first << " " << dis.first->getCoordinates().second << " " << dis.second << std::endl;
@@ -882,22 +949,22 @@ void Control::routing()
     std::cout << trackNodes.size() << "trackNodes.size()" << std::endl;
     for (auto um : trackNodes)
     {
-        std::cout << "track " << um.first->getCoordinates().first << um.second->getCoordinates().first << std::endl;
+        std::cout << "track " << um.first->getCoordinates().first << " " << um.second->getCoordinates().first << std::endl;
     }
 
-    for (const auto &entry : AStarResultForEachCity)
-    {
-        // std::shared_ptr<City> city = entry.first;
-        const std::vector<AStarRes> &routes = entry.second;
+    // for (const auto &entry : AStarResultForEachCity)
+    // {
+    //     // std::shared_ptr<City> city = entry.first;
+    //     const std::vector<AStarRes> &routes = entry.second;
 
-        std::cout << "AStarResultForEachCity " << entry.first->getCoordinates().first << " ";
-        // cout << "From City: " << city->name << endl;
+    //     std::cout << "AStarResultForEachCity " << entry.first->getCoordinates().first << " ";
+    //     // cout << "From City: " << city->name << endl;
 
-        for (const auto &route : routes)
-        {
-            std::cout << "  - Distance: " << route.destination->getCoordinates().first << ", Cost: " << route.cost << std::endl;
-        }
-    }
+    //     for (const auto &route : routes)
+    //     {
+    //         std::cout << "  - Distance: " << route.destination->getCoordinates().first << ", Cost: " << route.cost << std::endl;
+    //     }
+    // }
 }
 void Control::heuristicForAllCities()
 {
