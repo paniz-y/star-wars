@@ -106,7 +106,7 @@ public:
     static bool compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStarRes &second);
     int AStar(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
-
+    bool validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination,const std::shared_ptr<Spaceship> &spaceship);
 
     int amountOfDestruction;
 

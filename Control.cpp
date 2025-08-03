@@ -833,14 +833,24 @@ std::vector<std::shared_ptr<City>> Control::backtrackAStarPath(const std::shared
 
     std::shared_ptr<City> current = destination;
     while (current != nullptr && current != start)
-    { 
+    {
         path.push_back(current);
-        current = trackNodes.at(current); 
+        current = trackNodes.at(current);
     }
-    path.push_back(start); 
+    path.push_back(start);
     std::reverse(path.begin(), path.end());
 
     return path;
+}
+
+bool Control::validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, const std::shared_ptr<Spaceship> &spaceship)
+{
+    double distance = heuristic(start, destination);
+    if (spaceship->getControlLessDictance() >= distance)
+    {
+        return true;
+    }
+    return false;
 }
 
 /*int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
@@ -938,7 +948,11 @@ void Control::routing()
 {
     AStar(allCities[0], allCities[allCities.size() - 1], allSpaceships[0]);
     std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
-    for(auto f: finalRes)
+    for (auto um : trackNodes)
+    {
+        std::cout << validateRoutBasedOnUncontrolledDistance(um.second, um.first, allSpaceships[0]) << " validateRoutBasedOnUncontrolledDistance" << std::endl;
+    }
+    for (auto f : finalRes)
     {
         std::cout << f->getCoordinates().first << " finalRes" << std::endl;
     }
