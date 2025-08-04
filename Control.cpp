@@ -812,6 +812,13 @@ int Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<Cit
 
             if (shortestDistance.find(neighbor.first) == shortestDistance.end() || neighborGScore < shortestDistance[neighbor.first])
             {
+                if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(neighbor.first))
+                {
+                    if (heuristic(currNode.currCity, neighbor.first) > spaceship->getControlLessDictance())
+                    {
+                        continue;
+                    }
+                }
                 shortestDistance[neighbor.first] = neighborGScore;
                 trackNodes[neighbor.first] = currNode.currCity;
 
