@@ -10,7 +10,6 @@
 #include <iostream>
 #include <unordered_set>
 #include <algorithm>
-// #include <tuple>
 #include <float.h>
 #include "Spaceship.hpp"
 #include "City.hpp"
@@ -64,12 +63,20 @@ struct SharedPtrPairHash
 struct AStarRes
 {
     std::shared_ptr<City> destination;
-    //int numOfObstacles; // stores the number of spys or defenses along the way
-    double cost;
+    int numOfSpies; // stores the number of spys along the way
+    double costOfPath;
     bool isDestroyed = false;
     void setDestroyed(bool des)
     {
         isDestroyed = des;
+    }
+    void setSpies(int spy)
+    {
+        numOfSpies  = spy;
+    }
+    void setCost(int cost)
+    {
+        costOfPath = cost;
     }
 };
 
@@ -104,7 +111,7 @@ public:
     int chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship);
     static bool compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &second);
     static bool compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStarRes &second);
-    int AStar(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
+    AStarRes AStar(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
     bool validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination,const std::shared_ptr<Spaceship> &spaceship);
 

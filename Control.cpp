@@ -317,7 +317,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase5.txt", std::ios::in);
+    mapFile.open("testcase3.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -425,7 +425,7 @@ void Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std:
             // res = {destination, radarResistanceSoFar, currNode.g};
             res.destination = destination;
             // res.numOfObstacles = radarResistanceSoFar;
-            res.cost = currNode.g;
+            // res.cost = currNode.g;
             std::cout << "laaaaaaaaaaaaaaa " << res.isDestroyed << std::endl;
             AStarResultForEachCity[start].emplace_back(res); // rout found
 
@@ -779,7 +779,7 @@ int Control::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected
     return spysDetected;
 }
 
-int Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
+AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
 {
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
 
@@ -789,7 +789,7 @@ int Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<Cit
     {
         shortestDistance[neighbor.first] = DBL_MAX;
     }
-
+    int spiesAtThePath = 0;
     while (!nodes.empty())
     {
         Node currNode = nodes.top();
@@ -797,7 +797,13 @@ int Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<Cit
 
         if (currNode.currCity == destination)
         {
-            return currNode.g;
+
+            spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detcting whether the destination has spies
+            std::cout << "spy " << spiesAtThePath << std::endl;
+            AStarRes result;
+            result.setSpies(spiesAtThePath);
+            result.setCost(currNode.g);
+            return result;
         }
 
         if (visitedNodeCities.find(currNode.currCity) != visitedNodeCities.end())
@@ -806,16 +812,17 @@ int Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<Cit
         }
         visitedNodeCities.insert(currNode.currCity);
 
+        spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detcting whether the city has spies
+
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
             double neighborGScore = neighbor.second.first + currNode.g;
 
             if (shortestDistance.find(neighbor.first) == shortestDistance.end() || neighborGScore < shortestDistance[neighbor.first])
             {
-
                 if (heuristic(currNode.currCity, neighbor.first) > spaceship->getControlLessDictance())
                 {
-                    continue;
+                    continue; //reprogram the spaceship if required
                 }
 
                 shortestDistance[neighbor.first] = neighborGScore;
@@ -826,8 +833,10 @@ int Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<Cit
             }
         }
     }
-
-    return -1; // no rout found
+    AStarRes result;
+    result.setCost(-1);
+    result.setSpies(0);
+    return result; // no rout found
 }
 std::vector<std::shared_ptr<City>> Control::backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
 {
@@ -952,7 +961,7 @@ bool Control::compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStar
 }*/
 void Control::routing()
 {
-    AStar(allCities[0], allCities[allCities.size() - 1], allSpaceships[0]);
+    AStarRes a = AStar(allCities[0], allCities[allCities.size() - 1], allSpaceships[0]);
     std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
     std::shared_ptr<City> startValidCity = nullptr, validDestinationCity = nullptr;
 
@@ -961,6 +970,7 @@ void Control::routing()
     {
         std::cout << "track " << um.first->getCoordinates().first << " " << um.second->getCoordinates().first << std::endl;
     }
+    std::cout <<"cost " <<a.costOfPath << " spy " << a.numOfSpies << std::endl;
     while (1)
     {
         for (auto um : trackNodes)
