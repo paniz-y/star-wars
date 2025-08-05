@@ -317,7 +317,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase1.txt", std::ios::in);
+    mapFile.open("testcase5.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -812,13 +812,12 @@ int Control::AStar(const std::shared_ptr<City> &start, const std::shared_ptr<Cit
 
             if (shortestDistance.find(neighbor.first) == shortestDistance.end() || neighborGScore < shortestDistance[neighbor.first])
             {
-                if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(neighbor.first))
+
+                if (heuristic(currNode.currCity, neighbor.first) > spaceship->getControlLessDictance())
                 {
-                    if (heuristic(currNode.currCity, neighbor.first) > spaceship->getControlLessDictance())
-                    {
-                        continue;
-                    }
+                    continue;
                 }
+
                 shortestDistance[neighbor.first] = neighborGScore;
                 trackNodes[neighbor.first] = currNode.currCity;
 
@@ -961,7 +960,6 @@ void Control::routing()
     for (auto um : trackNodes)
     {
         std::cout << "track " << um.first->getCoordinates().first << " " << um.second->getCoordinates().first << std::endl;
-        validateRoutBasedOnUncontrolledDistance(um.second, um.first, allSpaceships[0]);
     }
     while (1)
     {
