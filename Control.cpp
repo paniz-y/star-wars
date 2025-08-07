@@ -317,7 +317,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase3.txt", std::ios::in);
+    mapFile.open("testcase6.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -871,14 +871,24 @@ bool Control::validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City
 
 void Control::findValidReachedDestinations()
 {
-    for (auto results : AStarResults)
+    for (std::vector<AStarRes>::iterator it = AStarResults.begin(); it != AStarResults.end();)
     {
-        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(results.destination))
+        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(it->destination))
         {
-            continue;
+            // std::cout << "enemy detect " << it->destination->getCoordinates().first << std::endl;
+            it++;
+            // continue;
         }
-        AStarResults.erase(std::remove(AStarResults.begin(), AStarResults.end(), results));
+        else
+        {
+            it = AStarResults.erase(it);
+        }
     }
+    // std::cout << "size " << AStarResults.size() << std::endl;
+    // for (auto res : AStarResults)
+    // {
+    //     std::cout << "in find " << res.destination->getCoordinates().first << " " << std::endl;
+    // }
 }
 
 int Control::findAPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship)
@@ -995,7 +1005,7 @@ bool Control::compareTwoRoutsBasedOnDefenseRatio(const AStarRes &first, const AS
 {
     if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first.destination))
     {
-        if(std::shared_ptr<EnemyCity> secondEnemy = std::dynamic_pointer_cast<EnemyCity>(second.destination))
+        if (std::shared_ptr<EnemyCity> secondEnemy = std::dynamic_pointer_cast<EnemyCity>(second.destination))
         {
             return firstEnemy->getDefense().getRatio() < secondEnemy->getDefense().getRatio();
         }
@@ -1007,9 +1017,9 @@ void Control::routing()
     {
         AStarRes finalResultForCurrentSpaceship;
         AStar(coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-        // for(auto r : AStarResults)
+        // for (auto r : AStarResults)
         // {
-        //     std::cout << r.destination->getCoordinates().first << " " << r.numOfSpies << " " << r.costOfPath << " "  << std::endl;
+        //     std::cout << "destination " << r.destination->getCoordinates().first << " " << r.numOfSpies << " " << r.costOfPath << " " << std::endl;
         // }
         findValidReachedDestinations();
         int indexOfSelectedPath = findAPathForARadarResistantSpaceship(spaceship);
