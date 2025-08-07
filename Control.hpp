@@ -170,7 +170,6 @@ private:
     //  std::vector<std::pair<int, int>> baseCityCoodinates;
     //  std::vector<std::pair<int, int>> civilCityCoodinates;
     //  std::vector<std::pair<int, int>> enemyCityCoodinates;
-    std::vector<AStarRes> AStarResults;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<AStarRes>> bestRoutForEachSpaceship;
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
     std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
@@ -179,5 +178,6 @@ private:
     // std::unordered_map<std::shared_ptr<City>, std::pair<std::shared_ptr<City>, double>> map;
     std::unordered_map<std::shared_ptr<City>, std::vector<AStarRes>> AStarResultForEachCity;
     std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackNodes;
+    std::vector<AStarRes> AStarResults;
 };
 #endif

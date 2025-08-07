@@ -798,11 +798,10 @@ AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_pt
         if (currNode.currCity == destination)
         {
 
-            spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detcting whether the destination has spies
+            spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
             std::cout << "spy " << spiesAtThePath << std::endl;
-            AStarRes result;
-            result.setSpies(spiesAtThePath);
-            result.setCost(currNode.g);
+            AStarRes result = {currNode.currCity, spiesAtThePath, currNode.g, false};
+            AStarResults.emplace_back(result);
             return result;
         }
 
@@ -812,7 +811,7 @@ AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_pt
         }
         visitedNodeCities.insert(currNode.currCity);
 
-        spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detcting whether the city has spies
+        spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the city has spies
 
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
@@ -822,7 +821,7 @@ AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_pt
             {
                 if (heuristic(currNode.currCity, neighbor.first) > spaceship->getControlLessDictance())
                 {
-                    continue; //reprogram the spaceship if required
+                    continue; // reprogram the spaceship if required
                 }
 
                 shortestDistance[neighbor.first] = neighborGScore;
@@ -830,6 +829,8 @@ AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_pt
 
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
+                AStarRes result = {currNode.currCity, spiesAtThePath, currNode.g, false};
+                AStarResults.emplace_back(result);
             }
         }
     }
@@ -961,43 +962,52 @@ bool Control::compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStar
 }*/
 void Control::routing()
 {
-    AStarRes a = AStar(allCities[0], allCities[allCities.size() - 1], allSpaceships[0]);
-    std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
-    std::shared_ptr<City> startValidCity = nullptr, validDestinationCity = nullptr;
+    for (auto spaceship : allSpaceships)
+    {
 
-    std::cout << trackNodes.size() << "trackNodes.size()" << std::endl;
-    for (auto um : trackNodes)
-    {
-        std::cout << "track " << um.first->getCoordinates().first << " " << um.second->getCoordinates().first << std::endl;
-    }
-    std::cout <<"cost " <<a.costOfPath << " spy " << a.numOfSpies << std::endl;
-    while (1)
-    {
-        for (auto um : trackNodes)
+        AStar(coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], allSpaceships[0]);
+        for(auto r : AStarResults)
         {
-            bool validRout = validateRoutBasedOnUncontrolledDistance(um.second, um.first, allSpaceships[0]);
-            if (validRout)
-            {
-
-                startValidCity = um.second;
-                validDestinationCity = um.first;
-                break;
-            }
+            std::cout << r.destination->getCoordinates().first << " " << r.numOfSpies << " " << r.costOfPath << " "  << std::endl; 
         }
 
-        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(validDestinationCity))
-            return;
+    }
+    // std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
+    // std::shared_ptr<City> startValidCity = nullptr, validDestinationCity = nullptr;
 
-        AStar(validDestinationCity, allCities[allCities.size() - 1], allSpaceships[0]);
-    }
-    for (auto f : finalRes)
-    {
-        std::cout << f->getCoordinates().first << " finalRes" << std::endl;
-    }
-    for (auto &dis : shortestDistance)
-    {
-        std::cout << "dis.first->getCoordinates().first " << dis.first->getCoordinates().first << " " << dis.first->getCoordinates().second << " " << dis.second << std::endl;
-    }
+    // std::cout << trackNodes.size() << "trackNodes.size()" << std::endl;
+    // for (auto um : trackNodes)
+    // {
+    //     std::cout << "track " << um.first->getCoordinates().first << " " << um.second->getCoordinates().first << std::endl;
+    // }
+    // std::cout <<"cost " <<a.costOfPath << " spy " << a.numOfSpies << std::endl;
+    // while (1)
+    // {
+    //     for (auto um : trackNodes)
+    //     {
+    //         bool validRout = validateRoutBasedOnUncontrolledDistance(um.second, um.first, allSpaceships[0]);
+    //         if (validRout)
+    //         {
+
+    //             startValidCity = um.second;
+    //             validDestinationCity = um.first;
+    //             break;
+    //         }
+    //     }
+
+    //     if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(validDestinationCity))
+    //         return;
+
+    //     AStar(validDestinationCity, allCities[allCities.size() - 1], allSpaceships[0]);
+    // }
+    // for (auto f : finalRes)
+    // {
+    //     std::cout << f->getCoordinates().first << " finalRes" << std::endl;
+    // }
+    // for (auto &dis : shortestDistance)
+    // {
+    //     std::cout << "dis.first->getCoordinates().first " << dis.first->getCoordinates().first << " " << dis.first->getCoordinates().second << " " << dis.second << std::endl;
+    // }
 
     // for (const auto &entry : AStarResultForEachCity)
     // {
