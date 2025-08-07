@@ -893,6 +893,13 @@ int Control::findAPathForARadarResistantSpaceship(const std::shared_ptr<Spaceshi
     return -1;
 }
 
+AStarRes Control::findBestDestinationBasedOnDefenseRatio()
+{
+    std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnDefenseRatio);
+
+    return AStarResults[0];
+}
+
 /*int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
     std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance() in nfind enemy func " << std::endl;
@@ -984,17 +991,38 @@ bool Control::compareTwoRoutsBasedOnSpys(const AStarRes &first, const AStarRes &
 {
     return first.numOfSpies < second.numOfSpies;
 }
+bool Control::compareTwoRoutsBasedOnDefenseRatio(const AStarRes &first, const AStarRes &second)
+{
+    if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first.destination))
+    {
+        if(std::shared_ptr<EnemyCity> secondEnemy = std::dynamic_pointer_cast<EnemyCity>(second.destination))
+        {
+            return firstEnemy->getDefense().getRatio() < secondEnemy->getDefense().getRatio();
+        }
+    }
+}
 void Control::routing()
 {
     for (auto spaceship : allSpaceships)
     {
-
+        AStarRes finalResultForCurrentSpaceship;
         AStar(coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         // for(auto r : AStarResults)
         // {
         //     std::cout << r.destination->getCoordinates().first << " " << r.numOfSpies << " " << r.costOfPath << " "  << std::endl;
         // }
         findValidReachedDestinations();
+        int indexOfSelectedPath = findAPathForARadarResistantSpaceship(spaceship);
+        if (indexOfSelectedPath == -1)
+        {
+            finalResultForCurrentSpaceship = findBestDestinationBasedOnDefenseRatio();
+        }
+        else
+        {
+            finalResultForCurrentSpaceship = AStarResults[indexOfSelectedPath];
+        }
+        std::cout << finalResultForCurrentSpaceship.destination->getCoordinates().first << "mmmmmmmmmm " << finalResultForCurrentSpaceship.numOfSpies << " "
+                  << finalResultForCurrentSpaceship.costOfPath << std::endl;
     }
     // std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
     // std::shared_ptr<City> startValidCity = nullptr, validDestinationCity = nullptr;
