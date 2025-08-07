@@ -7,7 +7,7 @@ class Defense
 public:
     Defense();
     void setRatio(int ratio);
-    int getRatio();
+    int getRatio() const;
     void defend();
     // bool operator==(const Defense otherDefense) const
     // {
