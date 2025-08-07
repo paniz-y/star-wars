@@ -755,11 +755,11 @@ void Control::collectAllCities(const std::vector<std::shared_ptr<City>> &baseCit
     }
 }
 */
-bool Control::isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int spaceshipRadarResistance)
+bool Control::isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpys)
 {
     // bool isResistance = (spaceshipRadarResistance < spaceship->getRadarResistance()) ? true : false;
-    std::cout << "resictannnnnnnnnnnn " << spaceshipRadarResistance << " badiiiiiiiiii " << spaceship->getRadarResistance() << std::endl;
-    if (spaceshipRadarResistance < spaceship->getRadarResistance())
+    std::cout << "resictannnnnnnnnnnn " << numOfSpys << " badiiiiiiiiii " << spaceship->getRadarResistance() << std::endl;
+    if (numOfSpys < spaceship->getRadarResistance())
         return true;
     return false;
 }
@@ -869,6 +869,30 @@ bool Control::validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City
     return false;
 }
 
+void Control::findValidReachedDestinations()
+{
+    for (auto results : AStarResults)
+    {
+        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(results.destination))
+        {
+            continue;
+        }
+        AStarResults.erase(std::remove(AStarResults.begin(), AStarResults.end(), results));
+    }
+}
+
+int Control::findAPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship)
+{
+    std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnSpys);
+
+    for (int i = 0; i < AStarResults.size(); i++)
+    {
+        if (isSpaceshipRadarResistant(spaceship, AStarResults[i].numOfSpies))
+            return i;
+    }
+    return -1;
+}
+
 /*int Control::findEnemyCity(const std::shared_ptr<City> &start, const std::shared_ptr<Spaceship> &spaceship)
 {
     std::cout << spaceship->getRadarResistance() << " spaceship->getRadarResistance() in nfind enemy func " << std::endl;
@@ -955,22 +979,22 @@ int Control::chooseBestRoutSoFar(const std::shared_ptr<Spaceship> &spaceship)
 bool Control::compareTwoRoutsBasedOnCost(const AStarRes &first, const AStarRes &second)
 {
     return first.cost < second.cost;
-}
-bool Control::compareTwoRoutsBasedOnObstacles(const AStarRes &first, const AStarRes &second)
-{
-    return first.numOfObstacles < second.numOfObstacles;
 }*/
+bool Control::compareTwoRoutsBasedOnSpys(const AStarRes &first, const AStarRes &second)
+{
+    return first.numOfSpies < second.numOfSpies;
+}
 void Control::routing()
 {
     for (auto spaceship : allSpaceships)
     {
 
-        AStar(coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], allSpaceships[0]);
-        for(auto r : AStarResults)
-        {
-            std::cout << r.destination->getCoordinates().first << " " << r.numOfSpies << " " << r.costOfPath << " "  << std::endl; 
-        }
-
+        AStar(coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
+        // for(auto r : AStarResults)
+        // {
+        //     std::cout << r.destination->getCoordinates().first << " " << r.numOfSpies << " " << r.costOfPath << " "  << std::endl;
+        // }
+        findValidReachedDestinations();
     }
     // std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
     // std::shared_ptr<City> startValidCity = nullptr, validDestinationCity = nullptr;
