@@ -6,7 +6,7 @@ EnemyCity::EnemyCity(std::pair<int, int> coords, bool spy, Defense defenseForEne
     setDefense(defenceCheck);
 }
 
-Defense EnemyCity::getDefense()
+const Defense &EnemyCity::getDefense () const
 {
     return defense;
 }

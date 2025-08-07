@@ -9,8 +9,8 @@ class EnemyCity : public City
 {
 public:
     // BaseCity();
-    EnemyCity(std::pair<int, int> coords, bool spy, Defense defense,bool defenceCheck);
-    Defense getDefense();
+    EnemyCity(std::pair<int, int> coords, bool spy, Defense defense, bool defenceCheck);
+    const Defense &getDefense() const;
 
     bool getHasDefense() const override;
     void setDefense(bool defense) override;
