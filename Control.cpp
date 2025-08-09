@@ -274,14 +274,13 @@ void Control::updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpa
     {
         if (enemy->getDefense().getRatio() > 0)
         {
-            std::cout << enemy->getDefense().getRatio() << " to tabe1 " << std::endl;
-            std::cout << enemy->defenseForChange().getRatio() << " to tabe2 " << std::endl;
+            // std::cout << enemy->getDefense().getRatio() << " to tabe1 " << std::endl;
+            // std::cout << enemy->defenseForChange().getRatio() << " to tabe2 " << std::endl;
             enemy->defenseForChange().defend();
-            std::cout << enemy->defenseForChange().getRatio() << " to tabe3 " << std::endl;
-            std::cout << enemy->getDefense().getRatio() << " to tabe4 " << std::endl;
+            // std::cout << enemy->defenseForChange().getRatio() << " to tabe3 " << std::endl;
+            // std::cout << enemy->getDefense().getRatio() << " to tabe4 " << std::endl;
         }
         mapWithSpys.removeDefense(finalResultForCurrentSpaceship.destination);
-        
     }
 }
 std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
@@ -831,7 +830,7 @@ AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_pt
         {
 
             spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
-            std::cout << "spy " << spiesAtThePath << std::endl;
+            // std::cout << "s/py " << spiesAtThePath << std::endl;
             AStarRes result = {currNode.currCity, spiesAtThePath, currNode.g, false};
             AStarResults.emplace_back(result);
             return result;
@@ -923,20 +922,21 @@ void Control::findValidReachedDestinations()
     // }
 }
 
-int Control::findAPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship)
+void Control::findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship)
 {
-    std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnSpys);
-
-    for (int i = 0; i < AStarResults.size(); i++)
+    std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnSpys); // sorting based on radar resistance
+    
+    for (std::vector<AStarRes>::iterator it = AStarResults.begin(); it != AStarResults.end();)
     {
-        if (isSpaceshipRadarResistant(spaceship, AStarResults[i].numOfSpies))
+        if (isSpaceshipRadarResistant(spaceship, it->numOfSpies))
         {
-            std::cout << "to if " << i << " " << AStarResults[i].numOfSpies << std::endl;
-            return i;
+            it++;
+        }
+        else
+        {
+            it = AStarResults.erase(it); //deleting the pathes exceeded 
         }
     }
-    std::cout << "out\n";
-    return -1;
 }
 
 AStarRes Control::findBestDestinationBasedOnDefenseRatio()
@@ -1061,24 +1061,26 @@ void Control::routing()
         //     std::cout << "destination " << r.destination->getCoordinates().first << " " << r.numOfSpies << " " << r.costOfPath << " " << std::endl;
         // }
         findValidReachedDestinations();
-        int indexOfSelectedPath = findAPathForARadarResistantSpaceship(spaceship);
-        if (indexOfSelectedPath == -1)
+        findPathForARadarResistantSpaceship(spaceship);
+        if (AStarResults.size() != 0)
         {
             finalResultForCurrentSpaceship = findBestDestinationBasedOnDefenseRatio();
         }
         else
         {
-            finalResultForCurrentSpaceship = AStarResults[indexOfSelectedPath];
+            std::cout << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << " is missed \n";
+            continue;
         }
         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
-        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(finalResultForCurrentSpaceship.destination))
-        {
-            std::cout << enemy->defenseForChange().getRatio() << " enemy->defenseForChange().getRatio()" << std::endl;
-        }
+        // if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(finalResultForCurrentSpaceship.destination))
+        // {
+        //     std::cout << enemy->defenseForChange().getRatio() << " enemy->defenseForChange().getRatio()" << std::endl;
+        // }
 
         // std::cout << finalResultForCurrentSpaceship.destination->getCoordinates().first << "mmmmmmmmmm " << finalResultForCurrentSpaceship.numOfSpies << " "
         //           << finalResultForCurrentSpaceship.costOfPath << std::endl;
         std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
+
         std::cout << cnt << " the spaceship is ";
         for (auto f : finalRes)
         {

@@ -120,7 +120,7 @@ public:
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
     bool validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, const std::shared_ptr<Spaceship> &spaceship);
     void findValidReachedDestinations();
-    int findAPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship);
+    void findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship);
     AStarRes findBestDestinationBasedOnDefenseRatio();
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
