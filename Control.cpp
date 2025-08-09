@@ -253,6 +253,21 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
     // enemyCityCoodinates.resize(numOfEnemyCitys);
     // enemyCityCoodinates = enemyCityCoodinatesFromFile;
 }
+void Control::findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemies)
+{
+    std::sort(enemies.begin(), enemies.end(), compareEnemiesBasedOnDistanse);
+}
+bool Control::compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second)
+{
+    if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first))
+    {
+        if (std::shared_ptr<EnemyCity> secondEnemy = std::dynamic_pointer_cast<EnemyCity>(second))
+        {
+            return firstEnemy->getCoordinates().second < secondEnemy->getCoordinates().second;
+        }
+    }
+    return false;
+}
 std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
 {
     std::vector<std::shared_ptr<City>> enemyCities;
@@ -268,6 +283,7 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
         coordsToCityPtr[enemyCityCoodinatesFromFile[i]] = enemyCities.back();
         // std::cout << " coordsToCityPtr[enemyCityCoodinatesFromFile[i]] "<< i << " " <<  coordsToCityPtr[enemyCityCoodinatesFromFile[i]]->getCoordinates().first << " " <<  coordsToCityPtr[enemyCityCoodinatesFromFile[i]]->getCoordinates().second << std::endl;
     }
+    findTheFarthestEnemyCity(enemyCities);
     return enemyCities;
 }
 std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
@@ -758,7 +774,7 @@ void Control::collectAllCities(const std::vector<std::shared_ptr<City>> &baseCit
 bool Control::isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpys)
 {
     // bool isResistance = (spaceshipRadarResistance < spaceship->getRadarResistance()) ? true : false;
-    std::cout << "resictannnnnnnnnnnn " << numOfSpys << " badiiiiiiiiii " << spaceship->getRadarResistance() << std::endl;
+    // std::cout << "resictannnnnnnnnnnn " << numOfSpys << " badiiiiiiiiii " << spaceship->getRadarResistance() << std::endl;
     if (numOfSpys < spaceship->getRadarResistance())
         return true;
     return false;
@@ -898,8 +914,12 @@ int Control::findAPathForARadarResistantSpaceship(const std::shared_ptr<Spaceshi
     for (int i = 0; i < AStarResults.size(); i++)
     {
         if (isSpaceshipRadarResistant(spaceship, AStarResults[i].numOfSpies))
+        {
+            std::cout << "to if " << i << " " << AStarResults[i].numOfSpies << std::endl;
             return i;
+        }
     }
+    std::cout << "out\n";
     return -1;
 }
 
@@ -1010,11 +1030,14 @@ bool Control::compareTwoRoutsBasedOnDefenseRatio(const AStarRes &first, const AS
             return firstEnemy->getDefense().getRatio() < secondEnemy->getDefense().getRatio();
         }
     }
+    return false;
 }
 void Control::routing()
 {
+    int cnt = 0;
     for (auto spaceship : allSpaceships)
     {
+        AStarResults.clear();
         AStarRes finalResultForCurrentSpaceship;
         AStar(coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         // for (auto r : AStarResults)
@@ -1031,10 +1054,16 @@ void Control::routing()
         {
             finalResultForCurrentSpaceship = AStarResults[indexOfSelectedPath];
         }
-        std::cout << finalResultForCurrentSpaceship.destination->getCoordinates().first << "mmmmmmmmmm " << finalResultForCurrentSpaceship.numOfSpies << " "
-                  << finalResultForCurrentSpaceship.costOfPath << std::endl;
+        // std::cout << finalResultForCurrentSpaceship.destination->getCoordinates().first << "mmmmmmmmmm " << finalResultForCurrentSpaceship.numOfSpies << " "
+        //           << finalResultForCurrentSpaceship.costOfPath << std::endl;
+        std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
+        std::cout << cnt << " the spaceship is ";
+        for (auto f : finalRes)
+        {
+            std::cout << f->getCoordinates().first << " " << f->getCoordinates().second << " finalRes ";
+        }
+        cnt++;
     }
-    // std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(allCities[0], allCities[allCities.size() - 1]);
     // std::shared_ptr<City> startValidCity = nullptr, validDestinationCity = nullptr;
 
     // std::cout << trackNodes.size() << "trackNodes.size()" << std::endl;
@@ -1061,10 +1090,6 @@ void Control::routing()
     //         return;
 
     //     AStar(validDestinationCity, allCities[allCities.size() - 1], allSpaceships[0]);
-    // }
-    // for (auto f : finalRes)
-    // {
-    //     std::cout << f->getCoordinates().first << " finalRes" << std::endl;
     // }
     // for (auto &dis : shortestDistance)
     // {

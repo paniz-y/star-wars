@@ -122,7 +122,8 @@ public:
     void findValidReachedDestinations();
     int findAPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship);
     AStarRes findBestDestinationBasedOnDefenseRatio();
-
+    void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
+    static bool compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     int amountOfDestruction;
 
 private:
