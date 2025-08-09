@@ -280,6 +280,8 @@ void Control::updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpa
             std::cout << enemy->defenseForChange().getRatio() << " to tabe3 " << std::endl;
             std::cout << enemy->getDefense().getRatio() << " to tabe4 " << std::endl;
         }
+        mapWithSpys.removeDefense(finalResultForCurrentSpaceship.destination);
+        
     }
 }
 std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
@@ -1073,6 +1075,7 @@ void Control::routing()
         {
             std::cout << enemy->defenseForChange().getRatio() << " enemy->defenseForChange().getRatio()" << std::endl;
         }
+
         // std::cout << finalResultForCurrentSpaceship.destination->getCoordinates().first << "mmmmmmmmmm " << finalResultForCurrentSpaceship.numOfSpies << " "
         //           << finalResultForCurrentSpaceship.costOfPath << std::endl;
         std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
