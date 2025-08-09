@@ -132,6 +132,7 @@ private:
     int numOfBaseCitys;
     int numOfCivilCitys;
     int numOfEnemyCitys;
+    int amountOfDestruction;
     std::fstream mapFile;
     Map mapWithSpys;
     Map mapWithDefenses;
@@ -188,7 +189,6 @@ private:
     std::unordered_map<std::shared_ptr<City>, std::vector<AStarRes>> AStarResultForEachCity;
     std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackNodes;
     std::vector<AStarRes> AStarResults;
-    int amountOfDestruction;
 
 };
 #endif
