@@ -1,7 +1,6 @@
 #ifndef DEFENSE_HPP
 #define DEFENSE_HPP
-#include <vector>
-//#include <utility>
+#include <utility>
 class Defense
 {
 public:
@@ -15,6 +14,7 @@ public:
     // }
     // friend struct std::hash<Defense>;
     // friend class EnemyCity;
+private:
     std::pair<int, int> coordinatesForDefense;
     int defenseRatio;
 };
@@ -35,7 +35,7 @@ public:
 //     std::size_t operator()(const std::pair<T1, T2>& p) const {
 //         std::size_t h1 = std::hash<T1>{}(p.first);
 //         std::size_t h2 = std::hash<T2>{}(p.second);
-//         return h1 ^ (h2 << 1); 
+//         return h1 ^ (h2 << 1);
 //     }
 // };
 #endif
