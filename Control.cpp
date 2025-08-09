@@ -268,6 +268,20 @@ bool Control::compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, 
     }
     return false;
 }
+void Control::updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpaceship)
+{
+    if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(finalResultForCurrentSpaceship.destination))
+    {
+        if (enemy->getDefense().getRatio() > 0)
+        {
+            std::cout << enemy->getDefense().getRatio() << " to tabe1 " << std::endl;
+            std::cout << enemy->defenseForChange().getRatio() << " to tabe2 " << std::endl;
+            enemy->defenseForChange().defend();
+            std::cout << enemy->defenseForChange().getRatio() << " to tabe3 " << std::endl;
+            std::cout << enemy->getDefense().getRatio() << " to tabe4 " << std::endl;
+        }
+    }
+}
 std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
 {
     std::vector<std::shared_ptr<City>> enemyCities;
@@ -1054,6 +1068,11 @@ void Control::routing()
         {
             finalResultForCurrentSpaceship = AStarResults[indexOfSelectedPath];
         }
+        updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
+        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(finalResultForCurrentSpaceship.destination))
+        {
+            std::cout << enemy->defenseForChange().getRatio() << " enemy->defenseForChange().getRatio()" << std::endl;
+        }
         // std::cout << finalResultForCurrentSpaceship.destination->getCoordinates().first << "mmmmmmmmmm " << finalResultForCurrentSpaceship.numOfSpies << " "
         //           << finalResultForCurrentSpaceship.costOfPath << std::endl;
         std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
@@ -1110,6 +1129,7 @@ void Control::routing()
     //     }
     // }
 }
+
 void Control::heuristicForAllCities()
 {
     for (int i = 0; i < allCities.size(); i++)

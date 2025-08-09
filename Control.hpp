@@ -124,8 +124,8 @@ public:
     AStarRes findBestDestinationBasedOnDefenseRatio();
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
-    int amountOfDestruction;
-
+    void updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpaceship);
+    
 private:
     int scenario;
     int numOfCitys;
@@ -188,5 +188,7 @@ private:
     std::unordered_map<std::shared_ptr<City>, std::vector<AStarRes>> AStarResultForEachCity;
     std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackNodes;
     std::vector<AStarRes> AStarResults;
+    int amountOfDestruction;
+
 };
 #endif
