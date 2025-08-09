@@ -925,7 +925,7 @@ void Control::findValidReachedDestinations()
 void Control::findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship)
 {
     std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnSpys); // sorting based on radar resistance
-    
+
     for (std::vector<AStarRes>::iterator it = AStarResults.begin(); it != AStarResults.end();)
     {
         if (isSpaceshipRadarResistant(spaceship, it->numOfSpies))
@@ -934,7 +934,7 @@ void Control::findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceshi
         }
         else
         {
-            it = AStarResults.erase(it); //deleting the pathes exceeded 
+            it = AStarResults.erase(it); // deleting the pathes exceeded
         }
     }
 }
@@ -1068,19 +1068,30 @@ void Control::routing()
             continue;
         }
         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
-    
+
         std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
+        
         controlDestructions(spaceship->getDestruction());
+        
         std::cout << cnt << " the spaceship is ";
-        for (auto f : finalRes)
-        {
-            std::cout << f->getCoordinates().first << " " << f->getCoordinates().second << " finalRes " << "distruction " << amountOfDestruction << std::endl;
-        }
+        // for (auto f : finalRes)
+        // {
+        //     std::cout << f->getCoordinates().first << " " << f->getCoordinates().second << " finalRes " << "distruction " << amountOfDestruction << std::endl;
+        // }
+        displayTheFinalResult(finalRes); 
         cnt++;
     }
     std::cout << "final destruction " << amountOfDestruction << std::endl;
 }
-
+void Control::displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes)
+{
+    std::cout << "the final path : ";
+    for (auto finalRes : finalRes)
+    {
+        std::cout << finalRes->getCoordinates().first << " " << finalRes->getCoordinates().second << "-> ";
+    }
+    std::cout << "final destruction " << amountOfDestruction << std::endl;
+}
 void Control::heuristicForAllCities()
 {
     for (int i = 0; i < allCities.size(); i++)
