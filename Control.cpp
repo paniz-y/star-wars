@@ -29,7 +29,6 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
         mapFile >> baseCityCoodinatesFromFile[i].first >> baseCityCoodinatesFromFile[i].second;
     }
 
-
     std::string baseCitySpyStringFromFile;
     mapFile >> baseCitySpyStringFromFile;
     std::vector<int> baseCitySpyFromFile(numOfBaseCitys);
@@ -40,11 +39,11 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
 
     std::string spaceshipString;
     mapFile >> spaceshipString;
-    std::cout << spaceshipString <<std::endl;
+    std::cout << spaceshipString << std::endl;
     std::string nameOfSPaceships, numberOfSpaceships;
     std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCitys);
-    std::cout << numOfBaseCitys <<std::endl;
-    for(int i = 0 ; i < spaceshipsInBaseCities.size() ; i++)
+    std::cout << numOfBaseCitys << std::endl;
+    for (int i = 0; i < spaceshipsInBaseCities.size(); i++)
     {
         mapFile >> numberOfSpaceships >> spaceshipsInBaseCities[i].first;
         mapFile >> nameOfSPaceships;
@@ -53,116 +52,58 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
             std::string spaceshipTmpName;
             mapFile >> spaceshipTmpName;
             spaceshipsInBaseCities[i].second.emplace_back(spaceshipTmpName);
-
         }
     }
-    
+
     std::vector<std::shared_ptr<City>> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
     return baseCityForMap;
 }
 std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(std::string spaceshipsInBaseCities)
 {
-    // std::vector<std::shared_ptr<Spaceship>> spaceshipFoundForBaseCity;
-    // std::cout << "spaceshipsInBaseCities " << spaceshipsInBaseCities.size() << std::endl;
-    // for (int i{}; i < spaceshipsInBaseCities.size() && i < spaceshipsInBaseCities[i].first; i++)
-    // {
-    // std::cout << "slammmmmmmmmm " << spaceshipsInBaseCities.first << " " << spaceshipsInBaseCities.second << std::endl;
     spaceshipType type = stringToSpaceshipType(spaceshipsInBaseCities);
     switch (type)
     {
     case spaceshipType::Awing:
     {
-        // std::shared_ptr<Awing> tmpSpaceship = std::make_shared<Awing>();
-        // std::shared_ptr<Awing> spaceshipFoundForBaseCity = std::make_shared<Awing>();
-        // allSpaceships.emplace_back(tmpSpaceship);
         return std::make_shared<Awing>();
-        // std::cout <<"awwwwwwwwwwww " <<tmpSpaceship->getNameOfSpaceship() << std::endl;
-        // spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
-        // std::cout << "first time spaceship created " <<
-        // break;
     }
-        // return std::make_shared<Awing>();
     case spaceshipType::DeathStar:
     {
-        // std::shared_ptr<DeathStar> tmpSpaceship = std::make_shared<DeathStar>();
         return std::make_shared<DeathStar>();
-        // std::shared_ptr<DeathStar> spaceshipFoundForBaseCity = std::make_shared<DeathStar>();
-        // spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
-        // std::cout << "deaaaaaaaaaa "<<tmpSpaceship->getNameOfSpaceship() << std::endl;
-        // allSpaceships.emplace_back(tmpSpaceship);
-        // break;
     }
     case spaceshipType::Mantis:
     {
-        // std::shared_ptr<Mantis> tmpSpaceship = std::make_shared<Mantis>();
-        // std::shared_ptr<Mantis> spaceshipFoundForBaseCity = std::make_shared<Mantis>();
-        // spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         return std::make_shared<Mantis>();
-        // std::cout << "mannnnnnnn "<<tmpSpaceship->getNameOfSpaceship() << std::endl;
-        // allSpaceships.emplace_back(tmpSpaceship);
-        break;
     }
+
     case spaceshipType::MillenniumFalcon:
     {
-        // std::shared_ptr<MillenniumFalcon> tmpSpaceship = std::make_shared<MillenniumFalcon>();
-        // std::shared_ptr<MillenniumFalcon> spaceshipFoundForBaseCity = std::make_shared<MillenniumFalcon>();
-        // spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         return std::make_shared<MillenniumFalcon>();
-        // break;
     }
+
     case spaceshipType::RazorCrest:
     {
-        // std::shared_ptr<RazorCrest> spaceshipFoundForBaseCity = std::make_shared<RazorCrest>();
-        // std::shared_ptr<RazorCrest> tmpSpaceship = std::make_shared<RazorCrest>();
-        // spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
-        // std::cout <<"rrrrrrrrrrrrrr " <<tmpSpaceship->getNameOfSpaceship() << std::endl;
-        // allSpaceships.emplace_back(tmpSpaceship);
         return std::make_shared<RazorCrest>();
-        // break;
-        // allSpaceships.emplace_back(tmpSpaceship);
     }
+
     case spaceshipType::StarDestroyer:
     {
-        // std::shared_ptr<StarDestroyer> spaceshipFoundForBaseCity = std::make_shared<StarDestroyer>();
-        // std::shared_ptr<StarDestroyer> tmpSpaceship = std::make_shared<StarDestroyer>();
-        // spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
-        // std::cout <<"ssssssssss " <<tmpSpaceship->getNameOfSpaceship() << std::endl;
-        // allSpaceships.emplace_back(tmpSpaceship);
         return std::make_shared<StarDestroyer>();
-        // break;
     }
-        // allSpaceships.emplace_back(tmpSpaceship);
+
     case spaceshipType::TieFighter:
     {
-        // std::shared_ptr<TieFighter> spaceshipFoundForBaseCity = std::make_shared<TieFighter>();
-        // std::shared_ptr<TieFighter> tmpSpaceship = std::make_shared<TieFighter>();
-        // allSpaceships.emplace_back(tmpSpaceship);
-        // spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         return std::make_shared<TieFighter>();
-        // break;
     }
+
     case spaceshipType::XwingStarFighter:
     {
-        // allSpaceships.emplace_back(tmpSpaceship);
-        // std::shared_ptr<XwingStarFighter> spaceshipFoundForBaseCity = std::make_shared<XwingStarFighter>();
-        // std::shared_ptr<XwingStarFighter> tmpSpaceship = std::make_shared<XwingStarFighter>();
-        // spaceshipFoundForBaseCity.emplace_back(tmpSpaceship);
         return std::make_shared<XwingStarFighter>();
-        // std::cout <<"xxxxxxxxxxxxxxx " <<tmpSpaceship->getNameOfSpaceship() << std::endl;
-        // allSpaceships.emplace_back(tmpSpaceship);
-        // break;
     }
+
     default:
         throw std::invalid_argument("Unknown city type: " + spaceshipsInBaseCities);
-        // allSpaceships.emplace_back(tmpSpaceship);
-        // }
     }
-    // for(auto a: spaceshipFoundForBaseCity)
-    //     std::cout << "aaaaaaaaaaaaaaaaaa " << a->getNameOfSpaceship() << std::endl;
-    // std::cout <<"akhar hamechi " << spaceshipFoundForBaseCity.size() << std::endl;
-    // std::cout << "akhar hamechi " << spaceshipFoundForBaseCity->getNameOfSpaceship() << std::endl;
-
-    // return std::make_shared<Spaceship>();
 }
 std::vector<std::shared_ptr<City>> Control::readCivilCitysFromFile()
 {
@@ -296,7 +237,7 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
     findTheFarthestEnemyCity(enemyCities);
     return enemyCities;
 }
-std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::vector <std::string>>> spaceshipsInBaseCities)
+std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities)
 {
     std::vector<std::shared_ptr<City>> baseCities;
     std::cout << "heeeeeeeeeee " << spaceshipsInBaseCities.size() << std::endl;
@@ -305,11 +246,11 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std
         std::vector<std::shared_ptr<Spaceship>> spaceshipsFoundFromBaseCities;
         // for (int j = 0; j < spaceshipsInBaseCities[i].first; j++)
         // {
-            // std::cout << "noghre " << spaceshipsInBaseCities[i].first << std::endl;
-            // std::vector <std::shared_ptr<Spaceship>> spaceshipFromBaseCity = findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities[i]);
-            // std::cout << "be in sorat " << a->getNameOfSpaceship() << std::endl;
-            for(int k = 0 ; k < spaceshipsInBaseCities[i].second.size() ; k++)
-                spaceshipsFoundFromBaseCities.emplace_back(findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities[i].second[k]));
+        // std::cout << "noghre " << spaceshipsInBaseCities[i].first << std::endl;
+        // std::vector <std::shared_ptr<Spaceship>> spaceshipFromBaseCity = findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities[i]);
+        // std::cout << "be in sorat " << a->getNameOfSpaceship() << std::endl;
+        for (int k = 0; k < spaceshipsInBaseCities[i].second.size(); k++)
+            spaceshipsFoundFromBaseCities.emplace_back(findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities[i].second[k]));
         // }
 
         std::shared_ptr<BaseCity> basePtrTmp = std::make_shared<BaseCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], spaceshipsFoundFromBaseCities);
@@ -325,7 +266,7 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std
     std::cout << "allSpaceships size " << allSpaceships.size() << std::endl;
     for (int i{}; i < allSpaceships.size(); i++)
     {
-        std::cout <<"in base class "<< allSpaceships[i]->getCoordinates().first << " " << allSpaceships[i]->getNameOfSpaceship() <<std::endl;
+        std::cout << "in base class " << allSpaceships[i]->getCoordinates().first << " " << allSpaceships[i]->getNameOfSpaceship() << std::endl;
     }
     return baseCities;
 }
