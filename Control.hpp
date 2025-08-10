@@ -64,7 +64,7 @@ struct SharedPtrPairHash
 struct AStarRes
 {
     std::shared_ptr<City> destination;
-    int numOfSpies; // stores the number of spys along the way
+    int numOfSpies; // stores the number of spies along the way
     double costOfPath;
     bool isDestroyed = false;
     void setDestroyed(bool des)
@@ -105,20 +105,20 @@ public:
     void collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
     void routing();
     void heuristicForAllCities();
-    bool isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpys);
+    bool isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpies);
     void controlDestructions(int des);
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
-    static bool compareTwoRoutsBasedOnSpys(const AStarRes &first, const AStarRes &second);
+    static bool compareTwoRoutsBasedOnSpies(const AStarRes &first, const AStarRes &second);
     static bool compareTwoRoutsBasedOnDefenseRatio(const AStarRes &first, const AStarRes &second);
     AStarRes AStar(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
     bool validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, const std::shared_ptr<Spaceship> &spaceship);
     void findValidReachedDestinations();
     void findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship);
-    void findPathBasedOnTotalDistanse(const std::shared_ptr<Spaceship> &spaceship);
+    void findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship);
     AStarRes findBestDestinationBasedOnDefenseRatio();
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
-    static bool compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
+    static bool compareEnemiesBasedOnDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     void updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpaceship);
     void displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes);
 
@@ -130,7 +130,7 @@ private:
     int numOfEnemyCitys;
     int amountOfDestruction;
     std::fstream mapFile;
-    Map mapWithSpys;
+    Map mapWithSpies;
     Map mapWithDefenses;
     enum class spaceshipType
     {

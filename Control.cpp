@@ -11,7 +11,7 @@ void Control::readMaxMapSizeFromFile()
     mapFile >> maxOfMapString;
     int maxMapSize;
     mapFile >> maxMapSize;
-    mapWithSpys.setMaxSize(maxMapSize);
+    mapWithSpies.setMaxSize(maxMapSize);
     mapWithDefenses.setMaxSize(maxMapSize);
 }
 std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
@@ -174,9 +174,9 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
 }
 void Control::findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemies)
 {
-    std::sort(enemies.begin(), enemies.end(), compareEnemiesBasedOnDistanse);
+    std::sort(enemies.begin(), enemies.end(), compareEnemiesBasedOnDistance);
 }
-bool Control::compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second)
+bool Control::compareEnemiesBasedOnDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second)
 {
     if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first))
     {
@@ -260,7 +260,7 @@ void Control::readMapFromFile()
     initializeListOfBaseAndCivilCities(baseCities, civilCities);
     mapFile.close();
     collectAllCities(baseCities, civilCities, enemyCities);
-    mapWithSpys.graphMap(allCities);
+    mapWithSpies.graphMap(allCities);
 }
 double heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second) // calculates heuristic for A* search algorithm
 {
@@ -303,9 +303,9 @@ void Control::collectAllCities(const std::vector<std::shared_ptr<City>> &baseCit
     allCities.insert(allCities.end(), enemyCities.begin(), enemyCities.end());
 }
 
-bool Control::isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpys)
+bool Control::isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpies)
 {
-    if (numOfSpys < spaceship->getRadarResistance())
+    if (numOfSpies < spaceship->getRadarResistance())
         return true;
     return false;
 }
@@ -328,7 +328,7 @@ AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_pt
 
     nodes.push({start, nullptr, 0, heuristic(start, destination)});
     shortestDistance[start] = 0;
-    for (auto &neighbor : mapWithSpys.getNeighbors(start))
+    for (auto &neighbor : mapWithSpies.getNeighbors(start))
     {
         shortestDistance[neighbor.first] = DBL_MAX;
     }
@@ -355,13 +355,13 @@ AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_pt
 
         spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the city has spies
 
-        for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
+        for (auto &neighbor : mapWithSpies.getNeighbors(currNode.currCity))
         {
             double neighborGScore = neighbor.second + currNode.g;
 
             if (shortestDistance.find(neighbor.first) == shortestDistance.end() || neighborGScore < shortestDistance[neighbor.first])
             {
-                if (heuristic(currNode.currCity, neighbor.first) > spaceship->getControlLessDictance())
+                if (heuristic(currNode.currCity, neighbor.first) > spaceship->getUncontrolledDistance())
                 {
                     continue; // reprogram the spaceship if required
                 }
@@ -404,7 +404,7 @@ std::vector<std::shared_ptr<City>> Control::backtrackAStarPath(const std::shared
 bool Control::validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, const std::shared_ptr<Spaceship> &spaceship)
 {
     double distance = heuristic(start, destination);
-    if (spaceship->getControlLessDictance() >= distance)
+    if (spaceship->getUncontrolledDistance() >= distance)
     {
         return true;
     }
@@ -429,7 +429,7 @@ void Control::findValidReachedDestinations()
 
 void Control::findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship)
 {
-    std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnSpys); // sorting based on radar resistance
+    std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnSpies); // sorting based on radar resistance
 
     for (std::vector<AStarRes>::iterator it = AStarResults.begin(); it != AStarResults.end();)
     {
@@ -444,7 +444,7 @@ void Control::findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceshi
     }
 }
 
-void Control::findPathBasedOnTotalDistanse(const std::shared_ptr<Spaceship> &spaceship)
+void Control::findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship)
 {
     for (std::vector<AStarRes>::iterator it = AStarResults.begin(); it != AStarResults.end();)
     {
@@ -454,7 +454,7 @@ void Control::findPathBasedOnTotalDistanse(const std::shared_ptr<Spaceship> &spa
         }
         else
         {
-            it = AStarResults.erase(it); // deleting the pathes that exceeded the total distanse of this spaceship
+            it = AStarResults.erase(it); // deleting the pathes that exceeded the total distance of this spaceship
         }
     }
 }
@@ -466,7 +466,7 @@ AStarRes Control::findBestDestinationBasedOnDefenseRatio()
     return AStarResults[0];
 }
 
-bool Control::compareTwoRoutsBasedOnSpys(const AStarRes &first, const AStarRes &second)
+bool Control::compareTwoRoutsBasedOnSpies(const AStarRes &first, const AStarRes &second)
 {
     return first.numOfSpies < second.numOfSpies;
 }
@@ -490,7 +490,7 @@ void Control::routing()
         AStarRes finalResultForCurrentSpaceship;
         AStar(coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         findValidReachedDestinations();
-        findPathBasedOnTotalDistanse(spaceship);
+        findPathBasedOnTotalDistance(spaceship);
         findPathForARadarResistantSpaceship(spaceship);
         if (AStarResults.size() != 0)
         {
