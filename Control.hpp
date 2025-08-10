@@ -10,6 +10,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <algorithm>
+#include <sstream>
 #include <float.h>
 #include "Spaceship.hpp"
 #include "City.hpp"
@@ -93,8 +94,8 @@ public:
     std::vector<std::shared_ptr<City>> readBaseCitysFromFile();
     std::vector<std::shared_ptr<City>> readCivilCitysFromFile();
     std::vector<std::shared_ptr<City>> readEnemyCitysFromFile();
-    std::shared_ptr<Spaceship> findSuitableSpaceshipForBaseCities(std::pair<int, std::string> spaceshipsInBaseCities);
-    std::vector<std::shared_ptr<City>> initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities);
+    std::shared_ptr<Spaceship> findSuitableSpaceshipForBaseCities(std::string spaceshipsInBaseCities);
+    std::vector<std::shared_ptr<City>> initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities);
     std::vector<std::shared_ptr<City>> initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
     std::vector<std::shared_ptr<City>> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
     void readMaxMapSizeFromFile();
@@ -126,9 +127,8 @@ public:
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     void updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpaceship);
-    void displayTheFinalResult( std::vector<std::shared_ptr<City>> finalRes);
-    
-    
+    void displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes);
+
 private:
     int scenario;
     int numOfCitys;
@@ -192,6 +192,5 @@ private:
     std::unordered_map<std::shared_ptr<City>, std::vector<AStarRes>> AStarResultForEachCity;
     std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackNodes;
     std::vector<AStarRes> AStarResults;
-
 };
 #endif

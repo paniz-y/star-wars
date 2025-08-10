@@ -29,10 +29,6 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
         mapFile >> baseCityCoodinatesFromFile[i].first >> baseCityCoodinatesFromFile[i].second;
     }
 
-    // for (int i = 0; i < numOfBaseCitys; i++)
-    // {
-    //     std::cout << baseCityCoodinatesFromFile[i].first << " " << baseCityCoodinatesFromFile[i].second << std::endl;
-    // }
 
     std::string baseCitySpyStringFromFile;
     mapFile >> baseCitySpyStringFromFile;
@@ -42,37 +38,36 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
         mapFile >> baseCitySpyFromFile[i];
     }
 
-    // for (int i = 0; i < numOfBaseCitys; i++)
-    // {
-    //     std::cout << "baseCityspys " << baseCitySpyFromFile[i] << std::endl;
-    // }
-
     std::string spaceshipString;
     mapFile >> spaceshipString;
+    std::cout << spaceshipString <<std::endl;
     std::string nameOfSPaceships, numberOfSpaceships;
-    std::vector<std::pair<int, std::string>> spaceshipsInBaseCities(numOfBaseCitys);
-    for (int i = 0; i < numOfBaseCitys; i++)
+    std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCitys);
+    std::cout << numOfBaseCitys <<std::endl;
+    for(int i = 0 ; i < spaceshipsInBaseCities.size() ; i++)
     {
-        mapFile >> numberOfSpaceships >> spaceshipsInBaseCities[i].first >> nameOfSPaceships >> spaceshipsInBaseCities[i].second;
-    }
+        mapFile >> numberOfSpaceships >> spaceshipsInBaseCities[i].first;
+        mapFile >> nameOfSPaceships;
+        for (int j = 0; j < spaceshipsInBaseCities[i].first; j++)
+        {
+            std::string spaceshipTmpName;
+            mapFile >> spaceshipTmpName;
+            spaceshipsInBaseCities[i].second.emplace_back(spaceshipTmpName);
 
-    for (int i = 0; i < numOfBaseCitys; i++)
-    {
-        std::cout << "spaceship " << numberOfSpaceships << " " << spaceshipsInBaseCities[i].first << " " << nameOfSPaceships << " " << spaceshipsInBaseCities[i].second << std::endl;
+        }
     }
+    
     std::vector<std::shared_ptr<City>> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
-    // baseCityCoodinates.resize(numOfBaseCitys);
-    // baseCityCoodinates = baseCityCoodinatesFromFile;
     return baseCityForMap;
 }
-std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(std::pair<int, std::string> spaceshipsInBaseCities)
+std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(std::string spaceshipsInBaseCities)
 {
     // std::vector<std::shared_ptr<Spaceship>> spaceshipFoundForBaseCity;
     // std::cout << "spaceshipsInBaseCities " << spaceshipsInBaseCities.size() << std::endl;
     // for (int i{}; i < spaceshipsInBaseCities.size() && i < spaceshipsInBaseCities[i].first; i++)
     // {
     // std::cout << "slammmmmmmmmm " << spaceshipsInBaseCities.first << " " << spaceshipsInBaseCities.second << std::endl;
-    spaceshipType type = stringToSpaceshipType(spaceshipsInBaseCities.second);
+    spaceshipType type = stringToSpaceshipType(spaceshipsInBaseCities);
     switch (type)
     {
     case spaceshipType::Awing:
@@ -158,7 +153,7 @@ std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(std::pair
         // break;
     }
     default:
-        throw std::invalid_argument("Unknown city type: " + spaceshipsInBaseCities.second);
+        throw std::invalid_argument("Unknown city type: " + spaceshipsInBaseCities);
         // allSpaceships.emplace_back(tmpSpaceship);
         // }
     }
@@ -280,7 +275,7 @@ void Control::updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpa
             // std::cout << enemy->defenseForChange().getRatio() << " to tabe3 " << std::endl;
             // std::cout << enemy->getDefense().getRatio() << " to tabe4 " << std::endl;
         }
-        //mapWithSpys.removeDefense(finalResultForCurrentSpaceship.destination);
+        // mapWithSpys.removeDefense(finalResultForCurrentSpaceship.destination);
     }
 }
 std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
@@ -301,20 +296,21 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
     findTheFarthestEnemyCity(enemyCities);
     return enemyCities;
 }
-std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::string>> spaceshipsInBaseCities)
+std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::vector <std::string>>> spaceshipsInBaseCities)
 {
     std::vector<std::shared_ptr<City>> baseCities;
-    // std::cout << "heeeeeeeeeee " << spaceshipsInBaseCities.size() << std::endl;
+    std::cout << "heeeeeeeeeee " << spaceshipsInBaseCities.size() << std::endl;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
     {
         std::vector<std::shared_ptr<Spaceship>> spaceshipsFoundFromBaseCities;
-        for (int j = 0; j < spaceshipsInBaseCities[i].first; j++)
-        {
+        // for (int j = 0; j < spaceshipsInBaseCities[i].first; j++)
+        // {
             // std::cout << "noghre " << spaceshipsInBaseCities[i].first << std::endl;
             // std::vector <std::shared_ptr<Spaceship>> spaceshipFromBaseCity = findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities[i]);
             // std::cout << "be in sorat " << a->getNameOfSpaceship() << std::endl;
-            spaceshipsFoundFromBaseCities.emplace_back(findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities[i]));
-        }
+            for(int k = 0 ; k < spaceshipsInBaseCities[i].second.size() ; k++)
+                spaceshipsFoundFromBaseCities.emplace_back(findSuitableSpaceshipForBaseCities(spaceshipsInBaseCities[i].second[k]));
+        // }
 
         std::shared_ptr<BaseCity> basePtrTmp = std::make_shared<BaseCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i], spaceshipsFoundFromBaseCities);
 
@@ -327,10 +323,10 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std
         // std::cout <<" coordsToCityPtr[baseCityCoodinatesFromFile " << i << " " << coordsToCityPtr[baseCityCoodinatesFromFile[i]]->getCoordinates().first << " " << coordsToCityPtr[baseCityCoodinatesFromFile[i]]->getCoordinates().second << std::endl;
     }
     std::cout << "allSpaceships size " << allSpaceships.size() << std::endl;
-    // for (int i{}; i < allSpaceships.size(); i++)
-    // {
-    //     std::cout <<"in base class "<< allSpaceships[i]->getCoordinates().first << " " << allSpaceships[i]->getCoordinates().second << std::endl;
-    // }
+    for (int i{}; i < allSpaceships.size(); i++)
+    {
+        std::cout <<"in base class "<< allSpaceships[i]->getCoordinates().first << " " << allSpaceships[i]->getNameOfSpaceship() <<std::endl;
+    }
     return baseCities;
 }
 std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile)
@@ -1086,15 +1082,15 @@ void Control::routing()
         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
 
         std::vector<std::shared_ptr<City>> finalRes = backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
-        
+
         controlDestructions(spaceship->getDestruction());
-        
+
         std::cout << cnt << " the spaceship is ";
         // for (auto f : finalRes)
         // {
         //     std::cout << f->getCoordinates().first << " " << f->getCoordinates().second << " finalRes " << "distruction " << amountOfDestruction << std::endl;
         // }
-        displayTheFinalResult(finalRes); 
+        displayTheFinalResult(finalRes);
         cnt++;
     }
     std::cout << "final destruction " << amountOfDestruction << std::endl;
