@@ -3,12 +3,11 @@ BaseCity::BaseCity(std::pair<int, int> coords, bool spy, std ::vector<std::share
 {
     listOfSpaceships = spaceships;
 }
-// BaseCity::BaseCity(){}
 void BaseCity ::setListOfSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships)
 {
     listOfSpaceships = spaceships;
 }
-std::vector<std::shared_ptr <Spaceship>> BaseCity ::getListOfSpaceships()
+std::vector<std::shared_ptr<Spaceship>> BaseCity ::getListOfSpaceships()
 {
     return listOfSpaceships;
 }
