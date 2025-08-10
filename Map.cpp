@@ -1,9 +1,9 @@
 #include "Map.hpp"
-std::vector<std::pair<std::shared_ptr<City>, std::pair<double, double>>> Map::getNeighbors(std::shared_ptr<City> city)
+std::vector<std::pair<std::shared_ptr<City>, double>> Map::getNeighbors(std::shared_ptr<City> city)
 {
     return locationsGraph[city];
 }
-void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex, std::pair<double, double> weight)
+void Map::addEdge(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex, double weight)
 {
     locationsGraph[firstVertex].emplace_back(secondVertex, weight);
     locationsGraph[secondVertex].emplace_back(firstVertex, weight);
@@ -29,31 +29,31 @@ int Map::calculateWeightForSpys(std::shared_ptr<City> firstVertex, std::shared_p
     }
     return 0;
 }
-int Map::calculateWeightForDefenses(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex)
-{
-    // if(firstVertex->getHasDefence() || secondVertex->getHasDefence())
-    // {
-    //     return maxSize * 2;
-    // }
-    if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(firstVertex))
-    {
-        return maxSize * 2;
-    }
-    if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(secondVertex))
-    {
-        return maxSize * 2;
-    }
-    return 0;
-}
+// int Map::calculateWeightForDefenses(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex)
+// {
+//     // if(firstVertex->getHasDefence() || secondVertex->getHasDefence())
+//     // {
+//     //     return maxSize * 2;
+//     // }
+//     if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(firstVertex))
+//     {
+//         return maxSize * 2;
+//     }
+//     if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(secondVertex))
+//     {
+//         return maxSize * 2;
+//     }
+//     return 0;
+// }
 
-void Map::removeDefense(std::shared_ptr<City> firstVertex)
-{
-    for (auto neighbor : locationsGraph[firstVertex])
-    {
+// void Map::removeDefense(std::shared_ptr<City> firstVertex)
+// {
+//     for (auto neighbor : locationsGraph[firstVertex])
+//     {
 
-       neighbor.second.second = 0;
-    }
-}
+//        neighbor.second.second = 0;
+//     }
+// }
 
 // std::pair<double, double> Map::pairWeightForSpysAndWeightForDefenses(double weightForSpys, double weightForDefenses)
 // {
@@ -67,8 +67,8 @@ void Map::graphMap(std::vector<std::shared_ptr<City>> cities)
     {
         for (int j = i + 1; j < cities.size(); j++)
         {
-            std::pair<double, double> WeightForSpysAndWeightForDefenses = std::make_pair(calculateWeightForSpys(cities[i], cities[j]), calculateWeightForDefenses(cities[i], cities[j]));
-            addEdge(cities[i], cities[j], WeightForSpysAndWeightForDefenses);
+            double WeightForSpies = calculateWeightForSpys(cities[i], cities[j]);
+            addEdge(cities[i], cities[j], WeightForSpies);
         }
     }
 }
