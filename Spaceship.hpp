@@ -10,16 +10,16 @@ public:
     void setDistance(int dis);
     void setRadarResistance(int radar);
     void setDestruction(int distruct);
-    void setControlLessDictance(int controlDictance);
+    void setUncontrolledDistance(int controlDictance);
     void setTypeOfSpaceship(std::string type);
     void setCoordinates(std::pair<int, int> coords);
     std::pair<int, int> getCoordinates();
     int getDistance();
     int getRadarResistance();
     int getDestruction();
-    int setControlLessDictance();
+    int setUncontrolledDistance();
     std::string getTypeOfSpaceship();
-    int getControlLessDictance();
+    int getUncontrolledDistance();
     std::string getNameOfSpaceship();
     void setName(std::string name);
     int detected();
@@ -29,10 +29,10 @@ public:
 protected:
     int distance;
     int radarResistance;
-    int Destruction;
-    int controlLessDictance;
+    int destruction;
+    int uncontrolledDistance;
     std::string nameOfSpaceship;
-    std ::string TypeOfSpaceship;
+    std ::string typeOfSpaceship;
     std::pair<int, int> coordinats;
 };
 #endif
