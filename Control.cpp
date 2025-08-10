@@ -348,7 +348,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase6.txt", std::ios::in);
+    mapFile.open("testcase7.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -939,6 +939,21 @@ void Control::findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceshi
     }
 }
 
+void Control::findPathBasedOnTotalDistanse(const std::shared_ptr<Spaceship> &spaceship)
+{
+    for (std::vector<AStarRes>::iterator it = AStarResults.begin(); it != AStarResults.end();)
+    {
+        if (heuristic(coordsToCityPtr[spaceship->getCoordinates()], it->destination) <= spaceship->getDistance())
+        {
+            it++;
+        }
+        else
+        {
+            it = AStarResults.erase(it); // deleting the pathes that exceeded the total distanse of this spaceship
+        }
+    }
+}
+
 AStarRes Control::findBestDestinationBasedOnDefenseRatio()
 {
     std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnDefenseRatio);
@@ -1057,6 +1072,7 @@ void Control::routing()
         AStarRes finalResultForCurrentSpaceship;
         AStar(coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         findValidReachedDestinations();
+        findPathBasedOnTotalDistanse(spaceship);
         findPathForARadarResistantSpaceship(spaceship);
         if (AStarResults.size() != 0)
         {

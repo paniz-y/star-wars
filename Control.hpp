@@ -121,11 +121,13 @@ public:
     bool validateRoutBasedOnUncontrolledDistance(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, const std::shared_ptr<Spaceship> &spaceship);
     void findValidReachedDestinations();
     void findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship);
+    void findPathBasedOnTotalDistanse(const std::shared_ptr<Spaceship> &spaceship);
     AStarRes findBestDestinationBasedOnDefenseRatio();
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnDistanse(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     void updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpaceship);
     void displayTheFinalResult( std::vector<std::shared_ptr<City>> finalRes);
+    
     
 private:
     int scenario;
