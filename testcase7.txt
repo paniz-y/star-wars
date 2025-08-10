@@ -8,9 +8,12 @@ number_of_spys_in_each_base_city:
 1
 0
 spaceships_in_each_base_city:
-number: 2 name: MillenniumFalcon
-number: 2 name: XwingStarFighter
-number: 2 name: TieFighter
+number: 4 
+names: MillenniumFalcon MillenniumFalcon XwingStarFighter XwingStarFighter
+number: 3 
+name: XwingStarFighter MillenniumFalcon XwingStarFighter
+number: 4 
+name: TieFighter XwingStarFighter TieFighter MillenniumFalcon
 number_of_civil_citys: 2
 civil_city_coordinates: 
 100 100
