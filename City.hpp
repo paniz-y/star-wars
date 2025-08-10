@@ -10,16 +10,12 @@ public:
 
     std::pair<int, int> getCoordinates();
 
-    void setExistingSpys(bool spy);
+    void setExistingSpy(bool spy);
 
     bool getExistenceOfSpy();
     virtual bool getHasDefense() const;
     virtual void setDefense(bool);
-    // bool operator==(const City& otherCity) const 
-    // {
-    //     return coordinates == otherCity.coordinates && spyExistence == otherCity.spyExistence;
-    // }
-
+ 
 protected:
     std::pair<int, int> coordinates;
     bool spyExistence;
