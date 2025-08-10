@@ -280,7 +280,7 @@ void Control::updateCurrentDefenseRatio(const AStarRes &finalResultForCurrentSpa
             // std::cout << enemy->defenseForChange().getRatio() << " to tabe3 " << std::endl;
             // std::cout << enemy->getDefense().getRatio() << " to tabe4 " << std::endl;
         }
-        mapWithSpys.removeDefense(finalResultForCurrentSpaceship.destination);
+        //mapWithSpys.removeDefense(finalResultForCurrentSpaceship.destination);
     }
 }
 std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
@@ -469,7 +469,7 @@ void Control::AStarRoutingForSpys(const std::shared_ptr<City> &start, const std:
         {
             // std::cout << "currNode " << currNode.g << std::endl;
 
-            double neighborGScore = neighbor.second.first + currNode.g;
+            double neighborGScore = neighbor.second + currNode.g;
             // std::cout << "nieghborGscore " << neighborGScore << std::endl;
             // std::cout << "nieghbor in heuristic " << neighbor.first->getCoordinates().first << " " << neighbor.first->getCoordinates().second << std::endl;
             // std::cout << "out of the if heuristic(neighbor.first, destination)" << heuristic(start, destination) << std::endl;
@@ -846,7 +846,7 @@ AStarRes Control::AStar(const std::shared_ptr<City> &start, const std::shared_pt
 
         for (auto &neighbor : mapWithSpys.getNeighbors(currNode.currCity))
         {
-            double neighborGScore = neighbor.second.first + currNode.g;
+            double neighborGScore = neighbor.second + currNode.g;
 
             if (shortestDistance.find(neighbor.first) == shortestDistance.end() || neighborGScore < shortestDistance[neighbor.first])
             {
