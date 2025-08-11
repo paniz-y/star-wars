@@ -20,16 +20,29 @@ double AStar::heuristic(const std::shared_ptr<City> &first, const std::shared_pt
     return distance;
 }
 
-PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
+void AStar::initializeShortestDistanceForStart(Map mapWithSpies, const std::shared_ptr<City> &start)
 {
-    std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
-
-    nodes.push({start, nullptr, 0, heuristic(start, destination)});
     shortestDistance[start] = 0;
     for (auto &neighbor : mapWithSpies.getNeighbors(start))
     {
         shortestDistance[neighbor.first] = DBL_MAX;
     }
+}
+
+
+PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
+{
+    std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
+
+    nodes.push({start, nullptr, 0, heuristic(start, destination)});
+
+    // shortestDistance[start] = 0;
+    // for (auto &neighbor : mapWithSpies.getNeighbors(start))
+    // {
+    //     shortestDistance[neighbor.first] = DBL_MAX;
+    // }
+    initializeShortestDistanceForStart(mapWithSpies, start);
+
     int spiesAtThePath = 0;
     while (!nodes.empty())
     {
@@ -117,7 +130,7 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
             {
                 if (heuristic(currNode.currCity, neighbor.first) > maxPathLength)
                 {
-                   maxPathLength = heuristic(currNode.currCity, neighbor.first); // checks for a longer path that must be taken without reprogramming
+                    maxPathLength = heuristic(currNode.currCity, neighbor.first); // checks for a longer path that must be taken without reprogramming
                 }
                 shortestDistance[neighbor.first] = neighborGScore;
                 trackNodes[neighbor.first] = currNode.currCity;
