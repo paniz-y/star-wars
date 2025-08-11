@@ -371,6 +371,21 @@ bool Control::compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const 
     }
     return false;
 }
+
+void Control::findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship)
+{
+    for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
+    {
+        if (it->maxPathLengthWithNoReprogram <= spaceship->getUncontrolledDistance())
+        {
+            it++;
+        }
+        else
+        {
+            it = AStarResults.erase(it); // deleting the pathes that exceeded the max length a spaceship can take without being reprogrammed 
+        }
+    }
+}
 void Control::routing()
 {
     int cnt = 0;

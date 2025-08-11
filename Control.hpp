@@ -80,6 +80,7 @@ public:
     void updateCurrentDefenseRatio(const PathResult &finalResultForCurrentSpaceship);
     void displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes);
     void setAStarResults(std::vector<PathResult> pathResults);
+    void findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship);
 
 private:
     int scenario;
