@@ -63,6 +63,11 @@ public:
     std::vector<std::shared_ptr<City>> initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
     std::vector<std::shared_ptr<City>> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
     void readMaxMapSizeFromFile();
+    
+    std::vector<std::pair<int, int>> readBaseCorrdinatesFromFile();
+    std::vector <int> readSpiesOfBasesFromFile();
+    void readNumberOfBasesFromFile();
+    std::vector <std::pair<int , std::vector<std::string>>> readSpaceshipsOfBasesFromFile();
     void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
     void initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> base, std::vector<std::shared_ptr<City>> civil);
     void collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
@@ -85,7 +90,7 @@ public:
 private:
     int scenario;
     int numOfCitys;
-    int numOfBaseCitys;
+    int numOfBaseCities;
     int numOfCivilCitys;
     int numOfEnemyCitys;
     int amountOfDestruction;

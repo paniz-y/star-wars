@@ -14,35 +14,35 @@ void Control::readMaxMapSizeFromFile()
     mapWithSpies.setMaxSize(maxMapSize);
     mapWithDefenses.setMaxSize(maxMapSize);
 }
+
 std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
 {
+    readNumberOfBasesFromFile();
+    std::vector<std::pair<int, int>> baseCityCoodinatesFromFile(numOfBaseCities);
+    baseCityCoodinatesFromFile = readBaseCorrdinatesFromFile();
+
+    std::vector<int> baseCitySpyFromFile(numOfBaseCities);
+    baseCitySpyFromFile = readSpiesOfBasesFromFile();
+
+    std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCities);
+    spaceshipsInBaseCities = readSpaceshipsOfBasesFromFile();
+
+    std::vector<std::shared_ptr<City>> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
+    return baseCityForMap;
+}
+void Control::readNumberOfBasesFromFile()
+{
     std::string numberOfBaseCitysFromFile;
-    mapFile >> numberOfBaseCitysFromFile >> numOfBaseCitys;
-
-    std::string baseCityCoordinatesFromFile;
-    mapFile >> baseCityCoordinatesFromFile;
-
-    std::vector<std::pair<int, int>> baseCityCoodinatesFromFile(numOfBaseCitys);
-
-    for (int i = 0; i < numOfBaseCitys; i++)
-    {
-        mapFile >> baseCityCoodinatesFromFile[i].first >> baseCityCoodinatesFromFile[i].second;
-    }
-
-    std::string baseCitySpyStringFromFile;
-    mapFile >> baseCitySpyStringFromFile;
-    std::vector<int> baseCitySpyFromFile(numOfBaseCitys);
-    for (int i = 0; i < numOfBaseCitys; i++)
-    {
-        mapFile >> baseCitySpyFromFile[i];
-    }
-
+    mapFile >> numberOfBaseCitysFromFile >> numOfBaseCities;
+}
+std::vector<std::pair<int, std::vector<std::string>>> Control::readSpaceshipsOfBasesFromFile()
+{
     std::string spaceshipString;
     mapFile >> spaceshipString;
     std::cout << spaceshipString << std::endl;
     std::string nameOfSPaceships, numberOfSpaceships;
-    std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCitys);
-    std::cout << numOfBaseCitys << std::endl;
+    std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCities);
+    std::cout << numOfBaseCities << std::endl;
     for (int i = 0; i < spaceshipsInBaseCities.size(); i++)
     {
         mapFile >> numberOfSpaceships >> spaceshipsInBaseCities[i].first;
@@ -54,9 +54,30 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
             spaceshipsInBaseCities[i].second.emplace_back(spaceshipTmpName);
         }
     }
+    return spaceshipsInBaseCities;
+}
+std::vector<int> Control::readSpiesOfBasesFromFile()
+{
+    std::string baseCitySpyStringFromFile;
+    mapFile >> baseCitySpyStringFromFile;
+    std::vector<int> baseCitySpyFromFile(numOfBaseCities);
+    for (int i = 0; i < numOfBaseCities; i++)
+    {
+        mapFile >> baseCitySpyFromFile[i];
+    }
+    return baseCitySpyFromFile;
+}
+std::vector<std::pair<int, int>> Control::readBaseCorrdinatesFromFile()
+{
+    std::string baseCityCoordinatesFromFile;
+    mapFile >> baseCityCoordinatesFromFile;
+    std::vector<std::pair<int, int>> baseCityCoodinatesFromFile(numOfBaseCities);
 
-    std::vector<std::shared_ptr<City>> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
-    return baseCityForMap;
+    for (int i = 0; i < numOfBaseCities; i++)
+    {
+        mapFile >> baseCityCoodinatesFromFile[i].first >> baseCityCoodinatesFromFile[i].second;
+    }
+    return baseCityCoodinatesFromFile;
 }
 std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(std::string spaceshipsInBaseCities)
 {
@@ -167,7 +188,7 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
     {
         enemyCitiesDefense[i].setRatio(enemyCityDefenseRatioFromFile[i]);
     }
- 
+
     std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoordinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
 
     return enemyCitiesMadeForMap;
@@ -311,10 +332,9 @@ void Control::findValidReachedDestinations()
         }
         else
         {
-            it = AStarResults.erase(it);
+            it = AStarResults.erase(it); // deleting the pathes not reaching destination
         }
     }
-   
 }
 
 void Control::findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship)
@@ -382,7 +402,7 @@ void Control::findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spacesh
         }
         else
         {
-            it = AStarResults.erase(it); // deleting the pathes that exceeded the max length a spaceship can take without being reprogrammed 
+            it = AStarResults.erase(it); // deleting the pathes that exceeded the max length a spaceship can take without being reprogrammed
         }
     }
 }
@@ -433,8 +453,6 @@ void Control::setAStarResults(std::vector<PathResult> pathResults)
 {
     AStarResults = pathResults;
 }
-
-
 
 int main()
 {
