@@ -1,0 +1,110 @@
+#include "AStar.hpp"
+std::vector<PathResult> AStar::getPathResults()
+{
+    return pathResults;
+}
+// AStar::AStar(std::shared_ptr<City> destination, int numOfSpies, double costOfPath)
+// {
+//     s
+// }
+// void AStar::setDestination(std::shared_ptr<City> des)
+// {
+//     destination = des;
+// }
+// void AStar::setNumOfSpies(int spies)
+// {
+//     numOfSpies = spies;
+// }
+int AStar::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected)
+{
+    if (city->getExistenceOfSpy())
+    {
+        spysDetected++;
+    }
+    return spysDetected;
+}
+double AStar::heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second) // calculates heuristic for A* search algorithm
+{
+    std::pair<int, int> firstCityCoordinates = first->getCoordinates();
+    std::pair<int, int> secondCityCoordinates = second->getCoordinates();
+    double distance = sqrt(pow(firstCityCoordinates.first - secondCityCoordinates.first, 2) + pow(firstCityCoordinates.second - secondCityCoordinates.second, 2));
+    return distance;
+}
+
+PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
+{
+    std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
+
+    nodes.push({start, nullptr, 0, heuristic(start, destination)});
+    shortestDistance[start] = 0;
+    for (auto &neighbor : mapWithSpies.getNeighbors(start))
+    {
+        shortestDistance[neighbor.first] = DBL_MAX;
+    }
+    int spiesAtThePath = 0;
+    while (!nodes.empty())
+    {
+        Node currNode = nodes.top();
+        nodes.pop();
+
+        if (currNode.currCity == destination)
+        {
+
+            spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
+            PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
+            pathResults.emplace_back(result);
+            return result;
+        }
+
+        if (visitedNodeCities.find(currNode.currCity) != visitedNodeCities.end())
+        {
+            continue;
+        }
+        visitedNodeCities.insert(currNode.currCity);
+
+        spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the city has spies
+
+        for (auto &neighbor : mapWithSpies.getNeighbors(currNode.currCity))
+        {
+            double neighborGScore = neighbor.second + currNode.g;
+
+            if (shortestDistance.find(neighbor.first) == shortestDistance.end() || neighborGScore < shortestDistance[neighbor.first])
+            {
+                if (heuristic(currNode.currCity, neighbor.first) > spaceship->getUncontrolledDistance())
+                {
+                    continue; // reprogram the spaceship if required
+                }
+
+                shortestDistance[neighbor.first] = neighborGScore;
+                trackNodes[neighbor.first] = currNode.currCity;
+
+                double neighborHScore = heuristic(neighbor.first, destination);
+                nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
+                PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
+                pathResults.emplace_back(result);
+            }
+        }
+    }
+    PathResult result = {start, 0, -1};
+    return result; // no rout found
+}
+
+std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
+{
+    std::vector<std::shared_ptr<City>> path;
+    if (trackNodes.empty() || trackNodes.find(destination) == trackNodes.end())
+    {
+        return {};
+    }
+
+    std::shared_ptr<City> current = destination;
+    while (current != nullptr && current != start)
+    {
+        path.push_back(current);
+        current = trackNodes.at(current);
+    }
+    path.push_back(start);
+    std::reverse(path.begin(), path.end());
+
+    return path;
+}
