@@ -90,6 +90,7 @@ public:
     void displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes);
     void setAStarResults(std::vector<PathResult> pathResults);
     void findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship);
+    void routingForThirdScenario();
 
 private:
     int scenario;
