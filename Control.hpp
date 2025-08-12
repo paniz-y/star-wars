@@ -141,5 +141,6 @@ private:
     std::unordered_map<std::pair<int, int>, std::shared_ptr<City>, HashForPair> coordsToCityPtr;
     std::vector<std::shared_ptr<City>> allCities;
     std::vector<PathResult> AStarResults;
+    std::unordered_map<std::shared_ptr<City>, int> numOfReachedSpaceshipsToEachCity;
 };
 #endif

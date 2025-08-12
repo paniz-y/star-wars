@@ -486,6 +486,11 @@ void Control::routingForThirdScenario()
 {
     int cnt = 0;
 
+    // for(auto enemy: listOfEnemyCities)
+    // {
+    //     std::shared_ptr<City> city = enemy;
+    //     numOfReachedSpaceshipsToEachCity[enemy] = 0;
+    // }
     for (auto spaceship : allSpaceships)
     {
         std::cout << "routingForThirdScenario" << std::endl;
@@ -495,6 +500,7 @@ void Control::routingForThirdScenario()
         {
             aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
             setAStarResults(aStar.getPathResults());
+            findValidReachedDestinations();
             findPathBasedOnMaxLength(spaceship);
         }
 
@@ -502,6 +508,7 @@ void Control::routingForThirdScenario()
         {
             if (res.maxPathLengthWithNoReprogram)
                 std::cout << "333333 " << *(res.maxPathLengthWithNoReprogram) << " " << res.destination->getCoordinates().first << std::endl;
+            numOfReachedSpaceshipsToEachCity[res.destination]++;
         }
         //     findValidReachedDestinations();
         //     findPathBasedOnTotalDistance(spaceship);
