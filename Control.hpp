@@ -80,6 +80,7 @@ public:
     void controlDestructions(int des);
     static bool compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const PathResult &second);
+    static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, int> &first, const std::pair<std::shared_ptr<City>, int> &second);
     void findValidReachedDestinations();
     void findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship);
     void findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship);
@@ -91,6 +92,7 @@ public:
     void setAStarResults(std::vector<PathResult> pathResults);
     void findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship);
     void routingForThirdScenario();
+    void routingForFifthScenario();
 
 private:
     int scenario;
@@ -136,11 +138,11 @@ private:
         return spaceshipType::UNKNOWN;
     }
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
-    std::vector<EnemyCity> listOfEnemyCities;
+    std::vector<std::shared_ptr<EnemyCity>> listOfEnemyCities;
     std::vector<std::shared_ptr<City>> listOfBaseAndCivilCities;
     std::unordered_map<std::pair<int, int>, std::shared_ptr<City>, HashForPair> coordsToCityPtr;
     std::vector<std::shared_ptr<City>> allCities;
     std::vector<PathResult> AStarResults;
-    std::unordered_map<std::shared_ptr<City>, int> numOfReachedSpaceshipsToEachCity;
+    std::unordered_map<std::shared_ptr<City>, int> numOfReachedSpaceshipsToEachDestination;
 };
 #endif

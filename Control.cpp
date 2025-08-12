@@ -283,7 +283,7 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
     std::vector<std::shared_ptr<City>> enemyCities;
     for (int i = 0; i < enemyCityCoordinatesFromFile.size(); i++)
     {
-        EnemyCity enemyCityTmp(enemyCityCoordinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i], true);
+        std::shared_ptr<EnemyCity> enemyCityTmp = std::make_shared<EnemyCity>(enemyCityCoordinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i], true);
         listOfEnemyCities.emplace_back(enemyCityTmp);
         std::shared_ptr<EnemyCity> enemyPtrTmp = std::make_shared<EnemyCity>(enemyCityCoordinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i], true);
         enemyCities.emplace_back(enemyPtrTmp);
@@ -343,7 +343,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase8.txt", std::ios::in);
+    mapFile.open("testcase9.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -468,6 +468,21 @@ bool Control::compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const 
     return false;
 }
 
+bool Control::compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, int> &first, const std::pair<std::shared_ptr<City>, int> &second)
+{
+    if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first.first))
+    {
+        if (std::shared_ptr<EnemyCity> secondEnemy = std::dynamic_pointer_cast<EnemyCity>(second.first))
+        {
+            int numOfReachedSpaceshipsFirst = first.second - firstEnemy->getDefense().getRatio();
+            int numOfReachedSpaceshipsSecond = second.second - secondEnemy->getDefense().getRatio();
+
+            return numOfReachedSpaceshipsFirst > numOfReachedSpaceshipsSecond;
+        }
+    }
+    return false;
+}
+
 void Control::findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship)
 {
     for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
@@ -508,7 +523,7 @@ void Control::routingForThirdScenario()
         {
             if (res.maxPathLengthWithNoReprogram)
                 std::cout << "333333 " << *(res.maxPathLengthWithNoReprogram) << " " << res.destination->getCoordinates().first << std::endl;
-            numOfReachedSpaceshipsToEachCity[res.destination]++;
+            numOfReachedSpaceshipsToEachDestination[res.destination]++;
         }
         //     findValidReachedDestinations();
         //     findPathBasedOnTotalDistance(spaceship);
@@ -533,6 +548,63 @@ void Control::routingForThirdScenario()
         //     cnt++;
         // }
         // std::cout << "final destruction " << amountOfDestruction << std::endl;
+    }
+}
+void Control::routingForFifthScenario()
+{
+    for (auto enemy : listOfEnemyCities)
+    {
+        numOfReachedSpaceshipsToEachDestination[enemy] = 0;
+    }
+    for (auto spaceship : allSpaceships)
+    {
+        std::cout << "routingForFifthScenario" << std::endl;
+        AStarResults.clear();
+        PathResult finalResultForCurrentSpaceship;
+
+        aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
+        setAStarResults(aStar.getPathResults());
+        findValidReachedDestinations();
+        findPathBasedOnTotalDistance(spaceship);
+
+        for (auto res : AStarResults)
+        {
+
+            numOfReachedSpaceshipsToEachDestination[res.destination]++;
+            std::cout << numOfReachedSpaceshipsToEachDestination[res.destination] << " numOfReachedSpaceshipsToEachCity[res.destination] " << res.destination->getCoordinates().first << std::endl;
+        }
+        std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
+        std::sort(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
+
+        for (auto res : AStarResults)
+        {
+            if (res.destination == reachedSpaceshipsToEachDestination[0].first)
+            {
+
+                finalResultForCurrentSpaceship = res;
+                std::cout << spaceship->getNameOfSpaceship() << " name" << std::endl;
+                std::cout << res.numOfSpies << " res.numOfSpies" << std::endl;
+                if (!isSpaceshipRadarResistant(spaceship, res.numOfSpies))
+                {
+                    updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
+                }
+
+                break;
+            }
+        }
+
+        if (!isSpaceshipRadarResistant(spaceship, finalResultForCurrentSpaceship.numOfSpies))
+        {
+            continue;
+        }
+        updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
+
+        std::vector<std::shared_ptr<City>> finalRes = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
+
+        controlDestructions(spaceship->getDestruction());
+
+        displayTheFinalResult(finalRes);
+        break;
     }
 }
 void Control::routing()
@@ -588,5 +660,5 @@ int main()
     Control c;
     c.readMapFromFile();
     // c.routing();
-    c.routingForThirdScenario();
+    c.routingForFifthScenario();
 }
