@@ -4,7 +4,12 @@ Control::Control()
 {
     amountOfDestruction = 0;
 }
-
+void Control::readScenarioNumberFromFile()
+{
+    std::string scenarioString;
+    mapFile >> scenarioString >> scenario;
+    std::cout << "scenario " << scenario<<std::endl;
+}
 void Control::readMaxMapSizeFromFile()
 {
     std::string maxOfMapString;
@@ -14,9 +19,50 @@ void Control::readMaxMapSizeFromFile()
     mapWithSpies.setMaxSize(maxMapSize);
     mapWithDefenses.setMaxSize(maxMapSize);
 }
+std::vector<std::string> Control::readUnknownSpaceshipesFromFile()
+{
+    std::string existingSpaceshipsString, totalNumberString;
+    int existingSpies, totalNumberOfSpachships;
+    mapFile >> existingSpaceshipsString;
+    mapFile >> totalNumberString >> totalNumberOfSpachships;
+    std::vector<std::string> existingSpaceships(totalNumberOfSpachships);
 
+    for (int i{}; i < totalNumberOfSpachships; i++)
+    {
+        mapFile >> existingSpaceships[i];
+    }
+
+    for (int i{}; i < totalNumberOfSpachships; i++)
+    {
+        std::cout << "existingSpiesString " << existingSpaceships[i] << " ";
+    }
+    return existingSpaceships;
+}
+std::vector<int> Control::readBaseCpacitesFromFile()
+{
+    std::string basesCapacityStringFromFile;
+    mapFile >> basesCapacityStringFromFile;
+
+    std::vector<int> basesCapacityFromFile(numOfBaseCities);
+    std::cout << "basesCapacityStringFromFile " << basesCapacityFromFile.size() << std::endl;
+    for (int i = 0 , tmpCapacity; i < numOfBaseCities; i++)
+    {
+        std::cout << "in if";
+        mapFile >> tmpCapacity;
+        basesCapacityFromFile.emplace_back(tmpCapacity);
+        // mapFile >> basesCapacityFromFile[i];
+        // std::cout << basesCapacityFromFile[i] << " ";
+    }
+
+    for (int i{}; i < basesCapacityFromFile.size(); i++)
+    {
+        std::cout << "basesCapacityFromFile " << basesCapacityFromFile[i] << " ";
+    }
+    return basesCapacityFromFile;
+}
 std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
 {
+    std::vector<std::shared_ptr<City>> baseCityForMap;
     readNumberOfBasesFromFile();
     std::vector<std::pair<int, int>> baseCityCoodinatesFromFile(numOfBaseCities);
     baseCityCoodinatesFromFile = readBaseCorrdinatesFromFile();
@@ -24,10 +70,18 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
     std::vector<int> baseCitySpyFromFile(numOfBaseCities);
     baseCitySpyFromFile = readSpiesOfBasesFromFile();
 
-    std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCities);
-    spaceshipsInBaseCities = readSpaceshipsOfBasesFromFile();
-
-    std::vector<std::shared_ptr<City>> baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
+    if (scenario != 3)
+    {
+        std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCities);
+        spaceshipsInBaseCities = readSpaceshipsOfBasesFromFile();
+        baseCityForMap = initializeBaseCities(baseCityCoodinatesFromFile, baseCitySpyFromFile, spaceshipsInBaseCities);
+    }
+    else
+    {
+        std::cout << "start\n";
+        std::vector<int> baseCitiesCapacity = readBaseCpacitesFromFile();
+        std::vector<std::string> spaceshipsToBeDivided = readUnknownSpaceshipesFromFile();
+    }
     return baseCityForMap;
 }
 void Control::readNumberOfBasesFromFile()
@@ -267,13 +321,13 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase7.txt", std::ios::in);
+    mapFile.open("testcase8.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
         return;
     }
-
+    readScenarioNumberFromFile();
     std::vector<std::shared_ptr<City>> baseCities = readBaseCitysFromFile();
     std::vector<std::shared_ptr<City>> civilCities = readCivilCitysFromFile();
     std::vector<std::shared_ptr<City>> enemyCities = readEnemyCitysFromFile();

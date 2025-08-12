@@ -63,9 +63,11 @@ public:
     std::vector<std::shared_ptr<City>> initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
     std::vector<std::shared_ptr<City>> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
     void readMaxMapSizeFromFile();
-    
+    std::vector <std::string> readUnknownSpaceshipesFromFile();
+    std::vector <int> readBaseCpacitesFromFile();
     std::vector<std::pair<int, int>> readBaseCorrdinatesFromFile();
     std::vector <int> readSpiesOfBasesFromFile();
+    void readScenarioNumberFromFile();
     void readNumberOfBasesFromFile();
     std::vector <std::pair<int , std::vector<std::string>>> readSpaceshipsOfBasesFromFile();
     void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
