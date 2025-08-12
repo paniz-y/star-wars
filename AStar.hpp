@@ -9,6 +9,7 @@
 #include <vector>
 #include <float.h>
 #include <optional>
+#include <iostream>
 #include "City.hpp"
 #include "Spaceship.hpp"
 #include "Map.hpp"
@@ -41,7 +42,7 @@ public:
     std::vector<PathResult> getPathResults();
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     PathResult AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
-    PathResult AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
+    PathResult AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, const std::shared_ptr<Spaceship> &spaceship);
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
     double heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second); // calculates heuristic for A* search algorithm
     void initializeShortestDistanceForStart(Map mapWithSpies, const std::shared_ptr<City> &start);
