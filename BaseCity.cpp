@@ -11,3 +11,13 @@ std::vector<std::shared_ptr<Spaceship>> BaseCity ::getListOfSpaceships()
 {
     return listOfSpaceships;
 }
+
+int BaseCity::getCapacity() const
+{
+    return baseCapacity;
+}
+
+void BaseCity::setCapacity(int capacity)
+{
+    baseCapacity = capacity;
+}
