@@ -1,0 +1,39 @@
+scenario: 3
+number_of_base_citys: 3
+base_city_coordinates: 
+0 0
+200 200
+220 220
+number_of_spys_in_each_base_city:
+1
+1
+0
+each_base_capacity_number:
+2
+3
+1
+spaceships_existing_in_base_cities:
+total_number: 10
+names: Awing Awing Mantis Awing Mantis Mantis RazorCrest StarDestroyer StarDestroyer RazorCrest
+number_of_civil_citys: 2
+civil_city_coordinates: 
+100 100
+400 400 
+number_of_spys_in_each_civil_city:
+0
+1
+number_of_enemy_citys: 3
+enemy_city_coordinates:
+700 450
+500 500
+900 50
+number_of_spys_in_each_enemy_city:
+0
+0
+0
+number_of_ratio_each_defense_has:
+1
+1
+1
+max_size_of_map:
+900
