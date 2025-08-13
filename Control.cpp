@@ -583,14 +583,6 @@ void Control::updateSpiesCoordinatesAfterEachNight(std::vector<std::pair<int, in
             allCities[i]->setExistingSpy(true);
         }
     }
-
-    for (int i = 0; i < allCities.size(); i++)
-    {
-        if (spies[i] == allCities[i]->getCoordinates())
-        {
-            std::cout << "city " << allCities[i]->getCoordinates().first << "spy " << allCities[i]->getExistenceOfSpy() << std::endl;
-        }
-    }
 }
 void Control::removeAllSpiesAfterEachNight()
 {
@@ -619,40 +611,25 @@ void Control::updateDefenseRatioAfterEachNight()
 void Control::updateSpiesAndDefenseRatiosForEachNight()
 {
     removeAllSpiesAfterEachNight();
-    updateSpiesCoordinatesAfterEachNight(updateSpiesAfterEachNight());
+    std::vector<std::pair<int, int>> updatedSpies = updateSpiesAfterEachNight();
+    updateSpiesCoordinatesAfterEachNight(updatedSpies);
     updateDefenseRatioAfterEachNight();
 }
 void Control::routingForFifthScenario()
 {
     sortSpaceshipsBasedOnDestruction();
-    // for (auto enemy : listOfEnemyCities)
-    // {
-    //     numOfReachedSpaceshipsToEachDestination[enemy] = 0;
-    // }
     initializeNumOfReachedSpaceshipsToEachDestination();
-    for (auto spaceship : allSpaceships)
-    {
-        std::cout << "routingForFifthScenario" << std::endl;
-        AStarResults.clear();
-
-        aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-        setAStarResults(aStar.getPathResults());
-        findValidReachedDestinations();
-        findPathBasedOnTotalDistance(spaceship);
-
-        // for (auto res : AStarResults)
-        // {
-        //     numOfReachedSpaceshipsToEachDestination[res.destination]++;
-        // }
-        incrementNumOfReachedSpaceshipsToEachDestination();
-    }
-
+    IdentifyPriorityEnemyTarget();
     for (auto spaceship : allSpaceships)
     {
         PathResult finalResultForCurrentSpaceship;
         std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
         std::sort(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
 
+        // for(auto &a : reachedSpaceshipsToEachDestination)
+        // {
+        //     std::cout << "sort " << a.first->getCoordinates().first << " " << a.second << std::endl;
+        // }
         for (auto res : AStarResults)
         {
             if (res.destination == reachedSpaceshipsToEachDestination[0].first)
@@ -661,9 +638,9 @@ void Control::routingForFifthScenario()
                 finalResultForCurrentSpaceship = res;
                 if (!isSpaceshipRadarResistant(spaceship, res.numOfSpies) && ifDestinationHasDefenseRatio(res.destination))
                 {
+                    // the spaceship has reached the destination not being seen while that enemy destination has still got defense so the spaceship is missed
                     updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
                 }
-
                 break;
             }
         }
@@ -672,18 +649,34 @@ void Control::routingForFifthScenario()
         {
             continue;
         }
+
+        // the spaceship has reached destination and caused destruction
         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
 
-        std::vector<std::shared_ptr<City>> finalRes = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
+        std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
 
         controlDestructions(spaceship->getDestruction());
 
-        displayTheFinalResult(finalRes);
+        displayTheFinalResult(finalpathResult); // display the final path and destruction
         std::cout << "finallllllllllll " << std::endl;
     }
-    
 }
-
+void Control::IdentifyPriorityEnemyTarget()
+{
+    for (auto spaceship : allSpaceships)
+    {
+        AStarResults.clear();
+        aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
+        setAStarResults(aStar.getPathResults()); // set the results collected by Astar
+        findValidReachedDestinations();
+        findPathBasedOnTotalDistance(spaceship);
+        // for (auto res : AStarResults)
+        // {
+        //     numOfReachedSpaceshipsToEachDestination[res.destination]++;
+        // }
+        incrementNumOfReachedSpaceshipsToEachDestination();
+    }
+}
 bool Control::ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination)
 {
     if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(destination))
@@ -729,7 +722,7 @@ void Control::routing()
         }
         else
         {
-            std::cout << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << " is missed \n";
+            std::cout <<"spaceship " << spaceship->getNameOfSpaceship()<<" at " <<spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << " is missed \n";
             continue;
         }
         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
