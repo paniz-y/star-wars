@@ -93,6 +93,7 @@ public:
     void findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship);
     void routingForThirdScenario();
     void routingForFifthScenario();
+    bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
 
 private:
     int scenario;
