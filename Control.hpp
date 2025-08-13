@@ -10,7 +10,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <algorithm>
-#include <sstream>
+#include <random>
 #include <float.h>
 #include "Spaceship.hpp"
 #include "City.hpp"
@@ -68,6 +68,9 @@ public:
     std::vector<std::pair<int, int>> readBaseCorrdinatesFromFile();
     std::vector<int> readSpiesOfBasesFromFile();
     void readScenarioNumberFromFile();
+    std::vector<std::pair<int, int>> updateSpiesAfterEachNight();
+    void removeAllSpiesAfterEachNight();
+    void updateSpiesCoordinatesAfterEachNight(std::vector <std::pair<int , int>> spies);
     std::vector<std::shared_ptr<City>> initializeBaseCitiesWithOutSpaceships(std::vector<std::pair<int, int>> coorrdinates, std::vector<int> spies);
     std::vector<std::shared_ptr<Spaceship>> initializeUnknownSpaceships(std::vector<std::string> spaceships);
     void readNumberOfBasesFromFile();
