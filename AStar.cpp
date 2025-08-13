@@ -29,7 +29,6 @@ void AStar::initializeShortestDistanceForStart(Map mapWithSpies, const std::shar
     }
 }
 
-
 PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
 {
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
@@ -53,8 +52,12 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
         {
             spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
             PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
-            pathResults.emplace_back(result);
-            return result;
+            if (std::find(pathResults.begin(), pathResults.end(), result) == pathResults.end())
+            {
+                pathResults.emplace_back(result);
+                return result;
+            }
+            return pathResults.back();
         }
 
         if (visitedNodeCities.find(currNode.currCity) != visitedNodeCities.end())

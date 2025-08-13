@@ -35,6 +35,12 @@ struct PathResult
     int numOfSpies; // stores the number of spies along the way
     double costOfPath;
     std::optional<int> maxPathLengthWithNoReprogram; // stores the maximum path length an spaceship must take without being reprogrammed
+    bool operator==(const PathResult &path)
+    {
+        if (path.destination == destination && path.numOfSpies == numOfSpies, path.costOfPath == costOfPath)
+            return true;
+        return false;
+    }
 };
 class AStar
 {
