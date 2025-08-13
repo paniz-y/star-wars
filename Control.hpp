@@ -81,6 +81,7 @@ public:
     static bool compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, int> &first, const std::pair<std::shared_ptr<City>, int> &second);
+    static bool compareSpaceshipsBasedOnDestruction(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     void findValidReachedDestinations();
     void findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship);
     void findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship);
@@ -94,6 +95,7 @@ public:
     void routingForThirdScenario();
     void routingForFifthScenario();
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
+    void sortSpaceshipsBasedOnDestruction();
 
 private:
     int scenario;

@@ -483,6 +483,11 @@ bool Control::compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::p
     return false;
 }
 
+bool Control::compareSpaceshipsBasedOnDestruction(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second)
+{
+    return first->getDestruction() < second->getDestruction();
+}
+
 void Control::findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship)
 {
     for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
@@ -552,6 +557,7 @@ void Control::routingForThirdScenario()
 }
 void Control::routingForFifthScenario()
 {
+    sortSpaceshipsBasedOnDestruction();
     for (auto enemy : listOfEnemyCities)
     {
         numOfReachedSpaceshipsToEachDestination[enemy] = 0;
@@ -615,6 +621,10 @@ bool Control::ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destinat
             return true;
     }
     return false;
+}
+void Control::sortSpaceshipsBasedOnDestruction()
+{
+    std::sort(allSpaceships.begin(), allSpaceships.end(), compareSpaceshipsBasedOnDestruction);
 }
 void Control::routing()
 {
