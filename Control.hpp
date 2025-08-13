@@ -69,6 +69,8 @@ public:
     std::vector<int> readSpiesOfBasesFromFile();
     void readScenarioNumberFromFile();
     std::vector<std::pair<int, int>> updateSpiesAfterEachNight();
+    void updateDefenseRatioAfterEachNight();
+    void updateSpiesAndDefenseRatiosForEachNight();
     void removeAllSpiesAfterEachNight();
     void updateSpiesCoordinatesAfterEachNight(std::vector <std::pair<int , int>> spies);
     std::vector<std::shared_ptr<City>> initializeBaseCitiesWithOutSpaceships(std::vector<std::pair<int, int>> coorrdinates, std::vector<int> spies);
