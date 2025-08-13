@@ -13,7 +13,7 @@ public:
     Defense &defenseForChange();
     bool getHasDefense() const override;
     void setDefense(bool defense) override;
-
+    void setDefenseForRatio(int ratio);
 
 private:
     Defense defense;

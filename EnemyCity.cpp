@@ -25,3 +25,8 @@ void EnemyCity::setDefense(bool defense)
 {
     hasDefense = defense;
 }
+
+void EnemyCity::setDefenseForRatio(int ratio)
+{
+    defense.setRatio(ratio);
+}
