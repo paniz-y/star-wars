@@ -96,6 +96,8 @@ public:
     void routingForFifthScenario();
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
     void sortSpaceshipsBasedOnDestruction();
+    void initializeNumOfReachedSpaceshipsToEachDestination();
+    void incrementNumOfReachedSpaceshipsToEachDestination();
 
 private:
     int scenario;

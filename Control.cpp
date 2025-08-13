@@ -558,10 +558,11 @@ void Control::routingForThirdScenario()
 void Control::routingForFifthScenario()
 {
     sortSpaceshipsBasedOnDestruction();
-    for (auto enemy : listOfEnemyCities)
-    {
-        numOfReachedSpaceshipsToEachDestination[enemy] = 0;
-    }
+    // for (auto enemy : listOfEnemyCities)
+    // {
+    //     numOfReachedSpaceshipsToEachDestination[enemy] = 0;
+    // }
+    initializeNumOfReachedSpaceshipsToEachDestination();
     for (auto spaceship : allSpaceships)
     {
         std::cout << "routingForFifthScenario" << std::endl;
@@ -572,10 +573,11 @@ void Control::routingForFifthScenario()
         findValidReachedDestinations();
         findPathBasedOnTotalDistance(spaceship);
 
-        for (auto res : AStarResults)
-        {
-            numOfReachedSpaceshipsToEachDestination[res.destination]++;
-        }
+        // for (auto res : AStarResults)
+        // {
+        //     numOfReachedSpaceshipsToEachDestination[res.destination]++;
+        // }
+        incrementNumOfReachedSpaceshipsToEachDestination();
     }
 
     for (auto spaceship : allSpaceships)
@@ -625,6 +627,20 @@ bool Control::ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destinat
 void Control::sortSpaceshipsBasedOnDestruction()
 {
     std::sort(allSpaceships.begin(), allSpaceships.end(), compareSpaceshipsBasedOnDestruction);
+}
+void Control::initializeNumOfReachedSpaceshipsToEachDestination()
+{
+    for (auto enemy : listOfEnemyCities)
+    {
+        numOfReachedSpaceshipsToEachDestination[enemy] = 0;
+    }
+}
+void Control::incrementNumOfReachedSpaceshipsToEachDestination()
+{
+    for (auto res : AStarResults)
+    {
+        numOfReachedSpaceshipsToEachDestination[res.destination]++;
+    }
 }
 void Control::routing()
 {
