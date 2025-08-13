@@ -560,27 +560,21 @@ void Control::routingForFifthScenario()
     {
         std::cout << "routingForFifthScenario" << std::endl;
         AStarResults.clear();
-        PathResult finalResultForCurrentSpaceship;
 
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         setAStarResults(aStar.getPathResults());
         findValidReachedDestinations();
         findPathBasedOnTotalDistance(spaceship);
 
-        // std::cout << spaceship->getNameOfSpaceship() << " name" << std::endl;
-        // std::cout << AStarResults.size() << " AStarResults.size()" << std::endl;
-        // for (auto res : AStarResults)
-        // {
-        //     std::cout << "res " << res.destination->getCoordinates().first << " " << res.numOfSpies << std::endl;
-        //     displayTheFinalResult(aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], res.destination));
-        // }
-
         for (auto res : AStarResults)
         {
-
             numOfReachedSpaceshipsToEachDestination[res.destination]++;
-            //std::cout << numOfReachedSpaceshipsToEachDestination[res.destination] << " numOfReachedSpaceshipsToEachCity[res.destination] " << res.destination->getCoordinates().first << std::endl;
         }
+    }
+
+    for (auto spaceship : allSpaceships)
+    {
+        PathResult finalResultForCurrentSpaceship;
         std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
         std::sort(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
 
@@ -590,10 +584,8 @@ void Control::routingForFifthScenario()
             {
 
                 finalResultForCurrentSpaceship = res;
-                //std::cout << res.numOfSpies << " res.numOfSpies" << std::endl;
                 if (!isSpaceshipRadarResistant(spaceship, res.numOfSpies) && ifDestinationHasDefenseRatio(res.destination))
                 {
-                    //std::cout << "too if radar" << std::endl;
                     updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
                 }
 
@@ -601,7 +593,7 @@ void Control::routingForFifthScenario()
             }
         }
 
-        if (!isSpaceshipRadarResistant(spaceship, finalResultForCurrentSpaceship.numOfSpies)&& ifDestinationHasDefenseRatio(finalResultForCurrentSpaceship.destination))
+        if (!isSpaceshipRadarResistant(spaceship, finalResultForCurrentSpaceship.numOfSpies) && ifDestinationHasDefenseRatio(finalResultForCurrentSpaceship.destination))
         {
             continue;
         }
@@ -613,7 +605,6 @@ void Control::routingForFifthScenario()
 
         displayTheFinalResult(finalRes);
         std::cout << "finallllllllllll " << std::endl;
-        break;
     }
 }
 bool Control::ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination)
