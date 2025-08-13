@@ -5,19 +5,22 @@ base_city_coordinates:
 number_of_spys_in_each_base_city:
 1
 spaceships_in_each_base_city:
-number: 4 
-names: Awing RazorCrest Mantis Mantis 
+number: 4
+names: Awing Mantis StarDestroyer StarDestroyer
 number_of_civil_citys: 1
 civil_city_coordinates: 
-220 220
+300 300
 number_of_spys_in_each_civil_city:
 1
-number_of_enemy_citys: 1
+number_of_enemy_citys: 2
 enemy_city_coordinates:
-500 500
+900 900
+600 600
 number_of_spys_in_each_enemy_city:
+0
 0
 number_of_ratio_each_defense_has:
 2
+10
 max_size_of_map:
 900
