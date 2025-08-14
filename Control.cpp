@@ -250,7 +250,7 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
     }
 
     std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoordinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
-
+    enemiesAsCity = enemyCitiesMadeForMap;
     return enemyCitiesMadeForMap;
 }
 void Control::findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemies)
@@ -475,7 +475,8 @@ bool Control::compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::p
         {
             int numOfReachedSpaceshipsFirst = first.second - firstEnemy->getDefense().getRatio();
             int numOfReachedSpaceshipsSecond = second.second - secondEnemy->getDefense().getRatio();
-
+            // std::cout << numOfReachedSpaceshipsFirst << " numOfReachedSpaceshipsFirst" << numOfReachedSpaceshipsSecond <<" numOfReachedSpaceshipsSecond" << std::endl;
+            // std::cout << (numOfReachedSpaceshipsFirst > numOfReachedSpaceshipsSecond) << std::endl;
             return numOfReachedSpaceshipsFirst > numOfReachedSpaceshipsSecond;
         }
     }
@@ -669,6 +670,8 @@ void Control::IdentifyPriorityEnemyTarget()
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
         findValidReachedDestinations();
+
+        aStar.validatePath(coordsToCityPtr[spaceship->getCoordinates()], enemiesAsCity);
         findPathBasedOnTotalDistance(spaceship);
         // for (auto res : AStarResults)
         // {
@@ -722,7 +725,7 @@ void Control::routing()
         }
         else
         {
-            std::cout <<"spaceship " << spaceship->getNameOfSpaceship()<<" at " <<spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << " is missed \n";
+            std::cout << "spaceship " << spaceship->getNameOfSpaceship() << " at " << spaceship->getCoordinates().first << " " << spaceship->getCoordinates().second << " is missed \n";
             continue;
         }
         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);

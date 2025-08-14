@@ -72,7 +72,7 @@ public:
     void updateDefenseRatioAfterEachNight();
     void updateSpiesAndDefenseRatiosForEachNight();
     void removeAllSpiesAfterEachNight();
-    void updateSpiesCoordinatesAfterEachNight(std::vector <std::pair<int , int>> spies);
+    void updateSpiesCoordinatesAfterEachNight(std::vector<std::pair<int, int>> spies);
     std::vector<std::shared_ptr<City>> initializeBaseCitiesWithOutSpaceships(std::vector<std::pair<int, int>> coorrdinates, std::vector<int> spies);
     std::vector<std::shared_ptr<Spaceship>> initializeUnknownSpaceships(std::vector<std::string> spaceships);
     void readNumberOfBasesFromFile();
@@ -150,6 +150,8 @@ private:
     }
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     std::vector<std::shared_ptr<EnemyCity>> listOfEnemyCities;
+    std::vector<std::shared_ptr<City>> enemiesAsCity;
+
     std::vector<std::shared_ptr<City>> listOfBaseAndCivilCities;
     std::unordered_map<std::pair<int, int>, std::shared_ptr<City>, HashForPair> coordsToCityPtr;
     std::vector<std::shared_ptr<City>> allCities;
