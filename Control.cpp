@@ -519,7 +519,7 @@ void Control::routingForThirdScenario()
         for (auto baseORCivil : listOfBaseAndCivilCities)
         {
             aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-            setAStarResults(aStar.getPathResults());
+            setAStarResults(aStar.getExistingPathsForEachSpaceship());
             findValidReachedDestinations();
             findPathBasedOnMaxLength(spaceship);
         }
@@ -631,18 +631,21 @@ void Control::routingForFifthScenario()
         // {
         //     std::cout << "sort " << a.first->getCoordinates().first << " " << a.second << std::endl;
         // }
-        for (auto res : AStarResults)
+        for (auto res : AStarPathsForEachSpaceship[spaceship])
         {
-            if (res.destination == reachedSpaceshipsToEachDestination[0].first)
+            for (auto &reached : reachedSpaceshipsToEachDestination)
             {
-
-                finalResultForCurrentSpaceship = res;
-                if (!isSpaceshipRadarResistant(spaceship, res.numOfSpies) && ifDestinationHasDefenseRatio(res.destination))
+                if (res.destination == reached.first)
                 {
-                    // the spaceship has reached the destination not being seen while that enemy destination has still got defense so the spaceship is missed
-                    updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
+
+                    finalResultForCurrentSpaceship = res;
+                    if (!isSpaceshipRadarResistant(spaceship, res.numOfSpies) && ifDestinationHasDefenseRatio(res.destination))
+                    {
+                        // the spaceship has reached the destination not being seen while that enemy destination has still got defense so the spaceship is missed
+                        updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
+                    }
+                    break;
                 }
-                break;
             }
         }
 
@@ -657,7 +660,7 @@ void Control::routingForFifthScenario()
         std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
 
         controlDestructions(spaceship->getDestruction());
-
+        std::cout << spaceship->getNameOfSpaceship() << std::endl;
         displayTheFinalResult(finalpathResult); // display the final path and destruction
         std::cout << "finallllllllllll " << std::endl;
     }
@@ -666,12 +669,11 @@ void Control::IdentifyPriorityEnemyTarget()
 {
     for (auto spaceship : allSpaceships)
     {
-        AStarResults.clear();
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-        setAStarResults(aStar.getPathResults()); // set the results collected by Astar
+        setAStarResults(aStar.getExistingPathsForEachSpaceship()); // set the results collected by Astar
         findValidReachedDestinations();
 
-        aStar.validatePath(coordsToCityPtr[spaceship->getCoordinates()], enemiesAsCity);
+        // aStar.validatePath(coordsToCityPtr[spaceship->getCoordinates()], enemiesAsCity);
         findPathBasedOnTotalDistance(spaceship);
         // for (auto res : AStarResults)
         // {
@@ -715,7 +717,7 @@ void Control::routing()
         AStarResults.clear();
         PathResult finalResultForCurrentSpaceship;
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-        setAStarResults(aStar.getPathResults());
+        setAStarResults(aStar.getExistingPathsForEachSpaceship());
         findValidReachedDestinations();
         findPathBasedOnTotalDistance(spaceship);
         findPathForARadarResistantSpaceship(spaceship);
@@ -750,9 +752,9 @@ void Control::displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes)
     std::cout << "final destruction " << amountOfDestruction << std::endl;
 }
 
-void Control::setAStarResults(std::vector<PathResult> pathResults)
+void Control::setAStarResults(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship)
 {
-    AStarResults = pathResults;
+    AStarPathsForEachSpaceship = existingPathsForEachSpaceship;
 }
 
 int main()
