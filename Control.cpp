@@ -399,56 +399,126 @@ void Control::controlDestructions(int des)
 
 void Control::findValidReachedDestinations()
 {
-    for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
+    for (auto &spaceship : AStarPathsForEachSpaceship)
     {
-        if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(it->destination))
+        for (auto it = spaceship.second.begin(); it != spaceship.second.end();)
         {
-            it++;
-        }
-        else
-        {
-            it = AStarResults.erase(it); // deleting the pathes not reaching destination
+            if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(it->destination))
+            {
+                it++;
+            }
+            else
+            {
+                it = spaceship.second.erase(it); // remove the path not reaching the enemy city
+            }
         }
     }
 }
 
 void Control::findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship)
 {
-    std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnSpies); // sorting based on radar resistance
+    // auto &astarPath = AStarPathsForEachSpaceship;
+    // std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnSpies); // sorting based on radar resistance
 
-    for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
+    // for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
+    // {
+    //     if (isSpaceshipRadarResistant(spaceship, it->numOfSpies))
+    //     {
+    //         it++;
+    //     }
+    //     else
+    //     {
+    //         it = AStarResults.erase(it); // deleting the pathes exceeded
+    //     }
+    // }
+    for (auto &spaceship : AStarPathsForEachSpaceship) // iterate over each spaceship's paths
     {
-        if (isSpaceshipRadarResistant(spaceship, it->numOfSpies))
+        // auto &paths = kv.second; // reference to vector<PathResult>
+        std::sort(spaceship.second.begin(), spaceship.second.end(), compareTwoRoutsBasedOnSpies); // sorting based on radar resistance
+        for (auto it = spaceship.second.begin(); it != spaceship.second.end();)
         {
-            it++;
-        }
-        else
-        {
-            it = AStarResults.erase(it); // deleting the pathes exceeded
+            if (isSpaceshipRadarResistant(spaceship.first, it->numOfSpies))
+            {
+                it++;
+            }
+            else
+            {
+                it = spaceship.second.erase(it); // remove the paths exceeding the radar
+            }
         }
     }
+    // std::cout << "===== Paths After filterAndSortPathsBasedOnSpies() =====\n";
+
+    // for (const auto &kv : AStarPathsForEachSpaceship)
+    // {
+    //     auto spaceship = kv.first;
+    //     const auto &paths = kv.second;
+
+    //     std::cout << "Spaceship: " << spaceship->getNameOfSpaceship()
+    //               << " | Remaining Paths: " << paths.size() << "\n";
+
+    //     for (const auto &path : paths)
+    //     {
+    //         std::cout << "  - Destination: ";
+    //         if (auto enemy = std::dynamic_pointer_cast<EnemyCity>(path.destination))
+    //         {
+    //             std::cout << enemy->getCoordinates().first;
+    //         }
+    //         else
+    //         {
+    //             std::cout << "Non-Enemy City";
+    //         }
+
+    //         std::cout << " | numOfSpies: " << path.numOfSpies << "\n";
+    //     }
+    //     std::cout << "------------------------------------------------------\n";
+    // }
+
+    // std::cout << "=======================================================\n";
 }
 
 void Control::findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship)
 {
-    for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
+    // for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
+    // {
+    //     if (aStar.heuristic(coordsToCityPtr[spaceship->getCoordinates()], it->destination) <= spaceship->getDistance())
+    //     {
+    //         it++;
+    //     }
+    //     else
+    //     {
+    //         it = AStarResults.erase(it); // deleting the pathes that exceeded the total distance of this spaceship
+    //     }
+    // }
+    for (auto &mapSpaceship : AStarPathsForEachSpaceship)
     {
-        if (aStar.heuristic(coordsToCityPtr[spaceship->getCoordinates()], it->destination) <= spaceship->getDistance())
+        // auto &paths = kv.second; // reference to vector<PathResult>
+
+        for (auto it = mapSpaceship.second.begin(); it != mapSpaceship.second.end();)
         {
-            it++;
-        }
-        else
-        {
-            it = AStarResults.erase(it); // deleting the pathes that exceeded the total distance of this spaceship
+            if (aStar.heuristic(coordsToCityPtr[spaceship->getCoordinates()], it->destination) <= spaceship->getDistance())
+            {
+                it++;
+            }
+            else
+            {
+                it = mapSpaceship.second.erase(it); // deleting the pathes that exceeded the total distance of this spaceship
+            }
         }
     }
 }
 
-PathResult Control::findBestDestinationBasedOnDefenseRatio()
+PathResult Control::findBestDestinationBasedOnDefenseRatio(std::shared_ptr<Spaceship> spaceship)
 {
-    std::sort(AStarResults.begin(), AStarResults.end(), compareTwoRoutsBasedOnDefenseRatio);
+    if (AStarPathsForEachSpaceship.find(spaceship) == AStarPathsForEachSpaceship.end() || AStarPathsForEachSpaceship.find(spaceship)->second.empty())
+    {
+        throw std::runtime_error("No paths found for this spaceship");
+    }
 
-    return AStarResults[0];
+    auto it = AStarPathsForEachSpaceship.find(spaceship);
+    std::sort(it->second.begin(), it->second.end(), compareTwoRoutsBasedOnDefenseRatio);
+
+    return it->second.front();
 }
 
 bool Control::compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second)
@@ -519,7 +589,7 @@ void Control::routingForThirdScenario()
         for (auto baseORCivil : listOfBaseAndCivilCities)
         {
             aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-            setAStarResults(aStar.getExistingPathsForEachSpaceship());
+            setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship());
             findValidReachedDestinations();
             findPathBasedOnMaxLength(spaceship);
         }
@@ -627,9 +697,11 @@ void Control::routingForFifthScenario()
         std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
         std::sort(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
 
-        // for(auto &a : reachedSpaceshipsToEachDestination)
+        // std::cout << spaceship->getNameOfSpaceship() << std::endl;
+        // for(auto &a : AStarPathsForEachSpaceship)
         // {
-        //     std::cout << "sort " << a.first->getCoordinates().first << " " << a.second << std::endl;
+        //     for(auto &b : a.second)
+        //     std::cout << "astar " <<a.first->getNameOfSpaceship() << " " << b.destination->getCoordinates().first<<" "<< b.numOfSpies << std::endl;
         // }
         for (auto res : AStarPathsForEachSpaceship[spaceship])
         {
@@ -670,7 +742,7 @@ void Control::IdentifyPriorityEnemyTarget()
     for (auto spaceship : allSpaceships)
     {
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-        setAStarResults(aStar.getExistingPathsForEachSpaceship()); // set the results collected by Astar
+        setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship()); // set the results collected by Astar
         findValidReachedDestinations();
 
         // aStar.validatePath(coordsToCityPtr[spaceship->getCoordinates()], enemiesAsCity);
@@ -704,9 +776,10 @@ void Control::initializeNumOfReachedSpaceshipsToEachDestination()
 }
 void Control::incrementNumOfReachedSpaceshipsToEachDestination()
 {
-    for (auto res : AStarResults)
+    for (auto &spaceship : AStarPathsForEachSpaceship)
     {
-        numOfReachedSpaceshipsToEachDestination[res.destination]++;
+        for (auto &path : spaceship.second)
+            numOfReachedSpaceshipsToEachDestination[path.destination]++;
     }
 }
 void Control::routing()
@@ -717,13 +790,13 @@ void Control::routing()
         AStarResults.clear();
         PathResult finalResultForCurrentSpaceship;
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-        setAStarResults(aStar.getExistingPathsForEachSpaceship());
+        setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship());
         findValidReachedDestinations();
         findPathBasedOnTotalDistance(spaceship);
         findPathForARadarResistantSpaceship(spaceship);
         if (AStarResults.size() != 0)
         {
-            finalResultForCurrentSpaceship = findBestDestinationBasedOnDefenseRatio();
+            finalResultForCurrentSpaceship = findBestDestinationBasedOnDefenseRatio(spaceship);
         }
         else
         {
@@ -752,9 +825,10 @@ void Control::displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes)
     std::cout << "final destruction " << amountOfDestruction << std::endl;
 }
 
-void Control::setAStarResults(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship)
+void Control::setAStarResults(std::vector<PathResult> pathResults, std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship)
 {
     AStarPathsForEachSpaceship = existingPathsForEachSpaceship;
+    AStarResults = pathResults;
 }
 
 int main()
