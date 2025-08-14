@@ -96,7 +96,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
         {
             spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
             PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
-            
+
             existingPathsForEachSpaceship[spaceship].emplace_back(result);
             pathResults.emplace_back(result);
             return result;
@@ -127,7 +127,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                         PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
                         existingPathsForEachSpaceship[spaceship].emplace_back(result);
                         pathResults.emplace_back(result);
-                        continue;//for the current city there is no need to continue the rest of algorithm
+                        continue; // for the current city there is no need to continue the rest of algorithm
                     }
                 }
 
@@ -137,6 +137,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
                 PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
+                pathResults.emplace_back(result);
                 existingPathsForEachSpaceship[spaceship].emplace_back(result);
             }
         }
