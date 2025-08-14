@@ -52,6 +52,7 @@ public:
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
     double heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second); // calculates heuristic for A* search algorithm
     void initializeShortestDistanceForStart(Map mapWithSpies, const std::shared_ptr<City> &start);
+    std::vector<std::vector<std::shared_ptr<City>>> validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities);
 
 private:
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score

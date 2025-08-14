@@ -29,6 +29,45 @@ void AStar::initializeShortestDistanceForStart(Map mapWithSpies, const std::shar
     }
 }
 
+std::vector<std::vector<std::shared_ptr<City>>> AStar::validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities)
+{
+    std::vector<std::vector<std::shared_ptr<City>>> completePathToEachDestination;
+    std::cout << " too backtrack1" << std::endl;
+
+    for (auto enemy : allEnemyCities)
+    {
+        std::vector<std::shared_ptr<City>> marg = backtrackAStarPath(start, enemy);
+        for (auto m : marg)
+        {
+            std::cout << m->getCoordinates().first << " marg" << std::endl;
+        }
+        completePathToEachDestination.emplace_back(backtrackAStarPath(start, enemy));
+    }
+    std::cout << " too backtrack3" << std::endl;
+
+    // for (auto first : completePathToEachDestination)
+    // {
+    //     std::cout << " too backtrack4" << std::endl;
+
+    //     for (auto second : first)
+    //     {
+    //     }
+    //     std::cout << std::endl;
+    // }
+    for (int i{}; i < completePathToEachDestination.size(); i++)
+    {
+        std::cout << " too backtrack4" << std::endl;
+
+        for (int j{}; j < completePathToEachDestination[i].size(); j++)
+        {
+            std::cout << " too backtrack5" << std::endl;
+
+            std::cout << completePathToEachDestination[i][j]->getCoordinates().first << " too backtrack";
+        }
+        std::cout << std::endl;
+    }
+}
+
 PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
 {
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
@@ -157,10 +196,18 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
 std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
 {
     std::vector<std::shared_ptr<City>> path;
+    std::cout << trackNodes.size() << " trackNodes.size()" << std::endl;
+    for (auto m : trackNodes)
+    {
+        std::cout << m.first << " " << m.second << std::endl;
+    }
+    std::cout << destination << " m" << std::endl;
     if (trackNodes.empty() || trackNodes.find(destination) == trackNodes.end())
     {
+        std::cout << "empty" << std::endl;
         return {};
     }
+    std::cout << "bad empty" << std::endl;
 
     std::shared_ptr<City> current = destination;
     while (current != nullptr && current != start)
