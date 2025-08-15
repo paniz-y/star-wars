@@ -89,7 +89,7 @@ public:
     static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, int> &first, const std::pair<std::shared_ptr<City>, int> &second);
     static bool compareSpaceshipsBasedOnDestruction(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     void findValidReachedDestinations();
-    void findPathForARadarResistantSpaceship(const std::shared_ptr<Spaceship> &spaceship);
+    void findPathForARadarResistantSpaceship();
     void findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship);
     PathResult findBestDestinationBasedOnDefenseRatio(std::shared_ptr<Spaceship> spaceship);
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
