@@ -689,14 +689,17 @@ void Control::updateSpiesAndDefenseRatiosForEachNight()
 void Control::routingForFifthScenario()
 {
     sortSpaceshipsBasedOnDestruction();
-    initializeNumOfReachedSpaceshipsToEachDestination();
+    // initializeNumOfReachedSpaceshipsToEachDestination();
     IdentifyPriorityEnemyTarget();
     for (auto spaceship : allSpaceships)
     {
         PathResult finalResultForCurrentSpaceship;
         std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
         std::sort(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
-
+        for (auto a : reachedSpaceshipsToEachDestination)
+        {
+            std::cout << a.first->getCoordinates().first << " 701 " << a.second << std::endl;
+        }
         // std::cout << spaceship->getNameOfSpaceship() << std::endl;
         // for(auto &a : AStarPathsForEachSpaceship)
         // {
@@ -741,8 +744,10 @@ void Control::IdentifyPriorityEnemyTarget()
 {
     for (auto spaceship : allSpaceships)
     {
+        std::cout << spaceship->getNameOfSpaceship() << std::endl;
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship()); // set the results collected by Astar
+
         findValidReachedDestinations();
 
         // aStar.validatePath(coordsToCityPtr[spaceship->getCoordinates()], enemiesAsCity);
@@ -751,8 +756,8 @@ void Control::IdentifyPriorityEnemyTarget()
         // {
         //     numOfReachedSpaceshipsToEachDestination[res.destination]++;
         // }
-        incrementNumOfReachedSpaceshipsToEachDestination();
     }
+        incrementNumOfReachedSpaceshipsToEachDestination();
 }
 bool Control::ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination)
 {
@@ -776,10 +781,34 @@ void Control::initializeNumOfReachedSpaceshipsToEachDestination()
 }
 void Control::incrementNumOfReachedSpaceshipsToEachDestination()
 {
-    for (auto &spaceship : AStarPathsForEachSpaceship)
+    for (const auto &[spaceship, allPath] : AStarPathsForEachSpaceship)
     {
-        for (auto &path : spaceship.second)
+        std::cout << spaceship->getNameOfSpaceship() << " iterate umap ";
+        for (PathResult path : allPath)
+        {
+            //std::cout << path.destination->getCoordinates().first << " ";
             numOfReachedSpaceshipsToEachDestination[path.destination]++;
+        }
+        std::cout << std::endl;
+        ;
+    }
+    // for (auto &spaceship : AStarPathsForEachSpaceship)
+    // {
+    //     for (auto &path : spaceship.second)
+    //         std::cout << spaceship.first->getNameOfSpaceship() << path.destination->getCoordinates().first << " " << path.destination << std::endl;
+    // }
+    // for (auto a : numOfReachedSpaceshipsToEachDestination)
+    // {
+    //     std::cout << a.first << " " << a.first->getCoordinates().first << " " << a.second << " too incrementNumOfReachedSpaceshipsToEachDestination" << std::endl;
+    // }
+    // for (auto &spaceship : AStarPathsForEachSpaceship)
+    // {
+    //     for (auto &path : spaceship.second)
+    //         numOfReachedSpaceshipsToEachDestination[path.destination]++;
+    // }
+    for (auto a : numOfReachedSpaceshipsToEachDestination)
+    {
+        std::cout << a.first << " " << a.first->getCoordinates().first << " " << a.second << "  bad too incrementNumOfReachedSpaceshipsToEachDestination" << std::endl;
     }
 }
 void Control::routing()
