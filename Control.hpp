@@ -87,7 +87,8 @@ public:
     static bool compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, int> &first, const std::pair<std::shared_ptr<City>, int> &second);
-    static bool compareSpaceshipsBasedOnDestruction(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
+    static bool compareSpaceshipsBasedOnDestructionInAscendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
+    static bool compareSpaceshipsBasedOnDestructionInDescendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     void findValidReachedDestinations();
     void findPathForARadarResistantSpaceship();
     void findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship);
@@ -110,7 +111,8 @@ public:
     void routingForThirdScenario();
     void routingForFifthScenario();
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
-    void sortSpaceshipsBasedOnDestruction();
+    void sortSpaceshipsBasedOnDestructionInAscendingOrder();
+    void sortSpaceshipsBasedOnDestructionInDecendingOrder();
     void initializeNumOfReachedSpaceshipsToEachDestination();
     void incrementNumOfReachedSpaceshipsToEachDestination();
     void initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship);

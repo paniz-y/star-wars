@@ -573,9 +573,14 @@ bool Control::compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::p
     return false;
 }
 
-bool Control::compareSpaceshipsBasedOnDestruction(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second)
+bool Control::compareSpaceshipsBasedOnDestructionInAscendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second)
 {
     return first->getDestruction() < second->getDestruction();
+}
+
+bool Control::compareSpaceshipsBasedOnDestructionInDescendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second)
+{
+    return first->getDestruction() > second->getDestruction();
 }
 
 void Control::findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship)
@@ -708,7 +713,7 @@ void Control::updateSpiesAndDefenseRatiosForEachNight()
 }
 void Control::routingForFifthScenario()
 {
-    sortSpaceshipsBasedOnDestruction();
+    sortSpaceshipsBasedOnDestructionInAscendingOrder();
     // initializeNumOfReachedSpaceshipsToEachDestination();
     IdentifyPriorityEnemyTarget();
     for (auto spaceship : allSpaceships)
@@ -740,8 +745,12 @@ void Control::routingForFifthScenario()
                     finalResultForCurrentSpaceship = res;
                     if (!isSpaceshipRadarResistant(spaceship, res.numOfSpies) && ifDestinationHasDefenseRatio(res.destination))
                     {
-                        // the spaceship has reached the destination not being seen while that enemy destination has still got defense so the spaceship is missed
+                        // the spaceship has reached the destination being seen while that enemy destination has still got defense so the spaceship is missed
                         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
+                    }
+                    if(!ifDestinationHasDefenseRatio(res.destination))
+                    {
+                        sortSpaceshipsBasedOnDestructionInDecendingOrder();
                     }
                     break;
                 }
@@ -755,7 +764,7 @@ void Control::routingForFifthScenario()
 
         // the spaceship has reached destination and caused destruction
 
-        updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
+        // updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
 
         // std::cout << "baray backtark " << spaceship->getNameOfSpaceship() << std::endl;
         std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination, trackedCitiesForEachSpaceship[spaceship]);
@@ -790,9 +799,13 @@ bool Control::ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destinat
     }
     return false;
 }
-void Control::sortSpaceshipsBasedOnDestruction()
+void Control::sortSpaceshipsBasedOnDestructionInAscendingOrder()
 {
-    std::sort(allSpaceships.begin(), allSpaceships.end(), compareSpaceshipsBasedOnDestruction);
+    std::sort(allSpaceships.begin(), allSpaceships.end(), compareSpaceshipsBasedOnDestructionInAscendingOrder);
+}
+void Control::sortSpaceshipsBasedOnDestructionInDecendingOrder()
+{
+    std::sort(allSpaceships.begin(), allSpaceships.end(), compareSpaceshipsBasedOnDestructionInDescendingOrder);
 }
 void Control::initializeNumOfReachedSpaceshipsToEachDestination()
 {
