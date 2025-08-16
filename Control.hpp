@@ -113,6 +113,7 @@ public:
     void sortSpaceshipsBasedOnDestruction();
     void initializeNumOfReachedSpaceshipsToEachDestination();
     void incrementNumOfReachedSpaceshipsToEachDestination();
+    void initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship);
 
 private:
     int scenario;
@@ -166,5 +167,6 @@ private:
     std::vector<std::shared_ptr<City>> allCities;
     std::vector<PathResult> AStarResults;
     std::unordered_map<std::shared_ptr<City>, int> numOfReachedSpaceshipsToEachDestination;
+    std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachSpaceship;
 };
 #endif

@@ -758,7 +758,7 @@ void Control::routingForFifthScenario()
         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
 
         // std::cout << "baray backtark " << spaceship->getNameOfSpaceship() << std::endl;
-        std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
+        std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination, trackedCitiesForEachSpaceship[spaceship]);
 
         controlDestructions(spaceship->getDestruction());
         std::cout << spaceship->getNameOfSpaceship() << std::endl;
@@ -773,7 +773,7 @@ void Control::IdentifyPriorityEnemyTarget()
         std::cout << spaceship->getNameOfSpaceship() << std::endl;
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship()); // set the results collected by Astar
-
+        initializeTrackedCitiesForEachSpaceship(spaceship);
         findValidReachedDestinations(); // find the missed spaceships
 
         findPathBasedOnTotalDistance(spaceship);
@@ -833,6 +833,10 @@ void Control::incrementNumOfReachedSpaceshipsToEachDestination()
         std::cout << a.first << " " << a.first->getCoordinates().first << " " << a.second << "  bad too incrementNumOfReachedSpaceshipsToEachDestination" << std::endl;
     }
 }
+void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship)
+{
+    trackedCitiesForEachSpaceship[spaceship] = aStar.getTrackNodes();
+}
 void Control::routing()
 {
     int cnt = 0;
@@ -856,7 +860,7 @@ void Control::routing()
         }
         updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
 
-        std::vector<std::shared_ptr<City>> finalRes = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination);
+        std::vector<std::shared_ptr<City>> finalRes = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination, trackedCitiesForEachSpaceship[spaceship]);
 
         controlDestructions(spaceship->getDestruction());
 
