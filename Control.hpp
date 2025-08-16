@@ -91,12 +91,21 @@ public:
     void findValidReachedDestinations();
     void findPathForARadarResistantSpaceship();
     void findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship);
+    void readNumberOfCivilCitiesFromFile();
+    std::vector<std::pair<int, int>> readCivilCoordinatesFromFile();
+    std::vector<int> readCivilSpiesFromFile();
+    void readNumberOfEnemyCitiesFromFile();
+    std::vector<std::pair<int, int>> readEnemyCitiesCoordinatesFromFile();
+    std::vector<int> readEnemyCitiesSpiesFromFile();
+    std::vector<int> readEnemyCitiesDefenseRatioFromFile();
+    std::vector<Defense> readEnemyCitiesDefenseFromFile(std::vector<int> defenseRatio);
+
     PathResult findBestDestinationBasedOnDefenseRatio(std::shared_ptr<Spaceship> spaceship);
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     void updateCurrentDefenseRatio(const PathResult &finalResultForCurrentSpaceship);
     void displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes);
-    void setAStarResults(std::vector<PathResult> pathResults,std::unordered_map<std::shared_ptr<Spaceship>,std::vector <PathResult>> existingPathsForEachSpaceship);
+    void setAStarResults(std::vector<PathResult> pathResults, std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
     void findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship);
     void routingForThirdScenario();
     void routingForFifthScenario();
@@ -109,7 +118,7 @@ private:
     int scenario;
     int numOfCitys;
     int numOfBaseCities;
-    int numOfCivilCitys;
+    int numOfCivilCities;
     int numOfEnemyCitys;
     int amountOfDestruction;
     std::fstream mapFile;
@@ -151,7 +160,7 @@ private:
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     std::vector<std::shared_ptr<EnemyCity>> listOfEnemyCities;
     std::vector<std::shared_ptr<City>> enemiesAsCity;
-    std::unordered_map<std::shared_ptr<Spaceship>,std::vector <PathResult>> AStarPathsForEachSpaceship;
+    std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> AStarPathsForEachSpaceship;
     std::vector<std::shared_ptr<City>> listOfBaseAndCivilCities;
     std::unordered_map<std::pair<int, int>, std::shared_ptr<City>, HashForPair> coordsToCityPtr;
     std::vector<std::shared_ptr<City>> allCities;
