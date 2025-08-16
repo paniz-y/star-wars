@@ -49,12 +49,12 @@ public:
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     PathResult AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
     PathResult AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, const std::shared_ptr<Spaceship> &spaceship);
-    std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
+    std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities);
     double heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second); // calculates heuristic for A* search algorithm
     void initializeShortestDistanceForStart(Map mapWithSpies, const std::shared_ptr<City> &start);
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> getExistingPathsForEachSpaceship();
     std::vector<std::vector<std::shared_ptr<City>>> validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities);
-
+    std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> getTrackNodes();
 private:
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
     std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it

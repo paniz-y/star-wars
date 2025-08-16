@@ -34,6 +34,11 @@ std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> AStar::g
     return existingPathsForEachSpaceship;
 }
 
+std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> AStar::getTrackNodes()
+{
+    return trackNodes;
+}
+
 // std::vector<std::vector<std::shared_ptr<City>>> AStar::validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities)
 // {
 //     std::vector<std::vector<std::shared_ptr<City>>> completePathToEachDestination;
@@ -208,7 +213,7 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
     return result; // no rout found
 }
 
-std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
+std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities)
 {
     std::vector<std::shared_ptr<City>> path;
     // std::cout << trackNodes.size() << " trackNodes.size()" << std::endl;
@@ -217,7 +222,7 @@ std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_p
     //     std::cout << m.first << " " << m.second << std::endl;
     // }
     // std::cout << destination << " m" << std::endl;
-    if (trackNodes.empty() || trackNodes.find(destination) == trackNodes.end())
+    if (trackedCities.empty() || trackedCities.find(destination) == trackedCities.end())
     {
         // std::cout << "empty" << std::endl;
         return {};
@@ -228,7 +233,7 @@ std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_p
     while (current != nullptr && current != start)
     {
         path.push_back(current);
-        current = trackNodes.at(current);
+        current = trackedCities.at(current);
     }
     path.push_back(start);
     std::reverse(path.begin(), path.end());
