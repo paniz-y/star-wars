@@ -91,7 +91,7 @@ public:
     static bool compareSpaceshipsBasedOnDestructionInDescendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     void findValidReachedDestinations();
     void findPathForARadarResistantSpaceship();
-    void findPathBasedOnTotalDistance(const std::shared_ptr<Spaceship> &spaceship);
+    void findPathBasedOnTotalDistance();
     void readNumberOfCivilCitiesFromFile();
     std::vector<std::pair<int, int>> readCivilCoordinatesFromFile();
     std::vector<int> readCivilSpiesFromFile();
