@@ -1,3 +1,4 @@
+scenario: 5
 number_of_base_citys: 3
 base_city_coordinates: 
 0 0
@@ -16,23 +17,23 @@ number: 4
 name: TieFighter XwingStarFighter TieFighter MillenniumFalcon
 number_of_civil_citys: 2
 civil_city_coordinates: 
-100 100
+300 300
 400 400 
 number_of_spys_in_each_civil_city:
 0
 1
 number_of_enemy_citys: 3
 enemy_city_coordinates:
-700 450
-500 500
-900 50
+550 450
+700 500
+900 700
 number_of_spys_in_each_enemy_city:
-0
+1
 0
 0
 number_of_ratio_each_defense_has:
+0
 1
-1
-1
+10
 max_size_of_map:
 900
