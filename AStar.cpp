@@ -144,7 +144,9 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                 }
 
                 shortestDistance[neighbor.first] = neighborGScore;
-                trackNodes[neighbor.first] = currNode.currCity;
+                if(neighbor.first->getCoordinates().second > currNode.currCity->getCoordinates().second)
+                {std::cout << "behem bego chejori " << neighbor.first->getCoordinates().second << " " << currNode.currCity->getCoordinates().second << std::endl;
+            trackNodes[neighbor.first] = currNode.currCity;}
 
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
@@ -208,8 +210,11 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
                     maxPathLength = heuristic(currNode.currCity, neighbor.first); // checks for a longer path that must be taken without reprogramming
                 }
                 shortestDistance[neighbor.first] = neighborGScore;
-                if (neighbor.first->getCoordinates().second > neighbor.first->getCoordinates().second)
+
+                if (neighbor.first->getCoordinates().second > currNode.currCity->getCoordinates().second)
+                {
                     trackNodes[neighbor.first] = currNode.currCity;
+                }
 
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
@@ -226,23 +231,23 @@ std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_p
 {
     std::vector<std::shared_ptr<City>> path;
     // std::cout << trackNodes.size() << " trackNodes.size()" << std::endl;
-    // for (auto m : trackNodes)
-    // {
-    //     std::cout << m.first->getCoordinates().first << " " << m.second->getCoordinates().first << std::endl;
-    // }
-    // std::cout << destination << " m " << std::endl;
+    for (auto m : trackNodes)
+    {
+        std::cout << m.first->getCoordinates().first << " " << m.second->getCoordinates().first << std::endl;
+    }
+    std::cout << destination << " m " << std::endl;
     if (trackedCities.empty() || trackedCities.find(destination) == trackedCities.end())
     {
         // std::cout << "empty" << std::endl;
         return {};
     }
     // std::cout << "bad empty" << std::endl;
-    // std::cout << "start cheih " << start->getCoordinates().first << std::endl;
+    std::cout << "start cheih " << start->getCoordinates().first << std::endl;
     std::shared_ptr<City> current = destination;
     while (current != nullptr && current != start)
     {
         path.push_back(current);
-        // std::cout << "here " << trackedCities.at(current)->getCoordinates().first << std::endl;
+        std::cout << "here " << trackedCities.at(current)->getCoordinates().first << std::endl;
         current = trackedCities.at(current);
     }
     path.push_back(start);
