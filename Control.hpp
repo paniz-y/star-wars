@@ -86,7 +86,7 @@ public:
     void IdentifyPriorityEnemyTarget();
     static bool compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const PathResult &second);
-    static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, int> &first, const std::pair<std::shared_ptr<City>, int> &second);
+    static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &first, const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &second);
     static bool compareSpaceshipsBasedOnDestructionInAscendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     static bool compareSpaceshipsBasedOnDestructionInDescendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     void findValidReachedDestinations();
@@ -104,15 +104,15 @@ public:
     PathResult findBestDestinationBasedOnDefenseRatio(std::shared_ptr<Spaceship> spaceship);
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
-    void updateCurrentDefenseRatio(const PathResult &finalResultForCurrentSpaceship);
+    void updateCurrentDefenseRatio(const std::shared_ptr<City> &finalDEstinationForCurrentSpaceship);
     void displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes);
     void setAStarResults(std::vector<PathResult> pathResults, std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
     void findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship);
     void routingForThirdScenario();
     void routingForFifthScenario();
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
-    void sortSpaceshipsBasedOnDestructionInAscendingOrder();
-    void sortSpaceshipsBasedOnDestructionInDecendingOrder();
+    void sortSpaceshipsBasedOnDestructionInAscendingOrder(std::vector<std::shared_ptr<Spaceship>>&);
+    void sortSpaceshipsBasedOnDestructionInDecendingOrder(std::vector<std::shared_ptr<Spaceship>>);
     void initializeNumOfReachedSpaceshipsToEachDestination();
     void incrementNumOfReachedSpaceshipsToEachDestination();
     void initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship);
@@ -170,5 +170,8 @@ private:
     std::vector<PathResult> AStarResults;
     std::unordered_map<std::shared_ptr<City>, int> numOfReachedSpaceshipsToEachDestination;
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachSpaceship;
+    std::unordered_map<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> ReachedSpaceshipsToEachDestination;
+    //std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
+
 };
 #endif
