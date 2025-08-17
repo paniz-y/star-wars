@@ -588,8 +588,8 @@ bool Control::compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::p
 
 bool Control::compareSpaceshipsBasedOnDestructionInAscendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second)
 {
-//     std::cout << first->getDestruction() << " first->getDestruction()" << std::endl;
-//     std::cout << second->getDestruction() << " second->getDestruction()" << std::endl;
+    //     std::cout << first->getDestruction() << " first->getDestruction()" << std::endl;
+    //     std::cout << second->getDestruction() << " second->getDestruction()" << std::endl;
 
     return first->getDestruction() < second->getDestruction();
 }
@@ -799,22 +799,30 @@ void Control::updateSpiesAndDefenseRatiosForEachNight()
 // }
 void Control::controlingNightsForFifthScenario()
 {
-    for(int i=0 ; i < 5 ; i++)
+    for (int i = 0; i < 5; i++)
     {
         AStar aStar;
         std::cout << "before night " << i << std::endl;
         routingForFifthScenario(aStar);
-        AStarPathsForEachSpaceship.clear();
-        AStarResults.clear();
-        numOfReachedSpaceshipsToEachDestination.clear();
-        trackedCitiesForEachSpaceship.clear();
-        ReachedSpaceshipsToEachDestination.clear();
-
+        // AStarPathsForEachSpaceship.clear();
+        // AStarResults.clear();
+        // numOfReachedSpaceshipsToEachDestination.clear();
+        // trackedCitiesForEachSpaceship.clear();
+        // ReachedSpaceshipsToEachDestination.clear();
+        clearAllAStarRelatedData();
         // std::cout << "before spies update" << std::endl;
         updateSpiesAndDefenseRatiosForEachNight();
 
         // std::cout << "after spies update" << std::endl;
     }
+}
+void Control::clearAllAStarRelatedData()
+{
+    AStarPathsForEachSpaceship.clear();
+    AStarResults.clear();
+    numOfReachedSpaceshipsToEachDestination.clear();
+    trackedCitiesForEachSpaceship.clear();
+    ReachedSpaceshipsToEachDestination.clear();
 }
 void Control::routingForFifthScenario(AStar aStar)
 {
@@ -846,7 +854,6 @@ void Control::routingForFifthScenario(AStar aStar)
 
                 controlDestructions(spaceships.back()->getDestruction());
                 std::cout << des->getCoordinates().first << " (des)" << std::endl;
-
 
                 displayTheFinalResult(finalpathResult); // display the final path and destruction
                 std::cout << "finallllllllllll " << std::endl;

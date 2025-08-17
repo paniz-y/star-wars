@@ -117,6 +117,7 @@ public:
     void incrementNumOfReachedSpaceshipsToEachDestination();
     void initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship, AStar aStar);
     void controlingNightsForFifthScenario();
+    void clearAllAStarRelatedData();
 private:
     int scenario;
     int numOfCitys;
