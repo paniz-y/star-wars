@@ -44,6 +44,17 @@ std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_pt
     return numOfSpiesForEachDestinationOfEachSpaceship;
 }
 
+PathResult AStar::hasReachedADestination(const Node &currNode, int &spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship)
+{
+    spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
+    PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
+
+    existingPathsForEachSpaceship[spaceship].emplace_back(result);
+    pathResults.emplace_back(result);
+    numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
+    return result;
+}
+
 // std::vector<std::vector<std::shared_ptr<City>>> AStar::validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities)
 // {
 //     std::vector<std::vector<std::shared_ptr<City>>> completePathToEachDestination;
@@ -86,14 +97,8 @@ std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_pt
 PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
 {
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
-    // trackNodes.clear();
     nodes.push({start, nullptr, 0, heuristic(start, destination)});
 
-    // shortestDistance[start] = 0;
-    // for (auto &neighbor : mapWithSpies.getNeighbors(start))
-    // {
-    //     shortestDistance[neighbor.first] = DBL_MAX;
-    // }
     initializeShortestDistanceForStart(mapWithSpies, start);
 
     int spiesAtThePath = 0;
@@ -104,13 +109,14 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
 
         if (currNode.currCity == destination)
         {
-            spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
-            PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
+            // spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
+            // PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
 
-            existingPathsForEachSpaceship[spaceship].emplace_back(result);
-            pathResults.emplace_back(result);
-            numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
-            return result;
+            // existingPathsForEachSpaceship[spaceship].emplace_back(result);
+            // pathResults.emplace_back(result);
+            // numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
+            // return result;
+            hasReachedADestination(currNode, spiesAtThePath, spaceship);
         }
 
         if (visitedNodeCities.find(currNode.currCity) != visitedNodeCities.end())
@@ -135,24 +141,28 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                 {
                     if (std::shared_ptr<EnemyCity> neighborEnemy = std::dynamic_pointer_cast<EnemyCity>(neighbor.first))
                     {
-                        PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
-                        existingPathsForEachSpaceship[spaceship].emplace_back(result);
-                        pathResults.emplace_back(result);
-                        numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
+                        // PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
+                        // existingPathsForEachSpaceship[spaceship].emplace_back(result);
+                        // pathResults.emplace_back(result);
+                        // numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
+                        hasReachedADestination(currNode, spiesAtThePath, spaceship);
                         continue; // for the current city there is no need to continue the rest of algorithm
                     }
                 }
 
                 shortestDistance[neighbor.first] = neighborGScore;
-                if(neighbor.first->getCoordinates().second > currNode.currCity->getCoordinates().second)
-                {std::cout << "behem bego chejori " << neighbor.first->getCoordinates().second << " " << currNode.currCity->getCoordinates().second << std::endl;
-            trackNodes[neighbor.first] = currNode.currCity;}
+                if (neighbor.first->getCoordinates().second > currNode.currCity->getCoordinates().second)
+                {
+                    std::cout << "behem bego chejori " << neighbor.first->getCoordinates().second << " " << currNode.currCity->getCoordinates().second << std::endl;
+                    trackNodes[neighbor.first] = currNode.currCity;
+                }
 
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
-                PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
-                pathResults.emplace_back(result);
-                numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
+                // PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
+                // pathResults.emplace_back(result);
+                // numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
+                PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
                 existingPathsForEachSpaceship[spaceship].emplace_back(result);
             }
         }
