@@ -523,7 +523,7 @@ void Control::findPathForARadarResistantSpaceship()
     // std::cout << "=======================================================\n";
 }
 
-void Control::findPathBasedOnTotalDistance()
+void Control::findPathBasedOnTotalDistance(AStar aStar)
 {
     for (auto &mapSpaceship : AStarPathsForEachSpaceship)
     {
@@ -629,8 +629,8 @@ void Control::routingForThirdScenario()
         PathResult finalResultForCurrentSpaceship;
         for (auto baseORCivil : listOfBaseAndCivilCities)
         {
-            aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-            setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship());
+            // aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
+            // setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship());
             findValidReachedDestinations();
             findPathBasedOnMaxLength(spaceship);
         }
@@ -801,18 +801,26 @@ void Control::controlingNightsForFifthScenario()
 {
     for(int i=0 ; i < 5 ; i++)
     {
+        AStar aStar;
         std::cout << "before night " << i << std::endl;
-        routingForFifthScenario();
+        routingForFifthScenario(aStar);
+        AStarPathsForEachSpaceship.clear();
+        AStarResults.clear();
+        numOfReachedSpaceshipsToEachDestination.clear();
+        trackedCitiesForEachSpaceship.clear();
+        ReachedSpaceshipsToEachDestination.clear();
+
         // std::cout << "before spies update" << std::endl;
         updateSpiesAndDefenseRatiosForEachNight();
+
         // std::cout << "after spies update" << std::endl;
     }
 }
-void Control::routingForFifthScenario()
+void Control::routingForFifthScenario(AStar aStar)
 {
 
     // initializeNumOfReachedSpaceshipsToEachDestination();
-    IdentifyPriorityEnemyTarget();
+    IdentifyPriorityEnemyTarget(aStar);
     std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
     std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(ReachedSpaceshipsToEachDestination.begin(), ReachedSpaceshipsToEachDestination.end());
 
@@ -871,17 +879,17 @@ void Control::routingForFifthScenario()
     }
 }
 
-void Control::IdentifyPriorityEnemyTarget()
+void Control::IdentifyPriorityEnemyTarget(AStar aStar)
 {
     for (auto spaceship : allSpaceships)
     {
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship()); // set the results collected by Astar
-        initializeTrackedCitiesForEachSpaceship(spaceship);
+        initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
     }
     findValidReachedDestinations(); // find the missed spaceships
 
-    findPathBasedOnTotalDistance();
+    findPathBasedOnTotalDistance(aStar);
     incrementNumOfReachedSpaceshipsToEachDestination();
     // findPathForARadarResistantSpaceship();
 }
@@ -945,7 +953,7 @@ void Control::incrementNumOfReachedSpaceshipsToEachDestination()
     //     std::cout << a.first << " " << a.first->getCoordinates().first << " " << a.second << "  bad too incrementNumOfReachedSpaceshipsToEachDestination" << std::endl;
     // }
 }
-void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship)
+void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship, AStar aStar)
 {
     trackedCitiesForEachSpaceship[spaceship] = aStar.getTrackNodes();
     // for(auto &a : trackedCitiesForEachSpaceship[spaceship])
@@ -955,7 +963,7 @@ void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spac
     // }
 }
 
-void Control::routing()
+void Control::routing(AStar aStar)
 {
     int cnt = 0;
     for (auto spaceship : allSpaceships)
@@ -965,7 +973,7 @@ void Control::routing()
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         setAStarResults(aStar.getPathResults(), aStar.getExistingPathsForEachSpaceship());
         findValidReachedDestinations();
-        findPathBasedOnTotalDistance();
+        findPathBasedOnTotalDistance(aStar);
         findPathForARadarResistantSpaceship();
         if (AStarResults.size() != 0)
         {
