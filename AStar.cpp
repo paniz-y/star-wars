@@ -39,6 +39,11 @@ std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> AStar::getTrack
     return trackNodes;
 }
 
+std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> AStar::getNumOfSpiesForEachDestinationOfEachSpaceship()
+{
+    return numOfSpiesForEachDestinationOfEachSpaceship;
+}
+
 // std::vector<std::vector<std::shared_ptr<City>>> AStar::validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities)
 // {
 //     std::vector<std::vector<std::shared_ptr<City>>> completePathToEachDestination;
@@ -104,6 +109,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
 
             existingPathsForEachSpaceship[spaceship].emplace_back(result);
             pathResults.emplace_back(result);
+            numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
             return result;
         }
 
@@ -132,6 +138,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                         PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
                         existingPathsForEachSpaceship[spaceship].emplace_back(result);
                         pathResults.emplace_back(result);
+                        numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
                         continue; // for the current city there is no need to continue the rest of algorithm
                     }
                 }
@@ -143,6 +150,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
                 PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
                 pathResults.emplace_back(result);
+                numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
                 existingPathsForEachSpaceship[spaceship].emplace_back(result);
             }
         }
@@ -200,7 +208,7 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
                     maxPathLength = heuristic(currNode.currCity, neighbor.first); // checks for a longer path that must be taken without reprogramming
                 }
                 shortestDistance[neighbor.first] = neighborGScore;
-                if(neighbor.first->getCoordinates().second > neighbor.first->getCoordinates().second)
+                if (neighbor.first->getCoordinates().second > neighbor.first->getCoordinates().second)
                     trackNodes[neighbor.first] = currNode.currCity;
 
                 double neighborHScore = heuristic(neighbor.first, destination);
