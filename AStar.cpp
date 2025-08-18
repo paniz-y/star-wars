@@ -179,13 +179,10 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
 PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
 {
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
-
     nodes.push({start, nullptr, 0, heuristic(start, destination)});
-    shortestDistance[start] = 0;
-    for (auto &neighbor : mapWithSpies.getNeighbors(start))
-    {
-        shortestDistance[neighbor.first] = DBL_MAX;
-    }
+
+    initializeShortestDistanceForStart(mapWithSpies, start);
+
     int spiesAtThePath = 0;
     int maxPathLength = 0;
     while (!nodes.empty())
@@ -220,6 +217,16 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
                 if (heuristic(currNode.currCity, neighbor.first) > maxPathLength)
                 {
                     maxPathLength = heuristic(currNode.currCity, neighbor.first); // checks for a longer path that must be taken without reprogramming
+                }
+                if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity))
+                {
+                    if (std::shared_ptr<EnemyCity> neighborEnemy = std::dynamic_pointer_cast<EnemyCity>(neighbor.first))
+                    {
+                        spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
+                        PathResult result = {currNode.currCity, spiesAtThePath, currNode.g, maxPathLength};
+                        pathResults.emplace_back(result);
+                        continue; // for the current city there is no need to continue the rest of algorithm
+                    }
                 }
                 shortestDistance[neighbor.first] = neighborGScore;
 
