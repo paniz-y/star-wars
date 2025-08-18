@@ -119,6 +119,8 @@ public:
     void initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship, AStar aStar);
     void controlingNightsForFifthScenario();
     void clearAllAStarRelatedData();
+    void initializeListOfBaseCities(const std::vector<std::shared_ptr<City>> &baseCities);
+    void findValidPathsFromEachBaseCity(AStar aStar);
 private:
     int scenario;
     int numOfCitys;
@@ -174,6 +176,7 @@ private:
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachSpaceship;
     std::unordered_map<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> ReachedSpaceshipsToEachDestination;
     //std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
+    std::vector<std::shared_ptr<City>> listOfBaseCities;
 
 };
 #endif
