@@ -106,9 +106,9 @@ public:
     static bool compareEnemiesBasedOnDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     void updateCurrentDefenseRatio(const std::shared_ptr<City> &finalDEstinationForCurrentSpaceship);
     void displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes);
-    void setAStarResults(std::vector<PathResult> pathResults, std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
+    void setAStarResults(std::vector<PathResult> pathResults);
     void findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship);
-    void routingForThirdScenario();
+    void routingForThirdScenario(AStar aStar);
     void routingForFifthScenario(AStar aStar);
     void routingForSixthScenario(AStar aStar);
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
@@ -121,6 +121,7 @@ public:
     void clearAllAStarRelatedData();
     void initializeListOfBaseCities(const std::vector<std::shared_ptr<City>> &baseCities);
     void findValidPathsFromEachBaseCity(AStar aStar);
+    void setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
 private:
     int scenario;
     int numOfCitys;
