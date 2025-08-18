@@ -438,15 +438,24 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
         // initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
     }
-    //findValidReachedDestinations(); // find the missed spaceships
+    AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
+    findValidReachedDestinationsForUnknownSpaceship();
+    for (auto &[base, paths] : AStarPathsForEachBaseCity)
+    {
+        std::cout << base->getCoordinates().first << " base";
+        for (PathResult path : paths)
+        {
+            std::cout << path.destination->getCoordinates().first << " des " << *path.maxPathLengthWithNoReprogram << " max" << std::endl;
+        }
+    }
+     //findValidReachedDestinations(); // find the missed spaceships
 
     // findPathBasedOnTotalDistance(aStar);
     // incrementNumOfReachedSpaceshipsToEachDestination();
 }
 void Control::setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship)
 {
-        AStarPathsForEachSpaceship = existingPathsForEachSpaceship;
-
+    AStarPathsForEachSpaceship = existingPathsForEachSpaceship;
 }
 void Control::collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities)
 {
@@ -496,6 +505,24 @@ void Control::findValidReachedDestinations()
     //         std::cout << "------------------------------------------------------\n";
     //     }
     // }
+}
+void Control::findValidReachedDestinationsForUnknownSpaceship()
+{
+    for (auto &base : AStarPathsForEachBaseCity)
+    {
+        for (auto it = base.second.begin(); it != base.second.end();)
+        {
+            if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(it->destination))
+            {
+                it++;
+            }
+            else
+            {
+                it = base.second.erase(it); // remove the path not reaching the enemy city
+                //aStar.eraseInvalidPathForUnknownSpaceship(it, base.first);
+            }
+        }
+    }
 }
 
 void Control::findPathForARadarResistantSpaceship()
@@ -639,7 +666,6 @@ void Control::findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spacesh
 void Control::routingForThirdScenario(AStar aStar)
 {
     findValidPathsFromEachBaseCity(aStar);
-
 
     //     findValidReachedDestinations();
     //     findPathBasedOnTotalDistance(spaceship);
@@ -1072,7 +1098,7 @@ void Control::displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes)
 
 void Control::setAStarResults(std::vector<PathResult> pathResults)
 {
-    //AStarPathsForEachSpaceship = existingPathsForEachSpaceship;
+    // AStarPathsForEachSpaceship = existingPathsForEachSpaceship;
     AStarResults = pathResults;
 }
 
@@ -1084,5 +1110,5 @@ int main()
     // c.routingForFifthScenario();
     // c.controlingNightsForFifthScenario();
     AStar aStar;
-    c.routingForSixthScenario(aStar);
+    c.routingForThirdScenario(aStar);
 }

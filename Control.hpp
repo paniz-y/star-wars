@@ -112,7 +112,7 @@ public:
     void routingForFifthScenario(AStar aStar);
     void routingForSixthScenario(AStar aStar);
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
-    void sortSpaceshipsBasedOnDestructionInAscendingOrder(std::vector<std::shared_ptr<Spaceship>>&);
+    void sortSpaceshipsBasedOnDestructionInAscendingOrder(std::vector<std::shared_ptr<Spaceship>> &);
     void sortSpaceshipsBasedOnDestructionInDecendingOrder(std::vector<std::shared_ptr<Spaceship>>);
     void initializeNumOfReachedSpaceshipsToEachDestination();
     void incrementNumOfReachedSpaceshipsToEachDestination();
@@ -122,6 +122,8 @@ public:
     void initializeListOfBaseCities(const std::vector<std::shared_ptr<City>> &baseCities);
     void findValidPathsFromEachBaseCity(AStar aStar);
     void setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
+    void findValidReachedDestinationsForUnknownSpaceship();
+
 private:
     int scenario;
     int numOfCitys;
@@ -132,7 +134,7 @@ private:
     std::fstream mapFile;
     Map mapWithSpies;
     Map mapWithDefenses;
-    //AStar aStar;
+    // AStar aStar;
     enum class spaceshipType
     {
         Awing,
@@ -176,8 +178,8 @@ private:
     std::unordered_map<std::shared_ptr<City>, int> numOfReachedSpaceshipsToEachDestination;
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachSpaceship;
     std::unordered_map<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> ReachedSpaceshipsToEachDestination;
-    //std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
+    // std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
     std::vector<std::shared_ptr<City>> listOfBaseCities;
-
+    std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> AStarPathsForEachBaseCity;
 };
 #endif
