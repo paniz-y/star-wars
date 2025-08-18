@@ -109,6 +109,7 @@ public:
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     void updateCurrentDefenseRatio(const std::shared_ptr<City> &finalDEstinationForCurrentSpaceship);
+    void findSpaceshipForSeventhScenario();
     void displayTheFinalResult(std::vector<std::shared_ptr<City>> finalRes);
     void setAStarResults(std::vector<PathResult> pathResults);
     void findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship);

@@ -53,7 +53,7 @@ void Control::initializeSpaceshipsWithPrices(std::vector<std::pair<std::string, 
 void Control::readMaxDamageFromFile()
 {
     std::string maxDamageString;
-    mapFile >> maxDamageString >> maxDamage;    
+    mapFile >> maxDamageString >> maxDamage;
 }
 std::vector<std::string> Control::readUnknownSpaceshipesFromFile()
 {
@@ -363,6 +363,25 @@ void Control::updateCurrentDefenseRatio(const std::shared_ptr<City> &finalDestin
         if (enemy->getDefense().getRatio() > 0)
         {
             enemy->defenseForChange().defend();
+        }
+    }
+}
+void Control::findSpaceshipForSeventhScenario()
+{
+    std::vector<std::vector<int>> dpForSpaceships(spaceshipPrices.size() + 1, std::vector<int>(maxDamage + 1, 0)); // initialize dp table
+    std::vector<std::pair<std::shared_ptr<Spaceship>, int>> spaceshipsWithPrices(spaceshipPrices.begin(), spaceshipPrices.end());
+
+    for (int i = 1; i <= spaceshipsWithPrices.size(); i++)
+    {
+        for (int w = 0; w <= maxDamage; w++)
+        {
+            if (spaceshipsWithPrices[i - 1].second <= w) //determine whether the spaceship is affordable
+            {
+                dpForSpaceships[i][w] = std::max(dpForSpaceships[i - 1][w],                                                                                               // not taking the spaceship
+                                                 spaceshipsWithPrices[i - 1].first->getDestruction() + (dpForSpaceships[i - 1][w - spaceshipsWithPrices[i - 1].second])); // taking the spaceship
+            }
+            else
+                dpForSpaceships[i][w] = dpForSpaceships[i - 1][w];// the price is not affordable
         }
     }
 }
