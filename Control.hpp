@@ -63,9 +63,13 @@ public:
     std::vector<std::shared_ptr<City>> initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
     std::vector<std::shared_ptr<City>> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
     void readMaxMapSizeFromFile();
+    void initializePriceFile();
+    void readMaxDamageFromFile();
+    std::vector <std::pair <std::string , int>> readPricesFromFile();
+    void initializeSpaceshipsWithPrices(std::vector <std::pair<std::string , int>>spaceships);
     std::vector<std::string> readUnknownSpaceshipesFromFile();
-    std::vector<int> readBaseCpacitesFromFile();
-    std::vector<std::pair<int, int>> readBaseCorrdinatesFromFile();
+    std::vector<int> readBaseCapacitesFromFile();
+    std::vector<std::pair<int, int>> readBaseCoordinatesFromFile();
     std::vector<int> readSpiesOfBasesFromFile();
     void readScenarioNumberFromFile();
     std::vector<std::pair<int, int>> updateSpiesAfterEachNight();
@@ -129,9 +133,11 @@ private:
     int numOfCitys;
     int numOfBaseCities;
     int numOfCivilCities;
-    int numOfEnemyCitys;
+    int numOfEnemyCities;
     int amountOfDestruction;
+    int maxDamage; //uesd in 7'th scenario
     std::fstream mapFile;
+    std::fstream priceFile;
     Map mapWithSpies;
     Map mapWithDefenses;
     // AStar aStar;
@@ -169,6 +175,7 @@ private:
     }
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     std::vector<std::shared_ptr<EnemyCity>> listOfEnemyCities;
+    std::unordered_map<std::shared_ptr<Spaceship>, int > spaceshipPrices;
     std::vector<std::shared_ptr<City>> enemiesAsCity;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> AStarPathsForEachSpaceship;
     std::vector<std::shared_ptr<City>> listOfBaseAndCivilCities;

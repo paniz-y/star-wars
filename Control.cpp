@@ -19,6 +19,42 @@ void Control::readMaxMapSizeFromFile()
     mapWithSpies.setMaxSize(maxMapSize);
     mapWithDefenses.setMaxSize(maxMapSize);
 }
+void Control::initializePriceFile()
+{
+    priceFile.open("price.txt", std::ios::in);
+    if (!priceFile.is_open())
+    {
+        std::cerr << "Unable to the price open file" << std::endl;
+        return;
+    }
+    std::vector<std::pair<std::string, int>> spaceshipPrices(8);
+    spaceshipPrices = readPricesFromFile();
+    initializeSpaceshipsWithPrices(spaceshipPrices);
+    priceFile.close();
+}
+std::vector<std::pair<std::string, int>> Control::readPricesFromFile()
+{
+    std::string nameOfSpaceshipString, priceOfSpaceshipString;
+    std::vector<std::pair<std::string, int>> spaceshipPrices(8);
+    for (int i = 0; i < 8; i++)
+    {
+        priceFile >> nameOfSpaceshipString >> spaceshipPrices[i].first >> priceOfSpaceshipString >> spaceshipPrices[i].second;
+    }
+    return spaceshipPrices;
+}
+void Control::initializeSpaceshipsWithPrices(std::vector<std::pair<std::string, int>> spaceships)
+{
+    for (int i = 0; i < spaceships.size(); i++)
+    {
+        std::shared_ptr<Spaceship> setSpaceshipWithPrice = findSuitableSpaceshipForBaseCities(spaceships[i].first);
+        spaceshipPrices[setSpaceshipWithPrice] = spaceships[i].second;
+    }
+}
+void Control::readMaxDamageFromFile()
+{
+    std::string maxDamageString;
+    mapFile >> maxDamageString >> maxDamage;    
+}
 std::vector<std::string> Control::readUnknownSpaceshipesFromFile()
 {
     std::string existingSpaceshipsString, totalNumberString, spaceshipsStringName;
@@ -42,7 +78,7 @@ std::vector<std::string> Control::readUnknownSpaceshipesFromFile()
     }
     return existingSpaceships;
 }
-std::vector<int> Control::readBaseCpacitesFromFile()
+std::vector<int> Control::readBaseCapacitesFromFile()
 {
     std::string basesCapacityStringFromFile;
     mapFile >> basesCapacityStringFromFile;
@@ -69,12 +105,17 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
     std::vector<std::shared_ptr<City>> baseCityForMap;
     readNumberOfBasesFromFile();
     std::vector<std::pair<int, int>> baseCityCoodinatesFromFile(numOfBaseCities);
-    baseCityCoodinatesFromFile = readBaseCorrdinatesFromFile();
+    baseCityCoodinatesFromFile = readBaseCoordinatesFromFile();
 
     std::vector<int> baseCitySpyFromFile(numOfBaseCities);
     baseCitySpyFromFile = readSpiesOfBasesFromFile();
 
-    if (scenario != 3)
+    if (scenario == 7)
+    {
+        readMaxDamageFromFile();
+        baseCityForMap = initializeBaseCitiesWithOutSpaceships(baseCityCoodinatesFromFile, baseCitySpyFromFile);
+    }
+    else if (scenario != 3)
     {
         std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCities);
         spaceshipsInBaseCities = readSpaceshipsOfBasesFromFile();
@@ -83,7 +124,7 @@ std::vector<std::shared_ptr<City>> Control::readBaseCitysFromFile()
     else
     {
         std::vector<int> baseCitiesCapacity(numOfBaseCities);
-        baseCitiesCapacity = readBaseCpacitesFromFile();
+        baseCitiesCapacity = readBaseCapacitesFromFile();
         std::vector<std::string> spaceshipsToBeDivided = readUnknownSpaceshipesFromFile();
         allSpaceships = initializeUnknownSpaceships(spaceshipsToBeDivided);
         baseCityForMap = initializeBaseCitiesWithOutSpaceships(baseCityCoodinatesFromFile, baseCitySpyFromFile);
@@ -127,7 +168,7 @@ std::vector<int> Control::readSpiesOfBasesFromFile()
     }
     return baseCitySpyFromFile;
 }
-std::vector<std::pair<int, int>> Control::readBaseCorrdinatesFromFile()
+std::vector<std::pair<int, int>> Control::readBaseCoordinatesFromFile()
 {
     std::string baseCityCoordinatesFromFile;
     mapFile >> baseCityCoordinatesFromFile;
@@ -235,16 +276,16 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
 {
     readNumberOfEnemyCitiesFromFile();
 
-    std::vector<std::pair<int, int>> enemyCityCoordinatesFromFile(numOfEnemyCitys);
+    std::vector<std::pair<int, int>> enemyCityCoordinatesFromFile(numOfEnemyCities);
     enemyCityCoordinatesFromFile = readEnemyCitiesCoordinatesFromFile();
 
-    std::vector<int> enemyCitySpyFromFile(numOfEnemyCitys);
+    std::vector<int> enemyCitySpyFromFile(numOfEnemyCities);
     enemyCitySpyFromFile = readEnemyCitiesSpiesFromFile();
 
-    std::vector<int> enemyCityDefenseRatioFromFile(numOfEnemyCitys);
+    std::vector<int> enemyCityDefenseRatioFromFile(numOfEnemyCities);
     enemyCityDefenseRatioFromFile = readEnemyCitiesDefenseRatioFromFile();
 
-    std::vector<Defense> enemyCitiesDefense(numOfEnemyCitys);
+    std::vector<Defense> enemyCitiesDefense(numOfEnemyCities);
     enemyCitiesDefense = readEnemyCitiesDefenseFromFile(enemyCityDefenseRatioFromFile);
 
     std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(enemyCityCoordinatesFromFile, enemyCitySpyFromFile, enemyCitiesDefense);
@@ -254,15 +295,15 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
 void Control::readNumberOfEnemyCitiesFromFile()
 {
     std::string numberOfEnemyCitysFromFile;
-    mapFile >> numberOfEnemyCitysFromFile >> numOfEnemyCitys;
+    mapFile >> numberOfEnemyCitysFromFile >> numOfEnemyCities;
 }
 std::vector<std::pair<int, int>> Control::readEnemyCitiesCoordinatesFromFile()
 {
     std::string enemyCityCoordinatesStringFromFile;
     mapFile >> enemyCityCoordinatesStringFromFile;
 
-    std::vector<std::pair<int, int>> enemyCityCoordinatesFromFile(numOfEnemyCitys);
-    for (int i = 0; i < numOfEnemyCitys; i++)
+    std::vector<std::pair<int, int>> enemyCityCoordinatesFromFile(numOfEnemyCities);
+    for (int i = 0; i < numOfEnemyCities; i++)
     {
         mapFile >> enemyCityCoordinatesFromFile[i].first >> enemyCityCoordinatesFromFile[i].second;
     }
@@ -270,10 +311,10 @@ std::vector<std::pair<int, int>> Control::readEnemyCitiesCoordinatesFromFile()
 }
 std::vector<int> Control::readEnemyCitiesSpiesFromFile()
 {
-    std::vector<int> enemyCitySpyFromFile(numOfEnemyCitys);
+    std::vector<int> enemyCitySpyFromFile(numOfEnemyCities);
     std::string enemyCitySpyStringFromFile;
     mapFile >> enemyCitySpyStringFromFile;
-    for (int i = 0; i < numOfEnemyCitys; i++)
+    for (int i = 0; i < numOfEnemyCities; i++)
     {
         mapFile >> enemyCitySpyFromFile[i];
     }
@@ -283,9 +324,9 @@ std::vector<int> Control::readEnemyCitiesDefenseRatioFromFile()
 {
     std::string enemyCityDefenseStringRatioFromFile;
     mapFile >> enemyCityDefenseStringRatioFromFile;
-    std::vector<int> enemyCityDefenseRatioFromFile(numOfEnemyCitys);
+    std::vector<int> enemyCityDefenseRatioFromFile(numOfEnemyCities);
 
-    for (int i = 0; i < numOfEnemyCitys; i++)
+    for (int i = 0; i < numOfEnemyCities; i++)
     {
         mapFile >> enemyCityDefenseRatioFromFile[i];
     }
@@ -293,8 +334,8 @@ std::vector<int> Control::readEnemyCitiesDefenseRatioFromFile()
 }
 std::vector<Defense> Control::readEnemyCitiesDefenseFromFile(std::vector<int> enemyCityDefenseRatioFromFile)
 {
-    std::vector<Defense> enemyCitiesDefense(numOfEnemyCitys);
-    for (int i = 0; i < numOfEnemyCitys; i++)
+    std::vector<Defense> enemyCitiesDefense(numOfEnemyCities);
+    for (int i = 0; i < numOfEnemyCities; i++)
     {
         enemyCitiesDefense[i].setRatio(enemyCityDefenseRatioFromFile[i]);
     }
@@ -389,7 +430,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase7.txt", std::ios::in);
+    mapFile.open("testcase10.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -448,7 +489,7 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
             std::cout << path.destination->getCoordinates().first << " des " << *path.maxPathLengthWithNoReprogram << " max" << std::endl;
         }
     }
-     //findValidReachedDestinations(); // find the missed spaceships
+    // findValidReachedDestinations(); // find the missed spaceships
 
     // findPathBasedOnTotalDistance(aStar);
     // incrementNumOfReachedSpaceshipsToEachDestination();
@@ -519,7 +560,7 @@ void Control::findValidReachedDestinationsForUnknownSpaceship()
             else
             {
                 it = base.second.erase(it); // remove the path not reaching the enemy city
-                //aStar.eraseInvalidPathForUnknownSpaceship(it, base.first);
+                // aStar.eraseInvalidPathForUnknownSpaceship(it, base.first);
             }
         }
     }
@@ -1105,10 +1146,11 @@ void Control::setAStarResults(std::vector<PathResult> pathResults)
 int main()
 {
     Control c;
+    c.initializePriceFile();
     c.readMapFromFile();
     // c.routing();
     // c.routingForFifthScenario();
     // c.controlingNightsForFifthScenario();
-    AStar aStar;
-    c.routingForThirdScenario(aStar);
+    // AStar aStar;
+    // c.routingForThirdScenario(aStar);
 }
