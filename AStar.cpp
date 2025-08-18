@@ -55,6 +55,11 @@ PathResult AStar::hasReachedADestination(const Node &currNode, int &spiesAtThePa
     return result;
 }
 
+std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> AStar::getExistingPathsForEachBaseCity()
+{
+    return existingPathsForEachBaseCity;
+}
+
 // std::vector<std::vector<std::shared_ptr<City>>> AStar::validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities)
 // {
 //     std::vector<std::vector<std::shared_ptr<City>>> completePathToEachDestination;
@@ -193,6 +198,7 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
             spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
             PathResult result = {currNode.currCity, spiesAtThePath, currNode.g, maxPathLength};
             pathResults.emplace_back(result);
+            existingPathsForEachBaseCity[start].emplace_back(result);
             return result;
         }
 
@@ -210,7 +216,7 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
 
             if (shortestDistance.find(neighbor.first) == shortestDistance.end() || neighborGScore < shortestDistance[neighbor.first])
             {
-               
+
                 if (heuristic(currNode.currCity, neighbor.first) > maxPathLength)
                 {
                     maxPathLength = heuristic(currNode.currCity, neighbor.first); // checks for a longer path that must be taken without reprogramming
@@ -226,10 +232,12 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
                 PathResult result = {currNode.currCity, spiesAtThePath, currNode.g, maxPathLength};
                 pathResults.emplace_back(result);
+                existingPathsForEachBaseCity[start].emplace_back(result);
             }
         }
     }
     PathResult result = {start, 0, -1, maxPathLength};
+    existingPathsForEachBaseCity[start].emplace_back(result);
     return result; // no rout found
 }
 

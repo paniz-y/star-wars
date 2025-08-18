@@ -56,7 +56,8 @@ public:
     std::vector<std::vector<std::shared_ptr<City>>> validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities);
     std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> getTrackNodes();
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> getNumOfSpiesForEachDestinationOfEachSpaceship();
-    PathResult hasReachedADestination(const Node &currNode, int &spiesAtThePath,const std::shared_ptr<Spaceship> &spaceship);
+    PathResult hasReachedADestination(const Node &currNode, int &spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
+    std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> getExistingPathsForEachBaseCity();
 
 private:
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
@@ -66,5 +67,6 @@ private:
     ;                                    // stores all the valid path calculated with A* search algorithm for each spaceship
     std::vector<PathResult> pathResults; // stores all the valid path calculated with A* search algorithm
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
+    std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> existingPathsForEachBaseCity; // stores all the valid path calculated with A* search algorithm for each base city
 };
 #endif
