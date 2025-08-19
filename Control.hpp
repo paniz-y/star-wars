@@ -65,8 +65,8 @@ public:
     void readMaxMapSizeFromFile();
     void initializePriceFile();
     void readMaxDamageFromFile();
-    std::vector <std::pair <std::string , int>> readPricesFromFile();
-    void initializeSpaceshipsWithPrices(std::vector <std::pair<std::string , int>>spaceships);
+    std::vector<std::pair<std::string, int>> readPricesFromFile();
+    void initializeSpaceshipsWithPrices(std::vector<std::pair<std::string, int>> spaceships);
     std::vector<std::string> readUnknownSpaceshipesFromFile();
     std::vector<int> readBaseCapacitesFromFile();
     std::vector<std::pair<int, int>> readBaseCoordinatesFromFile();
@@ -105,7 +105,7 @@ public:
     std::vector<int> readEnemyCitiesDefenseRatioFromFile();
     std::vector<Defense> readEnemyCitiesDefenseFromFile(std::vector<int> defenseRatio);
 
-    PathResult findBestDestinationBasedOnDefenseRatio(std::shared_ptr<Spaceship> spaceship);
+    PathResult findBestDestinationBasedOnDefenseRatioForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship);
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     void updateCurrentDefenseRatio(const std::shared_ptr<City> &finalDEstinationForCurrentSpaceship);
@@ -128,6 +128,8 @@ public:
     void findValidPathsFromEachBaseCity(AStar aStar);
     void setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
     void findValidReachedDestinationsForUnknownSpaceship();
+    PathResult findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity);
+    void initializeTrackedCitiesForEachBaseCity(const std::shared_ptr<City> &baseCity, AStar aStar);
 
 private:
     int scenario;
@@ -136,7 +138,7 @@ private:
     int numOfCivilCities;
     int numOfEnemyCities;
     int amountOfDestruction;
-    int maxDamage; //uesd in 7'th scenario
+    int maxDamage; // uesd in 7'th scenario
     std::fstream mapFile;
     std::fstream priceFile;
     Map mapWithSpies;
@@ -176,7 +178,7 @@ private:
     }
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     std::vector<std::shared_ptr<EnemyCity>> listOfEnemyCities;
-    std::unordered_map<std::shared_ptr<Spaceship>, int > spaceshipPrices;
+    std::unordered_map<std::shared_ptr<Spaceship>, int> spaceshipPrices;
     std::vector<std::shared_ptr<City>> enemiesAsCity;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> AStarPathsForEachSpaceship;
     std::vector<std::shared_ptr<City>> listOfBaseAndCivilCities;
@@ -189,5 +191,6 @@ private:
     // std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
     std::vector<std::shared_ptr<City>> listOfBaseCities;
     std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> AStarPathsForEachBaseCity;
+    std::unordered_map<std::shared_ptr<City>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachBaseCity;
 };
 #endif

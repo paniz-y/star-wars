@@ -375,13 +375,13 @@ void Control::findSpaceshipForSeventhScenario()
     {
         for (int w = 0; w <= maxDamage; w++)
         {
-            if (spaceshipsWithPrices[i - 1].second <= w) //determine whether the spaceship is affordable
+            if (spaceshipsWithPrices[i - 1].second <= w) // determine whether the spaceship is affordable
             {
                 dpForSpaceships[i][w] = std::max(dpForSpaceships[i - 1][w],                                                                                               // not taking the spaceship
                                                  spaceshipsWithPrices[i - 1].first->getDestruction() + (dpForSpaceships[i - 1][w - spaceshipsWithPrices[i - 1].second])); // taking the spaceship
             }
             else
-                dpForSpaceships[i][w] = dpForSpaceships[i - 1][w];// the price is not affordable
+                dpForSpaceships[i][w] = dpForSpaceships[i - 1][w]; // the price is not affordable
         }
     }
 }
@@ -449,7 +449,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase10.txt", std::ios::in);
+    mapFile.open("testcase7.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -496,13 +496,15 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
     {
         aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1]);
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
-        // initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
+        initializeTrackedCitiesForEachBaseCity(base, aStar);
     }
     AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
     findValidReachedDestinationsForUnknownSpaceship();
     for (auto &[base, paths] : AStarPathsForEachBaseCity)
     {
+        findBestDestinationBasedOnDefenseRatioForEachBaseCity(base);
         std::cout << base->getCoordinates().first << " base";
+        std::cout << paths.size() << "size" << std::endl;
         for (PathResult path : paths)
         {
             std::cout << path.destination->getCoordinates().first << " des " << *path.maxPathLengthWithNoReprogram << " max" << std::endl;
@@ -585,6 +587,19 @@ void Control::findValidReachedDestinationsForUnknownSpaceship()
     }
 }
 
+PathResult Control::findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity)
+{
+    if (AStarPathsForEachBaseCity.find(baseCity) == AStarPathsForEachBaseCity.end() || AStarPathsForEachBaseCity.find(baseCity)->second.empty())
+    {
+        throw std::runtime_error("No paths found for this base city");
+    }
+
+    auto it = AStarPathsForEachBaseCity.find(baseCity);
+    std::sort(it->second.begin(), it->second.end(), compareTwoRoutsBasedOnDefenseRatio);
+
+    return it->second.front();
+}
+
 void Control::findPathForARadarResistantSpaceship()
 {
     for (auto &spaceship : AStarPathsForEachSpaceship) // iterate over each spaceship's paths
@@ -651,7 +666,7 @@ void Control::findPathBasedOnTotalDistance(AStar aStar)
     }
 }
 
-PathResult Control::findBestDestinationBasedOnDefenseRatio(std::shared_ptr<Spaceship> spaceship)
+PathResult Control::findBestDestinationBasedOnDefenseRatioForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship)
 {
     if (AStarPathsForEachSpaceship.find(spaceship) == AStarPathsForEachSpaceship.end() || AStarPathsForEachSpaceship.find(spaceship)->second.empty())
     {
@@ -1111,6 +1126,10 @@ void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spac
     //     // for(auto &b : )
     // }
 }
+void Control::initializeTrackedCitiesForEachBaseCity(const std::shared_ptr<City> &baseCity, AStar aStar)
+{
+    trackedCitiesForEachBaseCity[baseCity] = aStar.getTrackNodes();
+}
 
 void Control::routing(AStar aStar)
 {
@@ -1127,7 +1146,7 @@ void Control::routing(AStar aStar)
         findPathForARadarResistantSpaceship();
         if (AStarResults.size() != 0)
         {
-            finalResultForCurrentSpaceship = findBestDestinationBasedOnDefenseRatio(spaceship);
+            finalResultForCurrentSpaceship = findBestDestinationBasedOnDefenseRatioForEachSpaceship(spaceship);
         }
         else
         {
@@ -1170,6 +1189,6 @@ int main()
     // c.routing();
     // c.routingForFifthScenario();
     // c.controlingNightsForFifthScenario();
-    // AStar aStar;
-    // c.routingForThirdScenario(aStar);
+    AStar aStar;
+    c.routingForThirdScenario(aStar);
 }
