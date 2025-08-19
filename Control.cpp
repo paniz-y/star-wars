@@ -492,24 +492,33 @@ void Control::initializeListOfBaseCities(const std::vector<std::shared_ptr<City>
 }
 void Control::findValidPathsFromEachBaseCity(AStar aStar)
 {
-    for (auto base : listOfBaseCities)
+    for (auto &base : listOfBaseCities)
     {
-        aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1]);
+        std::cout << "to control " << std::endl;
+        AStarPathsForEachBaseCity[base] = aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1]);
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
         initializeTrackedCitiesForEachBaseCity(base, aStar);
+        // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
     }
-    AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
     findValidReachedDestinationsForUnknownSpaceship();
-    for (auto &[base, paths] : AStarPathsForEachBaseCity)
-    {
-        findBestDestinationBasedOnDefenseRatioForEachBaseCity(base);
-        std::cout << base->getCoordinates().first << " base";
-        std::cout << paths.size() << "size" << std::endl;
-        for (PathResult path : paths)
-        {
-            std::cout << path.destination->getCoordinates().first << " des " << *path.maxPathLengthWithNoReprogram << " max" << std::endl;
-        }
-    }
+    // for (auto &[base, paths] : AStarPathsForEachBaseCity)
+    // {
+    //     findBestDestinationBasedOnDefenseRatioForEachBaseCity(base);
+    //     std::cout << base->getCoordinates().first << " base ";
+    //     std::cout << paths.size() << " size " << std::endl;
+    //     for (PathResult path : paths)
+    //     {
+    //         std::cout << path.destination->getCoordinates().first << " des " << *path.maxPathLengthWithNoReprogram << " max" << std::endl;
+    //     }
+    // }
+    
+    // for (auto &base : listOfBaseCities)
+    // {
+    //     for (auto &enemy : enemiesAsCity)
+    std::vector<std::shared_ptr<City>> a = aStar.tmpBackTrack(listOfBaseCities[1], listOfBaseAndCivilCities[4]);
+    for (auto &s : a)
+        std::cout << s->getCoordinates().first << " " << s->getCoordinates().second<< " -> ";
+    // }
     // findValidReachedDestinations(); // find the missed spaceships
 
     // findPathBasedOnTotalDistance(aStar);
@@ -1051,6 +1060,7 @@ void Control::IdentifyPriorityEnemyTarget(AStar aStar)
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
         initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
     }
+
     findValidReachedDestinations(); // find the missed spaceships
 
     findPathBasedOnTotalDistance(aStar);
@@ -1179,12 +1189,16 @@ void Control::setAStarResults(std::vector<PathResult> pathResults)
 {
     // AStarPathsForEachSpaceship = existingPathsForEachSpaceship;
     AStarResults = pathResults;
+    // for(auto &a : AStarResults)
+    // {
+    //     std::cout << "astar des " << a.destination->getCoordinates().first << std::endl;
+    // }
 }
 
 int main()
 {
     Control c;
-    c.initializePriceFile();
+    // c.initializePriceFile();
     c.readMapFromFile();
     // c.routing();
     // c.routingForFifthScenario();
