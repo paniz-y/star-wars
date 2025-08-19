@@ -225,6 +225,8 @@ PathResult AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::sh
                         spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
                         PathResult result = {currNode.currCity, spiesAtThePath, currNode.g, maxPathLength};
                         pathResults.emplace_back(result);
+                        existingPathsForEachBaseCity[start].emplace_back(result);
+
                         continue; // for the current city there is no need to continue the rest of algorithm
                     }
                 }
