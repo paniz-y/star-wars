@@ -71,7 +71,7 @@ public:
     std::vector<int> readBaseCapacitesFromFile();
     std::vector<std::pair<int, int>> readBaseCoordinatesFromFile();
     int readTotalNumberOfSpaceshipsFromFile();
-    std::vector <std::string> extractSpaceshipNamesFromFile(int numOfSpaceships);
+    std::vector<std::string> extractSpaceshipNamesFromFile(int numOfSpaceships);
     std::vector<int> readSpiesOfBasesFromFile();
     void readScenarioNumberFromFile();
     std::vector<std::pair<int, int>> updateSpiesAfterEachNight();
@@ -134,6 +134,7 @@ public:
     void findValidReachedDestinationsForUnknownSpaceship();
     PathResult findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity);
     void initializeTrackedCitiesForEachBaseCity(const std::shared_ptr<City> &baseCity, AStar aStar);
+    void separateBTypeAndCTypeSpaceships();
 
 private:
     int scenario;
@@ -196,5 +197,7 @@ private:
     std::vector<std::shared_ptr<City>> listOfBaseCities;
     std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> dijkstraPathsForEachBaseCity;
     std::unordered_map<std::shared_ptr<City>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachBaseCity;
+    std::vector<std::shared_ptr<Spaceship>> listOfBTypeSpaceships;
+    std::vector<std::shared_ptr<Spaceship>> listOfCTypeSpaceships;
 };
 #endif
