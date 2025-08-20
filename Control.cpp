@@ -500,12 +500,19 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
         // for (auto &enemy : listOfEnemyCities)
         // {
         std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], bType).costOfPath << " astar check" << std::endl;
-        std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], cType).costOfPath << " astar check" << std::endl;
-        setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
+        setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
+        AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
         initializeTrackedCitiesForEachSpaceship(bType, aStar);
         findValidReachedDestinations();
         findPathBasedOnTotalDistance(aStar);
+        // break;
+        // std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], cType).costOfPath << " astar check" << std::endl;
+        // setAStarResults(aStar.getPathResults()); // set the results collected by Astar
+        // setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
+        // initializeTrackedCitiesForEachSpaceship(bType, aStar);
+        // findValidReachedDestinations();
+        // findPathBasedOnTotalDistance(aStar);
         //}
     }
     // std::cout << "499" << std::endl;
@@ -515,16 +522,21 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
     // }
     // std::cout << std::endl;
     // initializeTrackedCitiesForEachBaseCity(base, aStar);
-    // dijkstraPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
-    for (auto &[base, paths] : AStarPathsForEachSpaceship)
+    // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
+    for (auto &[base, paths] : AStarPathsForEachBaseCity)
     {
         // findBestDestinationBasedOnDefenseRatioForEachBaseCity(base);
-        std::cout << base->getCoordinates().first << " base " << base->getNameOfSpaceship() << "l";
+        std::cout << base->getCoordinates().first << " base " << base->getCoordinates().first << " l ";
         std::cout << paths.size() << " size " << std::endl;
         for (PathResult path : paths)
         {
-            std::cout << "destination " << path.destination->getCoordinates().first << std::endl;
+            std::cout << "destination " << path.destination->getCoordinates().first << " spies " << path.numOfSpies << std::endl;
         }
+    }
+    std::vector<std::shared_ptr<City>> finalRes = aStar.tmpBackTrack(listOfBaseCities[0], allCities[allCities.size() - 2]);
+    for (auto &f : finalRes)
+    {
+        std::cout << f->getCoordinates().first << " ";
     }
     findValidReachedDestinationsForUnknownSpaceship();
 }
@@ -570,7 +582,7 @@ void Control::findValidReachedDestinations()
 }
 void Control::findValidReachedDestinationsForUnknownSpaceship()
 {
-    for (auto &base : dijkstraPathsForEachBaseCity)
+    for (auto &base : AStarPathsForEachBaseCity)
     {
         for (auto it = base.second.begin(); it != base.second.end();)
         {
@@ -588,12 +600,12 @@ void Control::findValidReachedDestinationsForUnknownSpaceship()
 
 PathResult Control::findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity)
 {
-    if (dijkstraPathsForEachBaseCity.find(baseCity) == dijkstraPathsForEachBaseCity.end() || dijkstraPathsForEachBaseCity.find(baseCity)->second.empty())
+    if (AStarPathsForEachBaseCity.find(baseCity) == AStarPathsForEachBaseCity.end() || AStarPathsForEachBaseCity.find(baseCity)->second.empty())
     {
         throw std::runtime_error("No paths found for this base city");
     }
 
-    auto it = dijkstraPathsForEachBaseCity.find(baseCity);
+    auto it = AStarPathsForEachBaseCity.find(baseCity);
     std::sort(it->second.begin(), it->second.end(), compareTwoRoutsBasedOnDefenseRatio);
 
     return it->second.front();

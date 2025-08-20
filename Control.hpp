@@ -195,7 +195,7 @@ private:
     std::unordered_map<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> ReachedSpaceshipsToEachDestination;
     // std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
     std::vector<std::shared_ptr<City>> listOfBaseCities;
-    std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> dijkstraPathsForEachBaseCity;
+    std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> AStarPathsForEachBaseCity;
     std::unordered_map<std::shared_ptr<City>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachBaseCity;
     std::vector<std::shared_ptr<Spaceship>> listOfBTypeSpaceships;
     std::vector<std::shared_ptr<Spaceship>> listOfCTypeSpaceships;
