@@ -70,9 +70,13 @@ public:
     std::vector<std::string> readUnknownSpaceshipesFromFile();
     std::vector<int> readBaseCapacitesFromFile();
     std::vector<std::pair<int, int>> readBaseCoordinatesFromFile();
+    int readTotalNumberOfSpaceshipsFromFile();
+    std::vector <std::string> extractSpaceshipNamesFromFile(int numOfSpaceships);
     std::vector<int> readSpiesOfBasesFromFile();
     void readScenarioNumberFromFile();
     std::vector<std::pair<int, int>> updateSpiesAfterEachNight();
+    std::vector<std::pair<int, int>> generatingRandomSpiesForEachNight(int spies);
+    int initializeRandomNumberOfSpiesForEachNight();
     void updateDefenseRatioAfterEachNight();
     void updateSpiesAndDefenseRatiosForEachNight();
     void removeAllSpiesAfterEachNight();
