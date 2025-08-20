@@ -497,26 +497,26 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
         std::cout << "to control " << std::endl;
         aStar.dijkstraForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[4]);
         std::cout << "499" << std::endl;
-        for (auto a : aStar.dijkstraBacktrack(coordsToCityPtr[base->getCoordinates()], allCities[4]))
+        for (auto a : aStar.dijkstraBacktrack(coordsToCityPtr[base->getCoordinates()], allCities[5]))
         {
             std::cout << " marggggggggggggggggggggggggggggggggg " << a->getCoordinates().first << " ";
         }
         std::cout << std::endl;
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
         initializeTrackedCitiesForEachBaseCity(base, aStar);
-        // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
+        dijkstraPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
+    }
+    for (auto &[base, paths] : dijkstraPathsForEachBaseCity)
+    {
+        findBestDestinationBasedOnDefenseRatioForEachBaseCity(base);
+        std::cout << base->getCoordinates().first << " base ";
+        std::cout << paths.size() << " size " << std::endl;
+        for (PathResult path : paths)
+        {
+            std::cout <<"destination " <<path.destination->getCoordinates().first << std::endl;
+        }
     }
     findValidReachedDestinationsForUnknownSpaceship();
-    // for (auto &[base, paths] : AStarPathsForEachBaseCity)
-    // {
-    //     findBestDestinationBasedOnDefenseRatioForEachBaseCity(base);
-    //     std::cout << base->getCoordinates().first << " base ";
-    //     std::cout << paths.size() << " size " << std::endl;
-    //     for (PathResult path : paths)
-    //     {
-    //         std::cout << path.destination->getCoordinates().first << " des " << *path.maxPathLengthWithNoReprogram << " max" << std::endl;
-    //     }
-    // }
 
     // for (auto &base : listOfBaseCities)
     // {
@@ -582,7 +582,7 @@ void Control::findValidReachedDestinations()
 }
 void Control::findValidReachedDestinationsForUnknownSpaceship()
 {
-    for (auto &base : AStarPathsForEachBaseCity)
+    for (auto &base : dijkstraPathsForEachBaseCity)
     {
         for (auto it = base.second.begin(); it != base.second.end();)
         {
@@ -601,12 +601,12 @@ void Control::findValidReachedDestinationsForUnknownSpaceship()
 
 PathResult Control::findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity)
 {
-    if (AStarPathsForEachBaseCity.find(baseCity) == AStarPathsForEachBaseCity.end() || AStarPathsForEachBaseCity.find(baseCity)->second.empty())
+    if (dijkstraPathsForEachBaseCity.find(baseCity) == dijkstraPathsForEachBaseCity.end() || dijkstraPathsForEachBaseCity.find(baseCity)->second.empty())
     {
         throw std::runtime_error("No paths found for this base city");
     }
 
-    auto it = AStarPathsForEachBaseCity.find(baseCity);
+    auto it = dijkstraPathsForEachBaseCity.find(baseCity);
     std::sort(it->second.begin(), it->second.end(), compareTwoRoutsBasedOnDefenseRatio);
 
     return it->second.front();
