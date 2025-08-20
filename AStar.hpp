@@ -62,7 +62,7 @@ public:
     PathResult hasReachedADestination(const Node &currNode, int spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     PathResult hasNotReachedDestination(const std::shared_ptr<City> &currCity, int spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> getExistingPathsForEachBaseCity();
-    std::vector<std::shared_ptr<City>> tmpBackTrack(const std::shared_ptr<City> start, const std::shared_ptr<City> destination);
+    std::vector<std::shared_ptr<City>> tmpBackTrack(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, int *spies = nullptr);
     // std::vector<std::shared_ptr<City>> dijkstraForUnknownSpaceshipc(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
     std::vector<std::shared_ptr<City>> dijkstraBacktrack(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
 
