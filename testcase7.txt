@@ -10,7 +10,7 @@ number_of_spys_in_each_base_city:
 0
 spaceships_in_each_base_city:
 number: 4 
-names: MillenniumFalcon MillenniumFalcon XwingStarFighter XwingStarFighter
+names: StarDestroyer MillenniumFalcon XwingStarFighter XwingStarFighter
 number: 3 
 name: XwingStarFighter MillenniumFalcon XwingStarFighter
 number: 4 
