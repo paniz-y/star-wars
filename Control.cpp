@@ -494,20 +494,20 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
 {
     std::shared_ptr<Spaceship> bType = std::make_shared<Spaceship>(5000, 2, 90, 500, "B1");
     std::shared_ptr<Spaceship> cType = std::make_shared<Spaceship>(3000, 2, 110, 700, "C1");
-
+    separateBTypeAndCTypeSpaceships();
     for (auto &base : listOfBaseCities)
     {
         // for (auto &enemy : listOfEnemyCities)
         // {
-        std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], bType).costOfPath << " astar check" << std::endl;
+        // std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], bType).costOfPath << " astar check" << std::endl;
+        std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], listOfCTypeSpaceships.back()).costOfPath << " astar check" << std::endl;
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
         setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
         AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
         initializeTrackedCitiesForEachSpaceship(bType, aStar);
         findValidReachedDestinations();
         findPathBasedOnTotalDistance(aStar);
-        // break;
-        // std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], cType).costOfPath << " astar check" << std::endl;
+        break;
         // setAStarResults(aStar.getPathResults()); // set the results collected by Astar
         // setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
         // initializeTrackedCitiesForEachSpaceship(bType, aStar);
@@ -523,17 +523,18 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
     // std::cout << std::endl;
     // initializeTrackedCitiesForEachBaseCity(base, aStar);
     // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
-    for (auto &[base, paths] : AStarPathsForEachBaseCity)
+    for (auto &[base, paths] : AStarPathsForEachSpaceship)
     {
         // findBestDestinationBasedOnDefenseRatioForEachBaseCity(base);
-        std::cout << base->getCoordinates().first << " base " << base->getCoordinates().first << " l ";
+        std::cout << base->getCoordinates().first << " spaceship " << base->getUncontrolledDistance() << " l ";
         std::cout << paths.size() << " size " << std::endl;
         for (PathResult path : paths)
         {
             std::cout << "destination " << path.destination->getCoordinates().first << " spies " << path.numOfSpies << std::endl;
         }
     }
-    std::vector<std::shared_ptr<City>> finalRes = aStar.tmpBackTrack(listOfBaseCities[0], allCities[allCities.size() - 2]);
+
+    std::vector<std::shared_ptr<City>> finalRes = aStar.tmpBackTrack(listOfBaseCities[0], allCities[allCities.size() - 1]);
     for (auto &f : finalRes)
     {
         std::cout << f->getCoordinates().first << " ";
@@ -1000,7 +1001,7 @@ void Control::separateBTypeAndCTypeSpaceships()
     // spaceships in third scenario are either type C or type B
     for (auto &spaceship : allSpaceships)
     {
-        if (spaceship->getTypeOfSpaceship() == "C1") // the spaceship is type C
+        if (spaceship->getTypeOfSpaceship() == "C1" || spaceship->getTypeOfSpaceship() == "C") // the spaceship is type C
         {
             listOfCTypeSpaceships.emplace_back(spaceship);
         }
