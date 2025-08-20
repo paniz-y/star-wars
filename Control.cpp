@@ -495,7 +495,13 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
     for (auto &base : listOfBaseCities)
     {
         std::cout << "to control " << std::endl;
-        AStarPathsForEachBaseCity[base] = aStar.AStarSearchForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1]);
+        aStar.dijkstraForUnKnownSpaceship(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[4]);
+        std::cout << "499" << std::endl;
+        for (auto a : aStar.dijkstraBacktrack(coordsToCityPtr[base->getCoordinates()], allCities[4]))
+        {
+            std::cout << " marggggggggggggggggggggggggggggggggg " << a->getCoordinates().first << " ";
+        }
+        std::cout << std::endl;
         setAStarResults(aStar.getPathResults()); // set the results collected by Astar
         initializeTrackedCitiesForEachBaseCity(base, aStar);
         // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
@@ -511,13 +517,10 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
     //         std::cout << path.destination->getCoordinates().first << " des " << *path.maxPathLengthWithNoReprogram << " max" << std::endl;
     //     }
     // }
-    
+
     // for (auto &base : listOfBaseCities)
     // {
     //     for (auto &enemy : enemiesAsCity)
-    std::vector<std::shared_ptr<City>> a = aStar.tmpBackTrack(listOfBaseCities[1], listOfBaseAndCivilCities[4]);
-    for (auto &s : a)
-        std::cout << s->getCoordinates().first << " " << s->getCoordinates().second<< " -> ";
     // }
     // findValidReachedDestinations(); // find the missed spaceships
 
