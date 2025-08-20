@@ -51,18 +51,13 @@ int Spaceship::getDestruction()
 {
     return destruction;
 }
-int Spaceship::setUncontrolledDistance()
+int Spaceship::getUncontrolledDistance()
 {
     return uncontrolledDistance;
 }
 std::string Spaceship::getTypeOfSpaceship()
 {
     return typeOfSpaceship;
-}
-
-int Spaceship::getUncontrolledDistance()
-{
-    return uncontrolledDistance;
 }
 
 std::string Spaceship::getNameOfSpaceship()
@@ -77,7 +72,7 @@ void Spaceship::setName(std::string name)
 
 int Spaceship::detected()
 {
-    if(radarResistance > 0)
+    if (radarResistance > 0)
         radarResistance--;
     return radarResistance;
 }

@@ -5,7 +5,7 @@
 class Spaceship
 {
 public:
-    Spaceship(int dis , int radar , int distruct , int controlDistance ,std::string type);
+    Spaceship(int dis, int radar, int distruct, int controlDistance, std::string type);
     void destroy();
     void setDistance(int dis);
     void setRadarResistance(int radar);
@@ -17,9 +17,8 @@ public:
     int getDistance();
     int getRadarResistance();
     int getDestruction();
-    int setUncontrolledDistance();
-    std::string getTypeOfSpaceship();
     int getUncontrolledDistance();
+    std::string getTypeOfSpaceship();
     std::string getNameOfSpaceship();
     void setName(std::string name);
     int detected();
