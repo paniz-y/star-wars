@@ -26,12 +26,9 @@ void AStar::initializeShortestDistanceForStart(Map mapWithSpies, const std::shar
     shortestDistance[start] = 0;
     for (auto &neighbor : mapWithSpies.getNeighbors(start))
     {
-        shortestDistance[neighbor.first] = DBL_MAX;
+        shortestDistance[neighbor.first] = std::numeric_limits<double>::infinity();
     }
-    for (auto &neighbor : mapWithSpies.getNeighbors(start))
-    {
-        std::cout << "DBL_MAX " << shortestDistance[neighbor.first]<< std::endl;
-    }
+   
 }
 
 std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> AStar::getExistingPathsForEachSpaceship()
@@ -78,7 +75,26 @@ std::vector<std::shared_ptr<City>> AStar::tmpBackTrack(const std::shared_ptr<Cit
         curr = trackNodes.at(curr);  // move to parent
     }
 
-    std::reverse(path.begin(), path.end());  // path is currently from destination → start
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
+std::vector<std::shared_ptr<City>> AStar::dijkstraBacktrack(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
+{
+    std::vector<std::shared_ptr<City>> path;
+    if (shortestDistance[destination] == std::numeric_limits<double>::infinity())
+    {
+        return path; // no path found
+    }
+
+    for (auto cur = destination; cur != nullptr;)
+    {
+        path.push_back(cur);
+        if (cur == start)
+            break;
+        cur = trackNodes[cur];
+    }
+    std::reverse(path.begin(), path.end());
     return path;
 }
 
@@ -197,92 +213,47 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
     existingPathsForEachSpaceship[spaceship].emplace_back(result);
     return result; // no rout found
 }
-std::vector<PathResult> AStar::AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
+void AStar::dijkstraForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
 {
-    std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
-    // nodes.push({start, nullptr, 0, heuristic(start, destination)});
-    nodes.push({start, nullptr, 0, 0});
-    shortestDistance.clear();
-    initializeShortestDistanceForStart(mapWithSpies, start);
 
-    int spiesAtThePath = 0;
+    // for (auto &neighbor : mapWithSpies.getNeighbors(start))
+    // {
+    //     shortestDistance[neighbor.first] = DBL_MAX;
+    // }
+    // shortestDistance[start] = 0.0;
+    initializeShortestDistanceForStart(mapWithSpies, start);
+    std::cout << "236" << std::endl;
+    nodes.push({start, nullptr, 0.0, 0.0});
+
     while (!nodes.empty())
     {
+        std::cout << "241" << std::endl;
+
         Node currNode = nodes.top();
         nodes.pop();
-    std::cout << "nodeeeeeeeee " << currNode.currCity->getCoordinates().first << std::endl;
+
+        if (currNode.g != shortestDistance[currNode.currCity])
+            continue;
 
         if (currNode.currCity == destination)
-        {
-            spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the destination has spies
-            PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
-            // std::cout << "curr " << currNode.currCity->getCoordinates().first << std::endl;
-            // existingPathsForEachSpaceship[spaceship].emplace_back(result);
-            pathResults.emplace_back(result);
-            // numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
-            return pathResults;
-            // hasReachedADestination(currNode, spiesAtThePath, spaceship);
-        }
-    std::cout << "cuurrrrrrrrrrrrrr " << currNode.currCity->getCoordinates().first << std::endl;
-        if (visitedNodeCities.find(currNode.currCity) != visitedNodeCities.end())
-        {
-            std::cout << "visited" << std::endl;
-            continue;
-        }
-        visitedNodeCities.insert(currNode.currCity);
+            break;
 
-        spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath); // detecting whether the city has spies
-
-        for (auto &neighbor : mapWithSpies.getNeighbors(currNode.currCity))
+        for (auto &edge : mapWithSpies.getNeighbors(currNode.currCity))
         {
-            double neighborGScore = neighbor.second + currNode.g;
+            auto neighbor = edge.first;
+            double weight = edge.second;
+            double newNeighborGScore = currNode.g + weight;
+            std::cout << "257" << std::endl;
 
-std::cout <<currNode.currCity->getCoordinates().first << " neighbor " << neighbor.first->getCoordinates().first <<" neighborGScore " << neighborGScore << " shortestDistance[neighbor.first] " << shortestDistance[neighbor.first] << std::endl;
-            if (neighborGScore < shortestDistance[neighbor.first])
+            if (newNeighborGScore < shortestDistance[neighbor])
             {
-                std::cout << "aya oon bozogtare?" << std::endl;
-                // if (heuristic(currNode.currCity, neighbor.first) > spaceship->getUncontrolledDistance())
-                // {
-                //     continue; // reprogram the spaceship if required
-                // }
-                if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(currNode.currCity))
-                {
-                    if (std::shared_ptr<EnemyCity> neighborEnemy = std::dynamic_pointer_cast<EnemyCity>(neighbor.first))
-                    {
-                        PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
-                        // existingPathsForEachSpaceship[spaceship].emplace_back(result);
-                        pathResults.emplace_back(result);
-                        // numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
-                        // hasReachedADestination(currNode, spiesAtThePath, spaceship);
-                        continue; // for the current city there is no need to continue the rest of algorithm
-                    }
-                }
-
-                shortestDistance[neighbor.first] = neighborGScore;
-                if (neighbor.first->getCoordinates().second > currNode.currCity->getCoordinates().second)
-                {
-                // if(neighbor.first != start)
-                    // std::cout << "behem bego chejori " << neighbor.first->getCoordinates().second << " " << currNode.currCity->getCoordinates().second << std::endl;
-                    trackNodes[neighbor.first] = currNode.currCity;
-                }
-
-            
-                // double neighborHScore = heuristic(neighbor.first, destination);
-                std::cout << "ifffffffffffffff " << currNode.currCity->getCoordinates().first << " " << neighbor.first->getCoordinates().first << std::endl;
-                nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore});
-                std::cout << "bad toppppp " <<  nodes.top().currCity->getCoordinates().first << " " << neighbor.first->getCoordinates().first << std::endl;
-                PathResult result = {currNode.currCity, spiesAtThePath, currNode.g};
-                pathResults.emplace_back(result);
-                // numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination] = result.numOfSpies;
-                // PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
-                // existingPathsForEachSpaceship[spaceship].emplace_back(result);
+                shortestDistance[neighbor] = newNeighborGScore;
+                trackNodes[neighbor] = currNode.currCity;
+                nodes.push({neighbor, currNode.currCity, newNeighborGScore, 0.0}); 
             }
         }
     }
-    PathResult result = {start, 0, -1};
-                pathResults.emplace_back(result);
-    // existingPathsForEachSpaceship[spaceship].emplace_back(result);
-    return pathResults; // no rout found
+    std::cout << "267" << std::endl;
 }
 std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities)
 {

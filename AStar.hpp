@@ -24,9 +24,12 @@ struct Node
     {
         return g + heuristic;
     }
-    bool operator>(const Node &node) const
+};
+struct CompareNode
+{
+    bool operator()(const Node &a, const Node &b) const
     {
-        return calculateF() > node.calculateF();
+        return a.calculateF() > b.calculateF();
     }
 };
 struct PathResult
@@ -48,7 +51,7 @@ public:
     std::vector<PathResult> getPathResults();
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     PathResult AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
-    std::vector<PathResult> AStarSearchForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
+    void dijkstraForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities);
     double heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second); // calculates heuristic for A* search algorithm
     void initializeShortestDistanceForStart(Map mapWithSpies, const std::shared_ptr<City> &start);
@@ -58,10 +61,14 @@ public:
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> getNumOfSpiesForEachDestinationOfEachSpaceship();
     PathResult hasReachedADestination(const Node &currNode, int &spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> getExistingPathsForEachBaseCity();
-    std::vector<std::shared_ptr<City>> tmpBackTrack(const std::shared_ptr<City> start,const std::shared_ptr<City> destination);
+    std::vector<std::shared_ptr<City>> tmpBackTrack(const std::shared_ptr<City> start, const std::shared_ptr<City> destination);
+    //std::vector<std::shared_ptr<City>> dijkstraForUnknownSpaceshipc(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
+    std::vector<std::shared_ptr<City>> dijkstraBacktrack(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
+
+
 private:
-    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> nodes; // stores each node and sortes them based on f score
-    std::unordered_map<std::shared_ptr<City>, double> shortestDistance;     // for each node stores the shortest distance required to reach it
+    std::priority_queue<Node, std::vector<Node>, CompareNode> nodes;
+    std::unordered_map<std::shared_ptr<City>, double> shortestDistance; // for each node stores the shortest distance required to reach it
     std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackNodes;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship;
     ;                                    // stores all the valid path calculated with A* search algorithm for each spaceship
