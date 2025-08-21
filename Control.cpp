@@ -554,7 +554,7 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
         }
     }
 
-    std::vector<std::shared_ptr<City>> finalRes = aStar.tmpBackTrack(listOfBaseCities[0], allCities[allCities.size() - 1]);
+    std::vector<std::shared_ptr<City>> finalRes = aStar.backTrackToFindSpies(listOfBaseCities[0], allCities[allCities.size() - 1]);
     for (auto &f : finalRes)
     {
         std::cout << f->getCoordinates().first << " ";
