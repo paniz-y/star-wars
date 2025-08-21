@@ -135,6 +135,8 @@ public:
     PathResult findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity);
     void initializeTrackedCitiesForEachBaseCity(const std::shared_ptr<City> &baseCity, AStar aStar);
     void separateBTypeAndCTypeSpaceships();
+    std::shared_ptr<Spaceship> findBestChoiceSpaceshipForThisPath(const std::shared_ptr<Spaceship> &bType, const int &pathIdx);
+    int findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceship, std::shared_ptr<Spaceship> &bestChoiceSpaceshipForThisPath);
 
 private:
     int scenario;
