@@ -449,7 +449,7 @@ std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<st
 }
 void Control::readMapFromFile()
 {
-    mapFile.open("testcase7.txt", std::ios::in);
+    mapFile.open("testcase8.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -490,7 +490,7 @@ void Control::initializeListOfBaseCities(const std::vector<std::shared_ptr<City>
 {
     listOfBaseCities.insert(listOfBaseCities.end(), baseCities.begin(), baseCities.end());
 }
-std::shared_ptr<Spaceship> Control::findBestChoiceSpaceshipForThisPath(const std::shared_ptr<Spaceship> &spaceship, const int &pathIdx)
+std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForThisPath(const std::shared_ptr<Spaceship> &spaceship, const int &pathIdx)
 {
     if (AStarPathsForEachSpaceship[spaceship].size() != 0)
     {
@@ -516,7 +516,7 @@ int Control::findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceshi
     for (int i{}; i < AStarPathsForEachSpaceship[spaceship].size(); i++)
     {
 
-        bestChoiceSpaceshipForThisPath = findBestChoiceSpaceshipForThisPath(spaceship, i);
+        bestChoiceSpaceshipForThisPath = findSuitableSpaceshipForThisPath(spaceship, i);
         if (bestChoiceSpaceshipForThisPath)
         {
             return i;
@@ -527,36 +527,53 @@ int Control::findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceshi
 
 void Control::findValidPathsFromEachBaseCity(AStar aStar)
 {
-    std::shared_ptr<Spaceship> bType = std::make_shared<Spaceship>(5000, 2, 90, 500, "B1");
-    std::shared_ptr<Spaceship> cType = std::make_shared<Spaceship>(3000, 2, 110, 700, "C1");
-    separateBTypeAndCTypeSpaceships();
-    for (auto &base : listOfBaseCities)
+    // std::shared_ptr<Spaceship> bType = std::make_shared<Spaceship>(5000, 2, 90, 500, "B1");
+    // std::shared_ptr<Spaceship> cType = std::make_shared<Spaceship>(3000, 2, 110, 700, "C1");
+    // separateBTypeAndCTypeSpaceships();
+    for (auto &spaceship : allSpaceships)
     {
-        // for (auto &enemy : listOfEnemyCities)
-        // {
-        // std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], bType).costOfPath << " astar check" << std::endl;
-        std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], listOfCTypeSpaceships.back()).costOfPath << " astar check" << std::endl;
-        setAStarResults(aStar.getPathResults()); // set the results collected by Astar
-        setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
 
-        // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
-        initializeTrackedCitiesForEachSpaceship(bType, aStar);
-        findValidReachedDestinations();
-        findPathBasedOnTotalDistance(aStar);
-        std::shared_ptr<Spaceship> bestChoiceSpaceshipForThisPath;
-        int pathFoundIdx = findPathForThisSpaceship(bType, bestChoiceSpaceshipForThisPath);
-        if (pathFoundIdx != -1)
+        for (auto &base : listOfBaseCities)
         {
-            ReachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[bType][pathFoundIdx].destination].emplace_back(bestChoiceSpaceshipForThisPath);
-        }
+            std::cout << "3spaceship " << spaceship->getNameOfSpaceship() << std::endl;
+            // for (auto &enemy : listOfEnemyCities)
+            // {
+            // std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], bType).costOfPath << " astar check" << std::endl;
+            std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], spaceship).costOfPath << " astar check" << std::endl;
+            setAStarResults(aStar.getPathResults()); // set the results collected by Astar
+            setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
 
-        break;
-        // setAStarResults(aStar.getPathResults()); // set the results collected by Astar
-        // setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
-        // initializeTrackedCitiesForEachSpaceship(bType, aStar);
-        // findValidReachedDestinations();
-        // findPathBasedOnTotalDistance(aStar);
-        //}
+            // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
+            initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
+            findValidReachedDestinations();
+            findPathBasedOnTotalDistance(aStar);
+            std::shared_ptr<Spaceship> bestChoiceSpaceshipForThisPath;
+            int pathFoundIdx = findPathForThisSpaceship(spaceship, bestChoiceSpaceshipForThisPath);
+            if (pathFoundIdx != -1) // this path is valid for this spaceship
+            {
+                ReachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination].emplace_back(bestChoiceSpaceshipForThisPath);
+                std::cout << "3bestChoiceSpaceshipForThisPath " << bestChoiceSpaceshipForThisPath->getNameOfSpaceship() << " " << " ReachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination]" << (AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination)->getCoordinates().first << std::endl;
+                for(auto t: trackedCitiesForEachSpaceship[spaceship])
+                {
+            
+                    std::cout << t.first->getCoordinates().first << " trackkkk " << t.second->getCoordinates().first << std::endl;
+                }
+                std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()],coordsToCityPtr[((AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination)->getCoordinates())], trackedCitiesForEachSpaceship[spaceship]);
+                std::cout << "557" << std::endl;
+                controlDestructions(spaceship->getDestruction());
+                std::cout << "559" << std::endl;
+
+                displayTheFinalResult(finalpathResult);
+                break;
+            }
+
+            // setAStarResults(aStar.getPathResults()); // set the results collected by Astar
+            // setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
+            // initializeTrackedCitiesForEachSpaceship(bType, aStar);
+            // findValidReachedDestinations();
+            // findPathBasedOnTotalDistance(aStar);
+            //}
+        }
     }
     // std::cout << "499" << std::endl;
     // for (auto a : aStar.dijkstraBacktrack(coordsToCityPtr[base->getCoordinates()], allCities[5]))
