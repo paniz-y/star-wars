@@ -857,7 +857,9 @@ void Control::clearAllAStarRelatedData()
 }
 void Control::routingForFifthScenario(AStar aStar)
 {
+    std::cout << "ghabl identity" << std::endl;
     IdentifyPriorityEnemyTarget(aStar);
+    std::cout << "bade identity" << std::endl;
     std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
     std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(ReachedSpaceshipsToEachDestination.begin(), ReachedSpaceshipsToEachDestination.end());
 
@@ -959,12 +961,18 @@ void Control::routingForSixthScenario(AStar aStar)
 
 void Control::IdentifyPriorityEnemyTarget(AStar aStar)
 {
-    for (auto spaceship : allSpaceships)
+    for (auto &spaceship : allSpaceships)
     {
-        aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
-        setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
-        setAStarResults(aStar.getPathResults()); // set the results collected by Astar
-        initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
+        for (auto &destination : enemiesAsCity)
+        {
+            std::cout << "ghabl astar " << std::endl;
+            aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], destination, spaceship);
+            std::cout << "bade astar " << std::endl;
+            // std::cout << "track " << aStargetTrackNodes
+            setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
+            setAStarResults(aStar.getPathResults()); // set the results collected by Astar
+            initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
+        }
     }
 
     findValidReachedDestinations(); // find the missed spaceships
@@ -1088,7 +1096,7 @@ int main()
     c.initializeMap();
     // c.routing();
     AStar aStar;
-    c.routingForFifthScenario(aStar);
     c.controlingNightsForFifthScenario();
-    //c.routingForThirdScenario(aStar);
+    // c.routingForFifthScenario(aStar);
+    // c.routingForThirdScenario(aStar);
 }
