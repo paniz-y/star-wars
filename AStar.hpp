@@ -51,20 +51,16 @@ public:
     std::vector<PathResult> getPathResults();
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     PathResult AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
-    PathResult dijkstraForUnKnownSpaceship(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
+    std::vector<std::shared_ptr<City>> AStar::backTrackToFindSpies(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, int *spiesAtThePath);
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities);
     double heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second); // calculates heuristic for A* search algorithm
     void initializeShortestDistanceForStart(Map mapWithSpies, const std::shared_ptr<City> &start);
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> getExistingPathsForEachSpaceship();
-    std::vector<std::vector<std::shared_ptr<City>>> validatePath(const std::shared_ptr<City> &start, const std::vector<std::shared_ptr<City>> &allEnemyCities);
     std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> getTrackNodes();
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> getNumOfSpiesForEachDestinationOfEachSpaceship();
     PathResult hasReachedADestination(const Node &currNode, int spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     PathResult hasNotReachedDestination(const std::shared_ptr<City> &currCity, int spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> getExistingPathsForEachBaseCity();
-    std::vector<std::shared_ptr<City>> tmpBackTrack(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, int *spies = nullptr);
-    // std::vector<std::shared_ptr<City>> dijkstraForUnknownSpaceshipc(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination)
-    std::vector<std::shared_ptr<City>> dijkstraBacktrack(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination);
 
 private:
     std::priority_queue<Node, std::vector<Node>, CompareNode> nodes;
