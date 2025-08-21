@@ -294,15 +294,25 @@ std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_p
     }
 
     std::shared_ptr<City> current = destination;
+    std::cout << start->getCoordinates().first << "start "<< std::endl;
     while (current != nullptr && current != start)
     {
+        std::cout << "301a" << std::endl;
+
         path.push_back(current);
+        std::cout << current->getCoordinates().first << " current" << std::endl;
         current = trackedCities.at(current);
-        increaseRadarResistant(trackedCities.at(current), spiesAtThePath);
+        std::cout << current->getCoordinates().first << " current" << std::endl;
+
+        //increaseRadarResistant(trackedCities.at(current), spiesAtThePath);
+        std::cout << "306a" << std::endl;
     }
+    std::cout << "309a" << std::endl;
+
     path.push_back(start);
     increaseRadarResistant(start, spiesAtThePath);
     std::reverse(path.begin(), path.end());
+    std::cout << "314a" << std::endl;
 
     return path;
 }
