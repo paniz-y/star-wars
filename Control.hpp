@@ -16,6 +16,7 @@
 #include "City.hpp"
 #include "BaseCity.hpp"
 #include "CivilCity.hpp"
+#include "Data.hpp"
 #include "Map.hpp"
 #include "EnemyCity.hpp"
 #include "Defense.hpp"
@@ -54,8 +55,8 @@ class Control
 
 public:
     Control();
-    void readMapFromFile();
-    std::vector<std::shared_ptr<City>> readBaseCitysFromFile();
+    void initializeMap();
+    std::vector<std::shared_ptr<City>> initializeAllBaseCitiesInAllScenarioa();
     std::vector<std::shared_ptr<City>> readCivilCitysFromFile();
     std::vector<std::shared_ptr<City>> readEnemyCitysFromFile();
     std::shared_ptr<Spaceship> findSuitableSpaceshipForBaseCities(std::string spaceshipsInBaseCities);
@@ -84,6 +85,7 @@ public:
     std::vector<std::shared_ptr<City>> initializeBaseCitiesWithOutSpaceships(std::vector<std::pair<int, int>> coorrdinates, std::vector<int> spies);
     std::vector<std::shared_ptr<Spaceship>> initializeUnknownSpaceships(std::vector<std::string> spaceships);
     void readNumberOfBasesFromFile();
+    void setMapMaxSize(int size);
     std::vector<std::pair<int, std::vector<std::string>>> readSpaceshipsOfBasesFromFile();
     void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
     void initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> base, std::vector<std::shared_ptr<City>> civil);
@@ -150,6 +152,7 @@ private:
     std::fstream priceFile;
     Map mapWithSpies;
     Map mapWithDefenses;
+    Data dataFile;
     // AStar aStar;
     enum class spaceshipType
     {
