@@ -7,10 +7,10 @@ base_city_coordinates:
 322 300  
 410 207
 420 541
-631 600
+631 420
 741 359
-802 880
-956 746
+802 450
+956 591
 number_of_spys_in_each_base_city_respectively:
 1
 1
@@ -46,9 +46,9 @@ name: Mantis RazorCrest DeathStar
 number_of_civil_citys: 6
 civil_city_coordinates: 
 370 700
-800 404
-986 367
-846 253
+800 486
+986 606
+846 756
 1025 1000
 1563 1400 
 number_of_spys_in_each_civil_city_respectively:
