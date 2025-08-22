@@ -11,7 +11,7 @@ public:
     BaseCity(std::pair<int, int> coords, bool spy);
     void setListOfSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships);
     std::vector<std::shared_ptr<Spaceship>> getListOfSpaceships();
-    int getCapacity() const;
+    int getCapacity() const override;
     void setCapacity(int capacity);
 
 private:
