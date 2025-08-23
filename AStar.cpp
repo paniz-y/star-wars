@@ -71,33 +71,20 @@ std::vector<std::shared_ptr<City>> AStar::backTrackToFindSpies(const std::shared
     std::vector<std::shared_ptr<City>> path;
     std::shared_ptr<City> curr = destination;
 
-    std::cout << "start " << start->getCoordinates().first << std::endl; 
-    std::cout << "start " << destination->getCoordinates().first << std::endl; 
-    for(auto &a : trackNodes)
-        std::cout << "hi " << a.first->getCoordinates().first << " " << a.second->getCoordinates().first << std::endl;
-    std::cout << trackNodes.size() << " size " << std::endl;
-    if (trackNodes.empty() || trackNodes.find(destination) == trackNodes.end())
-    {
-        throw std::runtime_error("destination " + std::to_string(destination->getCoordinates().first) + " " + std::to_string(destination->getCoordinates().second) + " not found in trackedCities or trackedCities is empty.");
-    }
-    while (curr != nullptr && curr != start)
+    while (curr != nullptr)
     {
         path.push_back(curr); // add current city to path
         if (spiesAtThePath)
             *spiesAtThePath = increaseRadarResistant(curr, *spiesAtThePath);
-        // if (curr == start)
-        // {
-        //     break;
-        // }
+        if (curr == start)
+        {
+            break;
+        }
 
         curr = trackNodes.at(curr); // move to parent
-        // std::cout << "at " << curr->getCoordinates().first << std::endl;
     }
-    for(auto &a : trackNodes)
-        std::cout << "hi " << a.first->getCoordinates().first << " " << a.second->getCoordinates().first << std::endl;
-    std::cout << "kharge " << std::endl;
-    // if (spiesAtThePath)
-    //     std::cout << "spies in back " << *spiesAtThePath << std::endl;
+    if (spiesAtThePath)
+        std::cout << "spies in back " << *spiesAtThePath << std::endl;
     std::reverse(path.begin(), path.end());
     return path;
 }
@@ -117,9 +104,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
 
         if (currNode.currCity == destination)
         {
-            std::cout << "to destiantion hastim " << std::endl;
-            if(currNode.currCity->getCoordinates().second < destination->getCoordinates().second)
-                backTrackToFindSpies(start, destination, &spiesAtThePath);
+            backTrackToFindSpies(start, destination, &spiesAtThePath);
             PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
             existingPathsForEachBaseCity[start].emplace_back(result);
         }
@@ -144,9 +129,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                 {
                     if (std::shared_ptr<EnemyCity> neighborEnemy = std::dynamic_pointer_cast<EnemyCity>(neighbor.first))
                     {
-                        std::cout << "inja hastim " << std::endl;
-                        if(currNode.currCity != start && currNode.currCity->getCoordinates().first > start->getCoordinates().second)
-                            backTrackToFindSpies(start, currNode.currCity, &spiesAtThePath);
+                        backTrackToFindSpies(start, currNode.currCity, &spiesAtThePath);
                         PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
                         spiesAtThePath = 0;
                         existingPathsForEachBaseCity[start].emplace_back(result);
@@ -163,9 +146,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
 
-                std::cout << "dige " << std::endl;
-                if(currNode.currCity != start && currNode.currCity->getCoordinates().second > start->getCoordinates().second)
-                    backTrackToFindSpies(start, currNode.currCity, &spiesAtThePath);
+                backTrackToFindSpies(start, currNode.currCity, &spiesAtThePath);
                 PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
                 spiesAtThePath = 0;
                 
