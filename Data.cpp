@@ -11,6 +11,7 @@ void Data::readMapFromFile()
     readBaseCitiesFromFile();
     readCivilCitiesFromFile();
     readEnemyCitiesFromFile();
+    readMaxMapSizeFromFile();
     mapFile.close();
 }
 void Data::readMaxMapSizeFromFile()
