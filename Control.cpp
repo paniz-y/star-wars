@@ -188,7 +188,7 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
         coordsToCityPtr[enemyCityCoordinatesFromFile[i]] = enemyCities.back();
     }
     findTheFarthestEnemyCity(enemyCities);
-    
+
     return enemyCities;
 }
 std::vector<std::shared_ptr<Spaceship>> Control::initializeUnknownSpaceships(std::vector<std::string> spaceships)
@@ -304,7 +304,6 @@ int Control::findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceshi
     }
     return -1; // for this spaceship there is no valid path starting from this base
 }
-
 
 bool Control::canSpaceshipReachDestinationFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base, AStar aStar)
 {
@@ -681,57 +680,99 @@ void Control::routingForSixthScenario(AStar aStar)
     std::shared_ptr<City> finalDestinationForCurrentSpaceship;
     for (auto &[des, spaceships] : ReachedSpaceshipsToEachDestination)
     {
+        std::cout << des->getCoordinates().first << " has aval " << spaceships.size() << std::endl;
+    }
+    for (auto &[des, spaceships] : ReachedSpaceshipsToEachDestination)
+    {
+        std::cout << des->getCoordinates().first << " has dovom " << spaceships.size() << std::endl;
+        for (auto &x : spaceships)
+        {
+            std::cout << "vay " << x->getNameOfSpaceship() << std::endl;
+        }
+
         finalDestinationForCurrentSpaceship = des;
-        std::cout << "ghabl sort\n";
+        // std::cout << "ghabl sort\n";
         sortSpaceshipsBasedOnDestructionInAscendingOrder(spaceships);
 
         for (auto spaceshipIt = spaceships.begin(); spaceshipIt != spaceships.end();)
         {
-            std::cout << "ghab; aval if" << std::endl;
-            if (!ifDestinationHasDefenseRatio(des))
+            std::cout << "(*spaceshipIt)->getHasReachedDestination() " << (*spaceshipIt)->getHasReachedDestination() << std::endl;
+            if (!((*spaceshipIt)->getHasReachedDestination()))
             {
-                std::cout << "ghabl backtrack\n";
-                std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceships.back()->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[spaceships.back()]);
+                std::cout << des->getCoordinates().first << " has sevom " << spaceships.size() << std::endl;
 
-                controlDestructions(spaceships.back()->getDestruction());
-
-                std::cout << "inja" << std::endl;
-                displayTheFinalResult(finalpathResult, spaceships.back()); // display the final path and destruction
-
-                std::cout << "ghab index\n";
-                auto index = std::distance(spaceships.begin(), spaceshipIt);
-
-                spaceships.pop_back();
-
-                if (index < spaceships.size())
-                    spaceshipIt = spaceships.begin() + index;
-                else
-                    spaceshipIt = spaceships.end();
-            }
-            else
-            {
-                // the spaceship has reached the destination being seen while that enemy destination has still got defense so the spaceship is missed
-                if (isSpaceshipRadarResistant((*spaceshipIt), aStar.getNumOfSpiesForEachDestinationOfEachSpaceship()[(*spaceshipIt)][des]))
+                std::cout << (*spaceshipIt)->getNameOfSpaceship() << " (*spaceshipIt)" << std::endl;
+                // std::cout << "ghab; aval if" << std::endl;
+                if (!ifDestinationHasDefenseRatio(des))
                 {
-                    std::cout << "here\n";
-                    std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[(*spaceshipIt)->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[(*spaceshipIt)]);
+                    // std::cout << "ghabl backtrack\n";
+                    std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceships.back()->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[spaceships.back()]);
 
-                    std::cout << "control destruction" << std::endl;
-                    controlDestructions((*spaceshipIt)->getDestruction());
-                    
-                    std::cout <<"displayTheFinalResult" << std::endl;
-                    displayTheFinalResult(finalpathResult, (*spaceshipIt)); // display the final path and destruction
-                    std::cout << "spaceship earase\n";
-                    spaceshipIt = spaceships.erase(spaceshipIt);
+                    controlDestructions(spaceships.back()->getDestruction());
+
+                    // std::cout << "inja" << std::endl;
+                    displayTheFinalResult(finalpathResult, spaceships.back()); // display the final path and destruction
+
+                    // std::cout << "ghab index\n";
+                    // auto index = std::distance(spaceships.begin(), spaceshipIt);
+
+                    // spaceships.pop_back();
+
+                    // if (index < spaceships.size())
+                    // {
+                    //     spaceshipIt = spaceships.begin() + index;
+                    //     // spaceshipIt++;
+                    // }
+                    // else
+                    //     spaceshipIt = spaceships.end();
+                    (*spaceshipIt)->setHasReachedDestination(true);
+                    auto itrTmp = spaceshipIt;
+                    while (itrTmp != spaceships.end())
+                    {
+                        itrTmp++;
+                    }
+                    spaceships.erase(itrTmp);
                 }
                 else
-                {std::cout << "update defense\n";
-                updateCurrentDefenseRatio(finalDestinationForCurrentSpaceship);
-                std::cout << "earse dige\n";
-                spaceshipIt = spaceships.erase(spaceshipIt);
-                std::cout << "bade earse\n";}
+                {
+                    std::cout << (*spaceshipIt)->getNameOfSpaceship() << " (*spaceshipIt)" << std::endl;
+
+                    // the spaceship has reached the destination being seen while that enemy destination has still got defense so the spaceship is missed
+                    if (isSpaceshipRadarResistant((*spaceshipIt), aStar.getNumOfSpiesForEachDestinationOfEachSpaceship()[(*spaceshipIt)][des]))
+                    {
+                        // std::cout << "here\n";
+                        std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[(*spaceshipIt)->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[(*spaceshipIt)]);
+
+                        // std::cout << "control destruction" << std::endl;
+                        controlDestructions((*spaceshipIt)->getDestruction());
+
+                        // std::cout << "displayTheFinalResult" << std::endl;
+                        displayTheFinalResult(finalpathResult, (*spaceshipIt)); // display the final path and destruction
+                                                                                // std::cout << "spaceship earase\n";
+                        (*spaceshipIt)->setHasReachedDestination(true);
+
+                        spaceshipIt = spaceships.erase(spaceshipIt);
+                        // spaceshipIt++;
+                    }
+                    else
+                    {
+                        (*spaceshipIt)->setHasReachedDestination(true);
+
+                        // std::cout << "update defense\n";
+                        updateCurrentDefenseRatio(finalDestinationForCurrentSpaceship);
+                        // std::cout << "earse dige\n";
+                        spaceshipIt = spaceships.erase(spaceshipIt);
+                        // spaceshipIt++;
+
+                        // std::cout << "bade earse\n";
+                    }
+                }
+                // std::cout << "bade else\n";
             }
-            std::cout << "bade else\n";
+            else 
+            {
+                spaceshipIt = spaceships.erase(spaceshipIt);
+            }
         }
     }
 }

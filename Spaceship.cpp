@@ -87,3 +87,13 @@ bool Spaceship::isStillResistant()
 }
 
 Spaceship::~Spaceship() = default;
+
+void Spaceship::setHasReachedDestination(const bool &reached)
+{
+    hasReachedDestination = reached;
+}
+
+bool Spaceship::getHasReachedDestination()
+{
+    return hasReachedDestination;
+}

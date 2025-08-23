@@ -24,6 +24,8 @@ public:
     int detected();
     bool isStillResistant();
     virtual ~Spaceship();
+    void setHasReachedDestination(const bool &reached);
+    bool getHasReachedDestination();
 
 protected:
     int distance;
@@ -33,5 +35,6 @@ protected:
     std::string nameOfSpaceship;
     std ::string typeOfSpaceship;
     std::pair<int, int> coordinats;
+    bool hasReachedDestination = false;
 };
 #endif
