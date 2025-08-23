@@ -61,7 +61,6 @@ public:
     PathResult hasReachedADestination(const Node &currNode, int spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     PathResult hasNotReachedDestination(const std::shared_ptr<City> &currCity, int spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> getExistingPathsForEachBaseCity();
-    std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>>> getExistingPathsForEachSpaceshipToEachDestination();
 
 private:
     std::priority_queue<Node, std::vector<Node>, CompareNode> nodes;
@@ -72,6 +71,5 @@ private:
     std::vector<PathResult> pathResults; // stores all the valid path calculated with A* search algorithm
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
     std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> existingPathsForEachBaseCity; // stores all the valid path calculated with A* search algorithm for each base city
-    std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>>> existingPathsForEachSpaceshipToEachDestination;
 };
 #endif
