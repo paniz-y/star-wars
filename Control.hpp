@@ -100,8 +100,8 @@ public:
     static bool compareSpaceshipsBasedOnDestructionInAscendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     static bool compareSpaceshipsBasedOnDestructionInDescendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     void findValidReachedDestinations(); // find paths that reach an enemy city
-    void findPathForARadarResistantSpaceship(); 
-    void findPathBasedOnTotalDistance(AStar aStar);// find paths that don't exceed total distance of the spaceship
+    void findPathForARadarResistantSpaceship();
+    void findPathBasedOnTotalDistance(AStar aStar); // find paths that don't exceed total distance of the spaceship
     void readNumberOfCivilCitiesFromFile();
     std::vector<std::pair<int, int>> readCivilCoordinatesFromFile();
     std::vector<int> readCivilSpiesFromFile();
@@ -113,7 +113,8 @@ public:
 
     PathResult findBestDestinationBasedOnDefenseRatioForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship);
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
-    static bool compareEnemiesBasedOnDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
+    static bool compareEnemiesBasedOnHorizontalDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
+    static bool compareEnemiesBasedOnVerticalDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     void updateCurrentDefenseRatio(const std::shared_ptr<City> &finalDEstinationForCurrentSpaceship);
     void findSpaceshipForSeventhScenario();
     void displayTheFinalResult(const std::vector<std::shared_ptr<City>> &finalRes, const std::shared_ptr<Spaceship> &spaceship);
@@ -141,7 +142,6 @@ public:
     void attributePathToSpaceship(const int &pathIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar);
     void displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base);
     bool canSpaceshipReachDestinationFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base, AStar aStar);
-    
 
 private:
     int scenario;
