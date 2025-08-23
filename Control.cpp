@@ -4,21 +4,7 @@ Control::Control()
 {
     amountOfDestruction = 0;
 }
-void Control::readScenarioNumberFromFile()
-{
-    std::string scenarioString;
-    mapFile >> scenarioString >> scenario;
-    std::cout << "scenario " << scenario << std::endl;
-}
-void Control::readMaxMapSizeFromFile()
-{
-    std::string maxOfMapString;
-    mapFile >> maxOfMapString;
-    int maxMapSize;
-    mapFile >> maxMapSize;
-    mapWithSpies.setMaxSize(maxMapSize);
-    mapWithDefenses.setMaxSize(maxMapSize);
-}
+
 void Control::initializePriceFile()
 {
     priceFile.open("price.txt", std::ios::in);
@@ -50,55 +36,6 @@ void Control::initializeSpaceshipsWithPrices(std::vector<std::pair<std::string, 
         spaceshipPrices[setSpaceshipWithPrice] = spaceships[i].second;
     }
 }
-void Control::readMaxDamageFromFile()
-{
-    std::string maxDamageString;
-    mapFile >> maxDamageString >> maxDamage;
-}
-std::vector<std::string> Control::readUnknownSpaceshipesFromFile()
-{
-    std::string existingSpaceshipsString;
-    mapFile >> existingSpaceshipsString;
-
-    int totalNumberOfSpaceships = readTotalNumberOfSpaceshipsFromFile();
-
-    std::vector<std::string> existingSpaceships(totalNumberOfSpaceships);
-    existingSpaceships = extractSpaceshipNamesFromFile(totalNumberOfSpaceships);
-
-    return existingSpaceships;
-}
-std::vector<std::string> Control::extractSpaceshipNamesFromFile(int totalNumberOfSpaceships)
-{
-    std::string spaceshipsStringName;
-    std::vector<std::string> existingSpaceships(totalNumberOfSpaceships);
-    mapFile >> spaceshipsStringName;
-    for (int i = 0; i < totalNumberOfSpaceships; i++)
-    {
-        mapFile >> existingSpaceships[i];
-    }
-    return existingSpaceships;
-}
-int Control::readTotalNumberOfSpaceshipsFromFile()
-{
-    std::string totalNumberString;
-    int totalNumberOfSpaceships;
-    mapFile >> totalNumberString >> totalNumberOfSpaceships;
-    return totalNumberOfSpaceships;
-}
-std::vector<int> Control::readBaseCapacitesFromFile()
-{
-    std::string basesCapacityStringFromFile;
-    mapFile >> basesCapacityStringFromFile;
-
-    std::vector<int> basesCapacityFromFile(numOfBaseCities);
-
-    for (int i = 0; i < numOfBaseCities; i++)
-    {
-        mapFile >> basesCapacityFromFile[i];
-    }
-
-    return basesCapacityFromFile;
-}
 std::vector<std::shared_ptr<City>> Control::initializeAllBaseCitiesInAllScenarioa()
 {
     std::vector<std::shared_ptr<City>> baseCityForMap;
@@ -118,59 +55,9 @@ std::vector<std::shared_ptr<City>> Control::initializeAllBaseCitiesInAllScenario
     }
     return baseCityForMap;
 }
-void Control::readNumberOfBasesFromFile()
-{
-    std::string numberOfBaseCitysFromFile;
-    mapFile >> numberOfBaseCitysFromFile >> numOfBaseCities;
-}
 void Control::setMapMaxSize(int maxMapSize)
 {
     mapWithSpies.setMaxSize(maxMapSize);
-}
-std::vector<std::pair<int, std::vector<std::string>>> Control::readSpaceshipsOfBasesFromFile()
-{
-    std::string spaceshipString;
-    mapFile >> spaceshipString;
-
-    std::string nameOfSPaceships, numberOfSpaceships;
-
-    std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities(numOfBaseCities);
-
-    for (int i = 0; i < spaceshipsInBaseCities.size(); i++)
-    {
-        mapFile >> numberOfSpaceships >> spaceshipsInBaseCities[i].first;
-        mapFile >> nameOfSPaceships;
-        for (int j = 0; j < spaceshipsInBaseCities[i].first; j++)
-        {
-            std::string spaceshipTmpName;
-            mapFile >> spaceshipTmpName;
-            spaceshipsInBaseCities[i].second.emplace_back(spaceshipTmpName);
-        }
-    }
-    return spaceshipsInBaseCities;
-}
-std::vector<int> Control::readSpiesOfBasesFromFile()
-{
-    std::string baseCitySpyStringFromFile;
-    mapFile >> baseCitySpyStringFromFile;
-    std::vector<int> baseCitySpyFromFile(numOfBaseCities);
-    for (int i = 0; i < numOfBaseCities; i++)
-    {
-        mapFile >> baseCitySpyFromFile[i];
-    }
-    return baseCitySpyFromFile;
-}
-std::vector<std::pair<int, int>> Control::readBaseCoordinatesFromFile()
-{
-    std::string baseCityCoordinatesFromFile;
-    mapFile >> baseCityCoordinatesFromFile;
-    std::vector<std::pair<int, int>> baseCityCoodinatesFromFile(numOfBaseCities);
-
-    for (int i = 0; i < numOfBaseCities; i++)
-    {
-        mapFile >> baseCityCoodinatesFromFile[i].first >> baseCityCoodinatesFromFile[i].second;
-    }
-    return baseCityCoodinatesFromFile;
 }
 std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(std::string spaceshipsInBaseCities)
 {
@@ -224,38 +111,6 @@ std::vector<std::shared_ptr<City>> Control::readCivilCitysFromFile()
     std::vector<std::shared_ptr<City>> civilCitiesForTheMap = initializeCivilCities(dataFile.getCivilCityCoodinates(), dataFile.getCivilCitySpies());
     return civilCitiesForTheMap;
 }
-void Control::readNumberOfCivilCitiesFromFile()
-{
-    std::string numberOfCivilCitysFromFile;
-    mapFile >> numberOfCivilCitysFromFile >> numOfCivilCities;
-}
-std::vector<std::pair<int, int>> Control::readCivilCoordinatesFromFile()
-{
-    std::vector<std::pair<int, int>> civilCityCoodinatesFromFile(numOfCivilCities);
-
-    std::string civilCityCoordinatesFromFile;
-    mapFile >> civilCityCoordinatesFromFile;
-
-    for (int i = 0; i < numOfCivilCities; i++)
-    {
-        mapFile >> civilCityCoodinatesFromFile[i].first >> civilCityCoodinatesFromFile[i].second;
-    }
-
-    return civilCityCoodinatesFromFile;
-}
-std::vector<int> Control::readCivilSpiesFromFile()
-{
-    std::string civilCitySpyStringFromFile;
-    std::vector<int> civilCitySpyFromFile(numOfCivilCities);
-    mapFile >> civilCitySpyStringFromFile;
-    for (int i = 0; i < numOfCivilCities; i++)
-    {
-        mapFile >> civilCitySpyFromFile[i];
-    }
-
-    return civilCitySpyFromFile;
-}
-
 std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
 {
     std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(dataFile.getEnemyCityCoordinates(), dataFile.getEnemyCitySpies(), dataFile.getEnemyCitiesDefense());
@@ -263,55 +118,7 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
 
     return enemyCitiesMadeForMap;
 }
-void Control::readNumberOfEnemyCitiesFromFile()
-{
-    std::string numberOfEnemyCitysFromFile;
-    mapFile >> numberOfEnemyCitysFromFile >> numOfEnemyCities;
-}
-std::vector<std::pair<int, int>> Control::readEnemyCitiesCoordinatesFromFile()
-{
-    std::string enemyCityCoordinatesStringFromFile;
-    mapFile >> enemyCityCoordinatesStringFromFile;
 
-    std::vector<std::pair<int, int>> enemyCityCoordinatesFromFile(numOfEnemyCities);
-    for (int i = 0; i < numOfEnemyCities; i++)
-    {
-        mapFile >> enemyCityCoordinatesFromFile[i].first >> enemyCityCoordinatesFromFile[i].second;
-    }
-    return enemyCityCoordinatesFromFile;
-}
-std::vector<int> Control::readEnemyCitiesSpiesFromFile()
-{
-    std::vector<int> enemyCitySpyFromFile(numOfEnemyCities);
-    std::string enemyCitySpyStringFromFile;
-    mapFile >> enemyCitySpyStringFromFile;
-    for (int i = 0; i < numOfEnemyCities; i++)
-    {
-        mapFile >> enemyCitySpyFromFile[i];
-    }
-    return enemyCitySpyFromFile;
-}
-std::vector<int> Control::readEnemyCitiesDefenseRatioFromFile()
-{
-    std::string enemyCityDefenseStringRatioFromFile;
-    mapFile >> enemyCityDefenseStringRatioFromFile;
-    std::vector<int> enemyCityDefenseRatioFromFile(numOfEnemyCities);
-
-    for (int i = 0; i < numOfEnemyCities; i++)
-    {
-        mapFile >> enemyCityDefenseRatioFromFile[i];
-    }
-    return enemyCityDefenseRatioFromFile;
-}
-std::vector<Defense> Control::readEnemyCitiesDefenseFromFile(std::vector<int> enemyCityDefenseRatioFromFile)
-{
-    std::vector<Defense> enemyCitiesDefense(numOfEnemyCities);
-    for (int i = 0; i < numOfEnemyCities; i++)
-    {
-        enemyCitiesDefense[i].setRatio(enemyCityDefenseRatioFromFile[i]);
-    }
-    return enemyCitiesDefense;
-}
 void Control::findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemies)
 {
     std::sort(enemies.begin(), enemies.end(), compareEnemiesBasedOnDistance);
@@ -373,7 +180,7 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
 std::vector<std::shared_ptr<Spaceship>> Control::initializeUnknownSpaceships(std::vector<std::string> spaceships)
 {
     std::vector<std::shared_ptr<Spaceship>> unknownSpaceships;
-    std::cout << "salam " << unknownSpaceships.size() << std::endl;
+
     for (int i = 0; i < spaceships.size(); i++)
     {
         unknownSpaceships.emplace_back(findSuitableSpaceshipForBaseCities(spaceships[i]));
@@ -475,7 +282,6 @@ int Control::findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceshi
 
     for (int i{}; i < AStarPathsForEachSpaceship[spaceship].size(); i++)
     {
-
         bestChoiceSpaceshipForThisPath = findSuitableSpaceshipForThisPath(spaceship, i);
         if (bestChoiceSpaceshipForThisPath)
         {
@@ -487,28 +293,23 @@ int Control::findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceshi
 
 void Control::findValidPathsFromEachBaseCity(AStar aStar)
 {
-    // std::shared_ptr<Spaceship> bType = std::make_shared<Spaceship>(5000, 2, 90, 500, "B1");
-    // std::shared_ptr<Spaceship> cType = std::make_shared<Spaceship>(3000, 2, 110, 700, "C1");
-    // separateBTypeAndCTypeSpaceships();
     for (auto &spaceship : allSpaceships)
     {
 
         for (auto &base : listOfBaseCities)
         {
-            std::cout << "3spaceship " << spaceship->getNameOfSpaceship() << std::endl;
-            // for (auto &enemy : listOfEnemyCities)
-            // {
-            // std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], bType).costOfPath << " astar check" << std::endl;
             std::cout << aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], spaceship).costOfPath << " astar check" << std::endl;
             setAStarResults(aStar.getPathResults()); // set the results collected by Astar
             setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
 
-            // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
             initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
             findValidReachedDestinations();
             findPathBasedOnTotalDistance(aStar);
+            
             std::shared_ptr<Spaceship> bestChoiceSpaceshipForThisPath;
+            
             int pathFoundIdx = findPathForThisSpaceship(spaceship, bestChoiceSpaceshipForThisPath);
+            
             if (pathFoundIdx != -1) // this path is valid for this spaceship
             {
                 ReachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination].emplace_back(bestChoiceSpaceshipForThisPath);
@@ -527,22 +328,9 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
                 break;
             }
 
-            // setAStarResults(aStar.getPathResults()); // set the results collected by Astar
-            // setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
-            // initializeTrackedCitiesForEachSpaceship(bType, aStar);
-            // findValidReachedDestinations();
-            // findPathBasedOnTotalDistance(aStar);
-            //}
         }
     }
-    // std::cout << "499" << std::endl;
-    // for (auto a : aStar.dijkstraBacktrack(coordsToCityPtr[base->getCoordinates()], allCities[5]))
-    // {
-    //     std::cout << " marggggggggggggggggggggggggggggggggg " << a->getCoordinates().first << " ";
-    // }
-    // std::cout << std::endl;
-    // initializeTrackedCitiesForEachBaseCity(base, aStar);
-    // AStarPathsForEachBaseCity = aStar.getExistingPathsForEachBaseCity();
+
     for (auto &[base, paths] : AStarPathsForEachSpaceship)
     {
         // findBestDestinationBasedOnDefenseRatioForEachBaseCity(base);
@@ -793,6 +581,7 @@ std::vector<std::pair<int, int>> Control::generatingRandomSpiesForEachNight(int 
 
     for (int i = 0; i < randomNumberOfSpies; i++)
         newSpiesCoordinates[i] = allCities[i]->getCoordinates();
+
     return newSpiesCoordinates;
 }
 void Control::updateSpiesCoordinatesAfterEachNight(std::vector<std::pair<int, int>> spies)
@@ -919,14 +708,11 @@ void Control::routingForSixthScenario(AStar aStar)
         {
             if (!ifDestinationHasDefenseRatio(des))
             {
-                std::cout << spaceships.back()->getNameOfSpaceship() << std::endl;
                 std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceships.back()->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[spaceships.back()]);
 
                 controlDestructions(spaceships.back()->getDestruction());
-                std::cout << des->getCoordinates().first << " (des)" << std::endl;
 
                 displayTheFinalResult(finalpathResult); // display the final path and destruction
-                std::cout << "finallllllllllll " << std::endl;
 
                 auto index = std::distance(spaceships.begin(), spaceshipIt);
 
@@ -947,7 +733,7 @@ void Control::routingForSixthScenario(AStar aStar)
                     controlDestructions((*spaceshipIt)->getDestruction());
 
                     displayTheFinalResult(finalpathResult); // display the final path and destruction
-                    std::cout << "finallllllllllll " << std::endl;
+
                     spaceshipIt = spaceships.erase(spaceshipIt);
                 }
                 updateCurrentDefenseRatio(finalDestinationForCurrentSpaceship);
@@ -1090,5 +876,6 @@ int main()
     // c.routingForFifthScenario();
     // c.controlingNightsForFifthScenario();
     AStar aStar;
-    c.routingForThirdScenario(aStar);
+    c.routingForSixthScenario(aStar);
+    // c.routingForThirdScenario(aStar);
 }
