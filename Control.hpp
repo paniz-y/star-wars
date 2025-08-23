@@ -132,14 +132,13 @@ public:
     void clearAllAStarRelatedData();
     void initializeListOfBaseCities(const std::vector<std::shared_ptr<City>> &baseCities);
     void findValidPathsFromEachBaseCity(AStar aStar);
-    void setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship, std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>>> existingPathsForEachSpaceshipToEachDestination);
+    void setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
     void findValidReachedDestinationsForUnknownSpaceship();
     PathResult findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity);
     void initializeTrackedCitiesForEachBaseCity(const std::shared_ptr<City> &baseCity, AStar aStar);
     void separateBTypeAndCTypeSpaceships();
     std::shared_ptr<Spaceship> findSuitableSpaceshipForThisPath(const std::shared_ptr<Spaceship> &bType, const int &pathIdx);
     int findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceship, std::shared_ptr<Spaceship> &bestChoiceSpaceshipForThisPath);
-    void initializeTrackedCitiesForEachSpaceshipToEachDestination(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &destination, AStar aStar);
 
 private:
     int scenario;
@@ -205,7 +204,5 @@ private:
     std::unordered_map<std::shared_ptr<City>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachBaseCity;
     std::vector<std::shared_ptr<Spaceship>> listOfBTypeSpaceships;
     std::vector<std::shared_ptr<Spaceship>> listOfCTypeSpaceships;
-    std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>>> trackedCitiesForEachSpaceshipToEachDestination;
-    std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>>> AStarPathsForEachSpaceshipToEachDestination;
 };
 #endif
