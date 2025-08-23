@@ -131,7 +131,6 @@ public:
     void controlingNightsForFifthScenario();
     void clearAllAStarRelatedData();
     void initializeListOfBaseCities(const std::vector<std::shared_ptr<City>> &baseCities);
-    void findValidPathsFromEachBaseCity(AStar aStar);
     void setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
     void findValidReachedDestinationsForUnknownSpaceship();
     PathResult findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity);
