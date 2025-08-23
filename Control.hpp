@@ -139,6 +139,7 @@ public:
     void separateBTypeAndCTypeSpaceships();
     std::shared_ptr<Spaceship> findSuitableSpaceshipForThisPath(const std::shared_ptr<Spaceship> &bType, const int &pathIdx);
     int findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceship, std::shared_ptr<Spaceship> &bestChoiceSpaceshipForThisPath);
+    void attributePathToSpaceship(const int &pathIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar);
 
 private:
     int scenario;
