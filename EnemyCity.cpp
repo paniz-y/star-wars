@@ -30,8 +30,3 @@ void EnemyCity::setDefenseForRatio(int ratio)
 {
     defense.setRatio(ratio);
 }
-
-int EnemyCity::getCapacity() const
-{
-    return defense.getRatio();
-}

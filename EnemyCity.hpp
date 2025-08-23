@@ -14,7 +14,6 @@ public:
     bool getHasDefense() const override;
     void setDefense(bool defense) override;
     void setDefenseForRatio(int ratio);
-    int getCapacity() const override;
 
 private:
     Defense defense;
