@@ -79,27 +79,28 @@ std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> AStar::getExi
     return existingPathsForEachBaseCity;
 }
 
-std::vector<std::shared_ptr<City>> AStar::backTrackToFindSpies(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, int *spiesAtThePath)
+int AStar::backTrackToFindSpies(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, std::unordered_map<std::shared_ptr <City> , std::shared_ptr <City>> trackedCities)
 {
     std::vector<std::shared_ptr<City>> path;
     std::shared_ptr<City> curr = destination;
-
+    int spiesAtThePath = 0;
+    
     while (curr != nullptr)
     {
         path.push_back(curr); // add current city to path
-        if (spiesAtThePath)
-            *spiesAtThePath = increaseRadarResistant(curr, *spiesAtThePath);
+        spiesAtThePath = increaseRadarResistant(curr, spiesAtThePath);
         if (curr == start)
         {
             break;
         }
 
-        curr = trackNodes.at(curr); // move to parent
+        curr = trackedCities.at(curr); // move to parent
+        
     }
     // if (spiesAtThePath)
-    //     std::cout << "spies in back " << *spiesAtThePath << std::endl;
-    std::reverse(path.begin(), path.end());
-    return path;
+        // std::cout << "spies in back " << spiesAtThePath << " for " << destination->getCoordinates().first << std::endl;
+    // std::reverse(path.begin(), path.end());
+    return spiesAtThePath;
 }
 
 PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)

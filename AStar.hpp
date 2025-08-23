@@ -49,11 +49,11 @@ class AStar
 {
 public:
     std::vector<PathResult> getPathResults();
-    void setTrackNodesInAstar(std::shared_ptr <City> neighbor , std::shared_ptr <City> curr);
-    void setReachedPathFromBaseCity(std::shared_ptr <City> start , PathResult res);
+    void setTrackNodesInAstar(std::shared_ptr<City> neighbor, std::shared_ptr<City> curr);
+    void setReachedPathFromBaseCity(std::shared_ptr<City> start, PathResult res);
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
     PathResult AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
-    std::vector<std::shared_ptr<City>> backTrackToFindSpies(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, int *spiesAtThePath = nullptr);
+    int backTrackToFindSpies(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities);
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities);
     double heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second); // calculates heuristic for A* search algorithm
     void initializeShortestDistanceForStart(Map mapWithSpies, const std::shared_ptr<City> &start);
