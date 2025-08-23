@@ -70,7 +70,6 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp",
-        "unordered_set": "cpp"
+        "variant": "cpp"
     }
 }

@@ -1087,8 +1087,8 @@ int main()
     // c.initializePriceFile();
     c.initializeMap();
     // c.routing();
+    // c.routingForFifthScenario();
+    // c.controlingNightsForFifthScenario();
     AStar aStar;
-    c.routingForFifthScenario(aStar);
-    c.controlingNightsForFifthScenario();
-    //c.routingForThirdScenario(aStar);
+    c.routingForThirdScenario(aStar);
 }
