@@ -297,7 +297,6 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
     {
         for (auto &base : listOfBaseCities)
         {
-            std::cout << spaceship->getNameOfSpaceship() << std::endl;
             aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], spaceship);
             setAStarResults(aStar.getPathResults()); // set the results collected by Astar
             setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
@@ -305,23 +304,29 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
             initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
             findValidReachedDestinations();
             findPathBasedOnTotalDistance(aStar);
-
-            std::shared_ptr<Spaceship> selectedSpaceshipForThisPath;
-
-            int pathFoundIdx = findPathForThisSpaceship(spaceship, selectedSpaceshipForThisPath);
-
-            if (pathFoundIdx != -1) // this path is valid for this spaceship
+            if(canSpaceshipReachDestinationFromThisBase(spaceship, base, aStar))
             {
-                attributePathToSpaceship(pathFoundIdx, spaceship, selectedSpaceshipForThisPath, aStar);
                 break;
             }
-            displayMissedSpaceshipFromThisBase(spaceship, base);
         }
     }
 
-    std::vector<std::shared_ptr<City>> finalRes = aStar.backTrackToFindSpies(listOfBaseCities[0], allCities[allCities.size() - 1]);
+    //std::vector<std::shared_ptr<City>> finalRes = aStar.backTrackToFindSpies(listOfBaseCities[0], allCities[allCities.size() - 1]);
 
-    findValidReachedDestinationsForUnknownSpaceship();
+}
+bool Control::canSpaceshipReachDestinationFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base, AStar aStar)
+{
+    std::shared_ptr<Spaceship> selectedSpaceshipForThisPath;
+
+    int pathFoundIdx = findPathForThisSpaceship(spaceship, selectedSpaceshipForThisPath);
+
+    if (pathFoundIdx != -1) // this path is valid for this spaceship
+    {
+        attributePathToSpaceship(pathFoundIdx, spaceship, selectedSpaceshipForThisPath, aStar);
+        return true;
+    }
+    displayMissedSpaceshipFromThisBase(spaceship, base);
+    return false;
 }
 
 void Control::displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base)
