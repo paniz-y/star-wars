@@ -4,6 +4,19 @@ std::vector<PathResult> AStar::getPathResults()
     return pathResults;
 }
 
+void AStar::setTrackNodesInAstar(std::shared_ptr<City> neighbor, std::shared_ptr<City> currCity)
+{
+    if (neighbor->getCoordinates().second > currCity->getCoordinates().second)
+    {
+        trackNodes[neighbor] = currCity;
+    }
+}
+
+void AStar::setReachedPathFromBaseCity(std::shared_ptr<City> start, PathResult result)
+{
+    existingPathsForEachBaseCity[start].emplace_back(result);
+}
+
 int AStar::increaseRadarResistant(std::shared_ptr<City> city, int spysDetected)
 {
     if (city->getExistenceOfSpy())
@@ -106,7 +119,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
         {
             backTrackToFindSpies(start, destination, &spiesAtThePath);
             PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
-            existingPathsForEachBaseCity[start].emplace_back(result);
+            setReachedPathFromBaseCity(start , result);
         }
 
         if (visitedNodeCities.find(currNode.currCity) != visitedNodeCities.end())
@@ -132,16 +145,14 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                         backTrackToFindSpies(start, currNode.currCity, &spiesAtThePath);
                         PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
                         spiesAtThePath = 0;
-                        existingPathsForEachBaseCity[start].emplace_back(result);
+                        setReachedPathFromBaseCity(start , result);
                         continue; // for the current city there is no need to continue the rest of algorithm
                     }
                 }
 
                 shortestDistance[neighbor.first] = neighborGScore;
-                if (neighbor.first->getCoordinates().second > currNode.currCity->getCoordinates().second)
-                {
-                    trackNodes[neighbor.first] = currNode.currCity;
-                }
+                
+                setTrackNodesInAstar(neighbor.first, currNode.currCity);
 
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
@@ -149,8 +160,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                 backTrackToFindSpies(start, currNode.currCity, &spiesAtThePath);
                 PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
                 spiesAtThePath = 0;
-                
-                existingPathsForEachBaseCity[start].emplace_back(result);
+                setReachedPathFromBaseCity(start , result);
             }
         }
     }
