@@ -297,6 +297,7 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
     {
         for (auto &base : listOfBaseCities)
         {
+            std::cout << spaceship->getNameOfSpaceship() << std::endl;
             aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], allCities[allCities.size() - 1], spaceship);
             setAStarResults(aStar.getPathResults()); // set the results collected by Astar
             setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
@@ -314,6 +315,7 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
                 attributePathToSpaceship(pathFoundIdx, spaceship, selectedSpaceshipForThisPath, aStar);
                 break;
             }
+            displayMissedSpaceshipFromThisBase(spaceship, base);
         }
     }
 
@@ -321,6 +323,13 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
 
     findValidReachedDestinationsForUnknownSpaceship();
 }
+
+void Control::displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base)
+{
+    std::cout << spaceship->getNameOfSpaceship() << " would have been missed starting from base placed at: "
+              << "(" << base->getCoordinates().first << " , " << base->getCoordinates().second << ")" << std::endl;
+}
+
 void Control::attributePathToSpaceship(const int &pathFoundIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar)
 {
     ReachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination].emplace_back(selectedSpaceshipForThisPath);
@@ -857,6 +866,6 @@ int main()
     // c.routingForFifthScenario();
     // c.controlingNightsForFifthScenario();
     AStar aStar;
-    //c.routingForSixthScenario(aStar);
-     c.routingForThirdScenario(aStar);
+    // c.routingForSixthScenario(aStar);
+    c.routingForThirdScenario(aStar);
 }

@@ -99,9 +99,9 @@ public:
     static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &first, const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &second);
     static bool compareSpaceshipsBasedOnDestructionInAscendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     static bool compareSpaceshipsBasedOnDestructionInDescendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
-    void findValidReachedDestinations();
-    void findPathForARadarResistantSpaceship();
-    void findPathBasedOnTotalDistance(AStar aStar);
+    void findValidReachedDestinations(); // find paths that reach an enemy city
+    void findPathForARadarResistantSpaceship(); 
+    void findPathBasedOnTotalDistance(AStar aStar);// find paths that don't exceed total distance of the spaceship
     void readNumberOfCivilCitiesFromFile();
     std::vector<std::pair<int, int>> readCivilCoordinatesFromFile();
     std::vector<int> readCivilSpiesFromFile();
@@ -140,6 +140,7 @@ public:
     std::shared_ptr<Spaceship> findSuitableSpaceshipForThisPath(const std::shared_ptr<Spaceship> &bType, const int &pathIdx);
     int findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceship, std::shared_ptr<Spaceship> &bestChoiceSpaceshipForThisPath);
     void attributePathToSpaceship(const int &pathIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar);
+    void displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base);
 
 private:
     int scenario;
