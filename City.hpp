@@ -15,7 +15,6 @@ public:
     bool getExistenceOfSpy();
     virtual bool getHasDefense() const;
     virtual void setDefense(bool);
-    virtual int getCapacity() const = 0;
  
 protected:
     std::pair<int, int> coordinates;
