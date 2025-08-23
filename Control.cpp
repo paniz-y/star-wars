@@ -559,11 +559,11 @@ void Control::findValidPathsFromEachBaseCity(AStar aStar)
         }
     }
 
-    // std::vector<std::shared_ptr<City>> finalRes = aStar.backTrackToFindSpies(listOfBaseCities[0], allCities[allCities.size() - 1]);
-    // for (auto &f : finalRes)
-    // {
-    //     std::cout << f->getCoordinates().first << " ";
-    // }
+    std::vector<std::shared_ptr<City>> finalRes = aStar.backTrackToFindSpies(listOfBaseCities[0], allCities[allCities.size() - 1]);
+    for (auto &f : finalRes)
+    {
+        std::cout << f->getCoordinates().first << " ";
+    }
     findValidReachedDestinationsForUnknownSpaceship();
 }
 void Control::setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship, std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>>> existingPathsForEachSpaceshipToEachDestination)
@@ -1025,17 +1025,15 @@ void Control::IdentifyPriorityEnemyTarget(AStar aStar)
     {
         for (auto &destination : enemiesAsCity)
         {
-            std::cout << spaceship->getNameOfSpaceship() << " spaceship->getNameOfSpaceship() " << spaceship->getCoordinates().first << " coord " << std::endl;
-            std::cout << "ghabl astar "<< coordsToCityPtr[spaceship->getCoordinates()]->getCoordinates().first << std::endl;
+            std::cout << spaceship->getNameOfSpaceship() << " spaceship->getNameOfSpaceship()" << std::endl;
+            // std::cout << "ghabl astar " << std::endl;
             aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], destination, spaceship);
-            std::cout << "bade astar " << std::endl;
+            // std::cout << "bade astar " << std::endl;
             //  std::cout << "track " << aStargetTrackNodes
             setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship(), aStar.getExistingPathsForEachSpaceshipToEachDestination());
             setAStarResults(aStar.getPathResults()); // set the results collected by Astar
             initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
             initializeTrackedCitiesForEachSpaceshipToEachDestination(spaceship, destination, aStar);
-            aStar.backTrackToFindSpies(coordsToCityPtr[spaceship->getCoordinates()], destination,trackedCitiesForEachSpaceshipToEachDestination[spaceship][destination]);
-            std::cout << "fek konam " << std::endl;
         }
     }
 
@@ -1047,8 +1045,7 @@ void Control::IdentifyPriorityEnemyTarget(AStar aStar)
     {
         for (auto &des : destinations)
         {
-            for(auto &a : des.second)
-                std::cout << spaceship->getNameOfSpaceship() << " name " << des.first->getCoordinates().first << " des " << des.second.size() << " size " << a.destination->getCoordinates().first << " path " << std::endl;
+            std::cout << spaceship->getNameOfSpaceship() << " name " << des.first->getCoordinates().first << " des " << des.second.size() << " size " << des.second.back().destination->getCoordinates().first << " path " << std::endl;
         }
     }
 }
