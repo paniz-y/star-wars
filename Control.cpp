@@ -328,7 +328,7 @@ void Control::displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship
 
 void Control::attributePathToSpaceship(const int &pathFoundIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar)
 {
-    ReachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination].emplace_back(selectedSpaceshipForThisPath);
+    reachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination].emplace_back(selectedSpaceshipForThisPath);
 
     std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[((AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination)->getCoordinates())], trackedCitiesForEachSpaceship[spaceship]);
     controlDestructions(spaceship->getDestruction());
@@ -382,8 +382,6 @@ void Control::findValidReachedDestinations()
             spaceshipIt++;
     }
 }
-
-
 
 void Control::findPathForARadarResistantSpaceship()
 {
@@ -604,19 +602,17 @@ void Control::clearAllAStarRelatedData()
 {
     AStarPathsForEachSpaceship.clear();
     AStarResults.clear();
-    numOfReachedSpaceshipsToEachDestination.clear();
     trackedCitiesForEachSpaceship.clear();
-    ReachedSpaceshipsToEachDestination.clear();
+    reachedSpaceshipsToEachDestination.clear();
 }
 void Control::routingForFifthScenario(AStar aStar)
 {
     IdentifyPriorityEnemyTarget(aStar);
-    std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
-    std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(ReachedSpaceshipsToEachDestination.begin(), ReachedSpaceshipsToEachDestination.end());
+    std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end());
 
     std::sort(reachedSpaceshipsToEachDestinationTmp.begin(), reachedSpaceshipsToEachDestinationTmp.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
     std::shared_ptr<City> finalDestinationForCurrentSpaceship;
-    for (auto &[des, spaceships] : ReachedSpaceshipsToEachDestination)
+    for (auto &[des, spaceships] : reachedSpaceshipsToEachDestination)
     {
         finalDestinationForCurrentSpaceship = des;
         sortSpaceshipsBasedOnDestructionInAscendingOrder(spaceships);
@@ -658,15 +654,14 @@ void Control::routingForFifthScenario(AStar aStar)
 void Control::routingForSixthScenario(AStar aStar)
 {
     IdentifyPriorityEnemyTarget(aStar);
-    std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
-    std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(ReachedSpaceshipsToEachDestination.begin(), ReachedSpaceshipsToEachDestination.end());
+    std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end());
 
     std::sort(reachedSpaceshipsToEachDestinationTmp.begin(), reachedSpaceshipsToEachDestinationTmp.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
     std::shared_ptr<City> finalDestinationForCurrentSpaceship;
-  
-    for (auto &[des, spaceships] : ReachedSpaceshipsToEachDestination)
+
+    for (auto &[des, spaceships] : reachedSpaceshipsToEachDestination)
     {
-     
+
         finalDestinationForCurrentSpaceship = des;
         sortSpaceshipsBasedOnDestructionInAscendingOrder(spaceships);
 
@@ -717,7 +712,6 @@ void Control::routingForSixthScenario(AStar aStar)
             }
         }
     }
-    
 }
 
 void Control::IdentifyPriorityEnemyTarget(AStar aStar)
@@ -730,7 +724,7 @@ void Control::IdentifyPriorityEnemyTarget(AStar aStar)
     }
     findValidReachedDestinations(); // find the missed spaceships
     findPathBasedOnTotalDistance(aStar);
-    incrementNumOfReachedSpaceshipsToEachDestination();
+    incrementReachedSpaceshipsToEachDestination();
     setSpiesAtThePathForEachDesination(aStar); // assign the spies to path and each spaceships
 }
 void Control::setSpiesAtThePathForEachDesination(AStar aStar)
@@ -760,21 +754,14 @@ void Control::sortSpaceshipsBasedOnDestructionInDecendingOrder(std::vector<std::
 {
     std::sort(spaceships.begin(), spaceships.end(), compareSpaceshipsBasedOnDestructionInDescendingOrder);
 }
-void Control::initializeNumOfReachedSpaceshipsToEachDestination()
-{
-    for (auto enemy : listOfEnemyCities)
-    {
-        numOfReachedSpaceshipsToEachDestination[enemy] = 0;
-    }
-}
-void Control::incrementNumOfReachedSpaceshipsToEachDestination()
+
+void Control::incrementReachedSpaceshipsToEachDestination()
 {
     for (const auto &[spaceship, allPath] : AStarPathsForEachSpaceship)
     {
         for (PathResult path : allPath)
         {
-            numOfReachedSpaceshipsToEachDestination[path.destination]++;
-            ReachedSpaceshipsToEachDestination[path.destination].emplace_back(spaceship);
+            reachedSpaceshipsToEachDestination[path.destination].emplace_back(spaceship);
         }
     }
 }
@@ -782,7 +769,6 @@ void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spac
 {
     trackedCitiesForEachSpaceship[spaceship] = aStar.getTrackNodes();
 }
-
 
 void Control::routing(AStar aStar)
 {
