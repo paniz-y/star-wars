@@ -63,18 +63,9 @@ public:
     std::vector<std::shared_ptr<City>> initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities);
     std::vector<std::shared_ptr<City>> initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile);
     std::vector<std::shared_ptr<City>> initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoodinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense);
-    void readMaxMapSizeFromFile();
     void initializePriceFile();
-    void readMaxDamageFromFile();
     std::vector<std::pair<std::string, int>> readPricesFromFile();
     void initializeSpaceshipsWithPrices(std::vector<std::pair<std::string, int>> spaceships);
-    std::vector<std::string> readUnknownSpaceshipesFromFile();
-    std::vector<int> readBaseCapacitesFromFile();
-    std::vector<std::pair<int, int>> readBaseCoordinatesFromFile();
-    int readTotalNumberOfSpaceshipsFromFile();
-    std::vector<std::string> extractSpaceshipNamesFromFile(int numOfSpaceships);
-    std::vector<int> readSpiesOfBasesFromFile();
-    void readScenarioNumberFromFile();
     std::vector<std::pair<int, int>> updateSpiesAfterEachNight();
     std::vector<std::pair<int, int>> generatingRandomSpiesForEachNight(int spies);
     int initializeRandomNumberOfSpiesForEachNight();
@@ -84,9 +75,7 @@ public:
     void updateSpiesCoordinatesAfterEachNight(std::vector<std::pair<int, int>> spies);
     std::vector<std::shared_ptr<City>> initializeBaseCitiesWithOutSpaceships(std::vector<std::pair<int, int>> coorrdinates, std::vector<int> spies);
     std::vector<std::shared_ptr<Spaceship>> initializeUnknownSpaceships(std::vector<std::string> spaceships);
-    void readNumberOfBasesFromFile();
     void setMapMaxSize(int size);
-    std::vector<std::pair<int, std::vector<std::string>>> readSpaceshipsOfBasesFromFile();
     void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
     void initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> base, std::vector<std::shared_ptr<City>> civil);
     void collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
@@ -94,6 +83,7 @@ public:
     bool isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpies);
     void controlDestructions(int des);
     void IdentifyPriorityEnemyTarget(AStar aStar);
+    void setSpiesAtThePathForEachDesination(AStar aStar);
     static bool compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &first, const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &second);
@@ -102,15 +92,6 @@ public:
     void findValidReachedDestinations(); // find paths that reach an enemy city
     void findPathForARadarResistantSpaceship();
     void findPathBasedOnTotalDistance(AStar aStar); // find paths that don't exceed total distance of the spaceship
-    void readNumberOfCivilCitiesFromFile();
-    std::vector<std::pair<int, int>> readCivilCoordinatesFromFile();
-    std::vector<int> readCivilSpiesFromFile();
-    void readNumberOfEnemyCitiesFromFile();
-    std::vector<std::pair<int, int>> readEnemyCitiesCoordinatesFromFile();
-    std::vector<int> readEnemyCitiesSpiesFromFile();
-    std::vector<int> readEnemyCitiesDefenseRatioFromFile();
-    std::vector<Defense> readEnemyCitiesDefenseFromFile(std::vector<int> defenseRatio);
-
     PathResult findBestDestinationBasedOnDefenseRatioForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship);
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnHorizontalDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
@@ -144,19 +125,11 @@ public:
     bool canSpaceshipReachDestinationFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base, AStar aStar);
 
 private:
-    int scenario;
-    int numOfCitys;
-    int numOfBaseCities;
-    int numOfCivilCities;
-    int numOfEnemyCities;
     int amountOfDestruction;
-    int maxDamage; // uesd in 7'th scenario
     std::fstream mapFile;
     std::fstream priceFile;
     Map mapWithSpies;
-    Map mapWithDefenses;
     Data dataFile;
-    // AStar aStar;
     enum class spaceshipType
     {
         Awing,
