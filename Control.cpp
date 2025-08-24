@@ -625,7 +625,7 @@ void Control::routingForFifthScenario(AStar aStar)
     }
 }
 
-void Control::routingForSixthScenario(AStar aStar)
+void Control::routing(AStar aStar)
 {
     IdentifyPriorityEnemyTarget(aStar);
     std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end());
@@ -740,40 +740,6 @@ void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spac
     trackedCitiesForEachSpaceship[spaceship] = aStar.getTrackNodes();
 }
 
-void Control::routing(AStar aStar)
-{
-    int cnt = 0;
-    for (auto spaceship : listOfSpaceships)
-    {
-        AStarResults.clear();
-        PathResult finalResultForCurrentSpaceship;
-        aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], listOfAllCities[listOfAllCities.size() - 1], spaceship);
-        setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
-        setAStarResults(aStar.getPathResults());
-        findValidReachedDestinations();
-        findPathBasedOnTotalDistance(aStar);
-        findPathForARadarResistantSpaceship();
-        if (AStarResults.size() != 0)
-        {
-            finalResultForCurrentSpaceship = findBestDestinationBasedOnDefenseRatioForEachSpaceship(spaceship);
-        }
-        else
-        {
-            std::cout << "spaceship " << spaceship->getNameOfSpaceship() << " at " << "(" << spaceship->getCoordinates().first << " , " << spaceship->getCoordinates().second << ")" << " is missed \n";
-            continue;
-        }
-        // updateCurrentDefenseRatio(finalResultForCurrentSpaceship);
-
-        std::vector<std::shared_ptr<City>> finalRes = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], finalResultForCurrentSpaceship.destination, trackedCitiesForEachSpaceship[spaceship]);
-
-        controlDestructions(spaceship->getDestruction());
-
-        std::cout << cnt << " the spaceship is ";
-        displayTheFinalResult(finalRes, spaceship);
-        cnt++;
-    }
-    std::cout << "final destruction " << amountOfDestruction << std::endl;
-}
 void Control::displayTheFinalResult(const std::vector<std::shared_ptr<City>> &finalRes, const std::shared_ptr<Spaceship> &spaceship)
 {
     std::cout << "the final path for " << spaceship->getNameOfSpaceship() << ": ";
@@ -798,6 +764,6 @@ int main()
     // c.routingForFifthScenario();
     // c.controlingNightsForFifthScenario();
     AStar aStar;
-    c.routingForSixthScenario(aStar);
+    c.routing(aStar);
     // c.routingForThirdScenario(aStar);
 }

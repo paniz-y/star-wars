@@ -78,7 +78,6 @@ public:
     void setMapMaxSize(int size);
     void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
     void collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
-    void routing(AStar aStar);
     bool isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpies);
     void controlDestructions(int des);
     void IdentifyPriorityEnemyTarget(AStar aStar);
@@ -100,7 +99,7 @@ public:
     void setAStarResults(std::vector<PathResult> pathResults);
     void routingForThirdScenario(AStar aStar);
     void routingForFifthScenario(AStar aStar);
-    void routingForSixthScenario(AStar aStar);
+    void routing(AStar aStar);
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
     void sortSpaceshipsBasedOnDestructionInAscendingOrder(std::vector<std::shared_ptr<Spaceship>> &);
     void incrementReachedSpaceshipsToEachDestination();
