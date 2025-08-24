@@ -161,7 +161,7 @@ private:
     std::unordered_map<std::shared_ptr<Spaceship>, int> spaceshipPrices;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> AStarPathsForEachSpaceship;
     std::unordered_map<std::pair<int, int>, std::shared_ptr<City>, HashForPair> coordsToCityPtr;
-    std::vector<std::shared_ptr<City>> allCities;
+    std::vector<std::shared_ptr<City>> listOfAllCities;
     std::vector<PathResult> AStarResults;
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachSpaceship;
