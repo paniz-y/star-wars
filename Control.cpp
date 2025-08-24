@@ -42,7 +42,7 @@ std::vector<std::shared_ptr<City>> Control::initializeAllBaseCitiesInAllScenario
 
     if (dataFile.getScenario() == 7)
     {
-        baseCityForMap = initializeBaseCitiesWithOutSpaceships(dataFile.getBaseCityCoodinates(), dataFile.getBaseCitySpies());
+        baseCityForMap = initializeBaseCitiesWithoutSpaceships(dataFile.getBaseCityCoodinates(), dataFile.getBaseCitySpies());
     }
     else if (dataFile.getScenario() != 3)
     {
@@ -51,15 +51,15 @@ std::vector<std::shared_ptr<City>> Control::initializeAllBaseCitiesInAllScenario
     else
     {
         listOfSpaceships = initializeUnknownSpaceships(dataFile.getSpaceshipsToBeDivided());
-        baseCityForMap = initializeBaseCitiesWithOutSpaceships(dataFile.getBaseCityCoodinates(), dataFile.getBaseCitySpies());
+        baseCityForMap = initializeBaseCitiesWithoutSpaceships(dataFile.getBaseCityCoodinates(), dataFile.getBaseCitySpies());
     }
     return baseCityForMap;
 }
-void Control::setMapMaxSize(int maxMapSize)
+void Control::setMapMaxSize(const int &maxMapSize)
 {
     mapWithSpies.setMaxSize(maxMapSize);
 }
-std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(std::string spaceshipsInBaseCities)
+std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(const std::string &spaceshipsInBaseCities)
 {
     spaceshipType type = stringToSpaceshipType(spaceshipsInBaseCities);
     switch (type)
@@ -121,20 +121,8 @@ std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
 void Control::findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemies)
 {
     std::sort(enemies.begin(), enemies.end(), compareEnemiesBasedOnVerticalDistance);
-    // std::sort(enemies.begin(), enemies.end(), compareEnemiesBasedOnHorizontalDistance);
 }
 
-bool Control::compareEnemiesBasedOnHorizontalDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second)
-{
-    if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first))
-    {
-        if (std::shared_ptr<EnemyCity> secondEnemy = std::dynamic_pointer_cast<EnemyCity>(second))
-        {
-            return firstEnemy->getCoordinates().first < secondEnemy->getCoordinates().first;
-        }
-    }
-    return false;
-}
 bool Control::compareEnemiesBasedOnVerticalDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second)
 {
     if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first))
@@ -175,7 +163,7 @@ void Control::findSpaceshipForSeventhScenario()
     //     }
     // }
 }
-std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<std::pair<int, int>> enemyCityCoordinatesFromFile, std::vector<int> enemyCitySpyFromFile, std::vector<Defense> enemyCitiesDefense)
+std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(const std::vector<std::pair<int, int>> &enemyCityCoordinatesFromFile, const std::vector<int> &enemyCitySpyFromFile, const std::vector<Defense> &enemyCitiesDefense)
 {
     std::vector<std::shared_ptr<City>> enemyCities;
     for (int i = 0; i < enemyCityCoordinatesFromFile.size(); i++)
@@ -190,7 +178,7 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(std::vector<st
 
     return enemyCities;
 }
-std::vector<std::shared_ptr<Spaceship>> Control::initializeUnknownSpaceships(std::vector<std::string> spaceships)
+std::vector<std::shared_ptr<Spaceship>> Control::initializeUnknownSpaceships(const std::vector<std::string> &spaceships)
 {
     std::vector<std::shared_ptr<Spaceship>> unknownSpaceships;
 
@@ -200,7 +188,7 @@ std::vector<std::shared_ptr<Spaceship>> Control::initializeUnknownSpaceships(std
     }
     return unknownSpaceships;
 }
-std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile, std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities)
+std::vector<std::shared_ptr<City>> Control::initializeBaseCities(const std::vector<std::pair<int, int>> &baseCityCoodinatesFromFile, const std::vector<int> &baseCitySpyFromFile, const std::vector<std::pair<int, std::vector<std::string>>> &spaceshipsInBaseCities)
 {
     std::vector<std::shared_ptr<City>> baseCities;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
@@ -217,7 +205,7 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(std::vector<std
     }
     return baseCities;
 }
-std::vector<std::shared_ptr<City>> Control::initializeBaseCitiesWithOutSpaceships(std::vector<std::pair<int, int>> baseCityCoodinatesFromFile, std::vector<int> baseCitySpyFromFile)
+std::vector<std::shared_ptr<City>> Control::initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &baseCityCoodinatesFromFile, const std::vector<int> &baseCitySpyFromFile)
 {
     std::vector<std::shared_ptr<City>> baseCities;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
@@ -228,7 +216,7 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCitiesWithOutSpaceship
     }
     return baseCities;
 }
-std::vector<std::shared_ptr<City>> Control::initializeCivilCities(std::vector<std::pair<int, int>> civilCityCoodinatesFromFile, std::vector<int> civilCitySpyFromFile)
+std::vector<std::shared_ptr<City>> Control::initializeCivilCities(const std::vector<std::pair<int, int>> &civilCityCoodinatesFromFile, const std::vector<int> &civilCitySpyFromFile)
 {
     std::vector<std::shared_ptr<City>> civilCities;
     for (int i = 0; i < civilCityCoodinatesFromFile.size(); i++)
@@ -255,7 +243,7 @@ void Control::initializeMap()
     mapWithSpies.graphMap(listOfAllCities);
 }
 
-void Control::initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates)
+void Control::initializeAllSpaceships(const std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::pair<int, int> &coordinates)
 {
     int listOfSpaceshipsSize = listOfSpaceships.size();
 
@@ -328,7 +316,7 @@ void Control::attributePathToSpaceship(const int &pathFoundIdx, const std::share
     displayTheFinalResult(finalpathResult, spaceship);
 }
 
-void Control::setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship)
+void Control::setAStarResultsForEachSpaceship(const std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> &existingPathsForEachSpaceship)
 {
     AStarPathsForEachSpaceship = existingPathsForEachSpaceship;
 }
@@ -340,13 +328,13 @@ void Control::collectAllCities(const std::vector<std::shared_ptr<City>> &baseCit
     listOfAllCities.insert(listOfAllCities.end(), enemyCities.begin(), enemyCities.end());
 }
 
-bool Control::isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpies)
+bool Control::isSpaceshipRadarResistant(const std::shared_ptr<Spaceship> &spaceship, const int &numOfSpies)
 {
     if (numOfSpies < spaceship->getRadarResistance())
         return true;
     return false;
 }
-void Control::controlDestructions(int des)
+void Control::controlDestructions(const int &des)
 {
     amountOfDestruction += des;
 }
@@ -421,15 +409,12 @@ void Control::findPathBasedOnTotalDistance(AStar aStar)
     }
 }
 
-
-
 bool Control::compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second)
 {
     return first.numOfSpies < second.numOfSpies;
 }
 
-
-bool Control::compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &first, const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &second)
+bool Control::compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &first, const std::pair<std::shared_ptr<City>, const std::vector<std::shared_ptr<Spaceship>>> &second)
 {
     if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first.first))
     {
@@ -490,7 +475,7 @@ int Control::initializeRandomNumberOfSpiesForEachNight()
     return randomNumberOfSpies;
 }
 
-std::vector<std::pair<int, int>> Control::generatingRandomSpiesForEachNight(int randomNumberOfSpies)
+std::vector<std::pair<int, int>> Control::generatingRandomSpiesForEachNight(const int &randomNumberOfSpies)
 {
     std::vector<std::pair<int, int>> newSpiesCoordinates(randomNumberOfSpies);
 
@@ -499,7 +484,7 @@ std::vector<std::pair<int, int>> Control::generatingRandomSpiesForEachNight(int 
 
     return newSpiesCoordinates;
 }
-void Control::updateSpiesCoordinatesAfterEachNight(std::vector<std::pair<int, int>> spies)
+void Control::updateSpiesCoordinatesAfterEachNight(const std::vector<std::pair<int, int>> &spies)
 {
     for (int i = 0; i < spies.size(); i++)
     {
@@ -744,7 +729,7 @@ void Control::displayTheFinalResult(const std::vector<std::shared_ptr<City>> &fi
     std::cout << "final destruction: " << amountOfDestruction << std::endl;
 }
 
-void Control::setAStarResults(std::vector<PathResult> pathResults)
+void Control::setAStarResults(const std::vector<PathResult> &pathResults)
 {
     AStarResults = pathResults;
 }
