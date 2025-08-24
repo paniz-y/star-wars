@@ -382,36 +382,8 @@ void Control::findValidReachedDestinations()
             spaceshipIt++;
     }
 }
-void Control::findValidReachedDestinationsForUnknownSpaceship()
-{
-    for (auto &base : AStarPathsForEachBaseCity)
-    {
-        for (auto it = base.second.begin(); it != base.second.end();)
-        {
-            if (std::shared_ptr<EnemyCity> enemy = std::dynamic_pointer_cast<EnemyCity>(it->destination))
-            {
-                it++;
-            }
-            else
-            {
-                it = base.second.erase(it); // remove the path not reaching the enemy city
-            }
-        }
-    }
-}
 
-PathResult Control::findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity)
-{
-    if (AStarPathsForEachBaseCity.find(baseCity) == AStarPathsForEachBaseCity.end() || AStarPathsForEachBaseCity.find(baseCity)->second.empty())
-    {
-        throw std::runtime_error("No paths found for this base city");
-    }
 
-    auto it = AStarPathsForEachBaseCity.find(baseCity);
-    std::sort(it->second.begin(), it->second.end(), compareTwoRoutsBasedOnDefenseRatio);
-
-    return it->second.front();
-}
 
 void Control::findPathForARadarResistantSpaceship()
 {
@@ -810,26 +782,7 @@ void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spac
 {
     trackedCitiesForEachSpaceship[spaceship] = aStar.getTrackNodes();
 }
-void Control::initializeTrackedCitiesForEachBaseCity(const std::shared_ptr<City> &baseCity, AStar aStar)
-{
-    trackedCitiesForEachBaseCity[baseCity] = aStar.getTrackNodes();
-}
 
-void Control::separateBTypeAndCTypeSpaceships()
-{
-    // spaceships in third scenario are either type C or type B
-    for (auto &spaceship : allSpaceships)
-    {
-        if (spaceship->getTypeOfSpaceship() == "C1" || spaceship->getTypeOfSpaceship() == "C") // the spaceship is type C
-        {
-            listOfCTypeSpaceships.emplace_back(spaceship);
-        }
-        else // the spaceship is type B
-        {
-            listOfBTypeSpaceships.emplace_back(spaceship);
-        }
-    }
-}
 
 void Control::routing(AStar aStar)
 {

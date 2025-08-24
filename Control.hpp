@@ -38,7 +38,7 @@ struct HashForPair
     {
         std::size_t h1 = std::hash<T1>{}(p.first);
         std::size_t h2 = std::hash<T2>{}(p.second);
-        return h1 ^ (h2 << 1); // Combine the two hashes
+        return h1 ^ (h2 << 1); 
     }
 };
 struct SharedPtrPairHash
@@ -114,10 +114,6 @@ public:
     void clearAllAStarRelatedData();
     void initializeListOfBaseCities(const std::vector<std::shared_ptr<City>> &baseCities);
     void setAStarResultsForEachSpaceship(std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> existingPathsForEachSpaceship);
-    void findValidReachedDestinationsForUnknownSpaceship();
-    PathResult findBestDestinationBasedOnDefenseRatioForEachBaseCity(const std::shared_ptr<City> &baseCity);
-    void initializeTrackedCitiesForEachBaseCity(const std::shared_ptr<City> &baseCity, AStar aStar);
-    void separateBTypeAndCTypeSpaceships();
     std::shared_ptr<Spaceship> findSuitableSpaceshipForThisPath(const std::shared_ptr<Spaceship> &bType, const int &pathIdx);
     int findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceship, std::shared_ptr<Spaceship> &bestChoiceSpaceshipForThisPath);
     void attributePathToSpaceship(const int &pathIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar);
@@ -175,11 +171,6 @@ private:
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachSpaceship;
     std::unordered_map<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> ReachedSpaceshipsToEachDestination;
-    // std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
     std::vector<std::shared_ptr<City>> listOfBaseCities;
-    std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> AStarPathsForEachBaseCity;
-    std::unordered_map<std::shared_ptr<City>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachBaseCity;
-    std::vector<std::shared_ptr<Spaceship>> listOfBTypeSpaceships;
-    std::vector<std::shared_ptr<Spaceship>> listOfCTypeSpaceships;
 };
 #endif
