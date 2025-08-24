@@ -421,34 +421,13 @@ void Control::findPathBasedOnTotalDistance(AStar aStar)
     }
 }
 
-PathResult Control::findBestDestinationBasedOnDefenseRatioForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship)
-{
-    if (AStarPathsForEachSpaceship.find(spaceship) == AStarPathsForEachSpaceship.end() || AStarPathsForEachSpaceship.find(spaceship)->second.empty())
-    {
-        throw std::runtime_error("No paths found for this spaceship");
-    }
 
-    auto it = AStarPathsForEachSpaceship.find(spaceship);
-    std::sort(it->second.begin(), it->second.end(), compareTwoRoutsBasedOnDefenseRatio);
-
-    return it->second.front();
-}
 
 bool Control::compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second)
 {
     return first.numOfSpies < second.numOfSpies;
 }
-bool Control::compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const PathResult &second)
-{
-    if (std::shared_ptr<EnemyCity> firstEnemy = std::dynamic_pointer_cast<EnemyCity>(first.destination))
-    {
-        if (std::shared_ptr<EnemyCity> secondEnemy = std::dynamic_pointer_cast<EnemyCity>(second.destination))
-        {
-            return firstEnemy->getDefense().getRatio() < secondEnemy->getDefense().getRatio();
-        }
-    }
-    return false;
-}
+
 
 bool Control::compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &first, const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &second)
 {

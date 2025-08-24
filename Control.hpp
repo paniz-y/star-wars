@@ -83,13 +83,11 @@ public:
     void IdentifyPriorityEnemyTarget(AStar aStar);
     void setSpiesAtThePathForEachDesination(AStar aStar);
     static bool compareTwoRoutsBasedOnSpies(const PathResult &first, const PathResult &second);
-    static bool compareTwoRoutsBasedOnDefenseRatio(const PathResult &first, const PathResult &second);
     static bool compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction(const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &first, const std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> &second);
     static bool compareSpaceshipsBasedOnDestructionInAscendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second);
     void findValidReachedDestinations(); // find paths that reach an enemy city
     void findPathForARadarResistantSpaceship();
     void findPathBasedOnTotalDistance(AStar aStar); // find paths that don't exceed total distance of the spaceship
-    PathResult findBestDestinationBasedOnDefenseRatioForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship);
     void findTheFarthestEnemyCity(std::vector<std::shared_ptr<City>> &enemy);
     static bool compareEnemiesBasedOnHorizontalDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
     static bool compareEnemiesBasedOnVerticalDistance(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second);
