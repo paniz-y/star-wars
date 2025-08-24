@@ -1,18 +1,21 @@
+scenario: 1
 number_of_base_citys: 2
 base_city_coordinates: 
 0 0
 200 200
-number_of_spys_in_each_base_city:
+number_of_spys_in_each_base_city_respectively:
 1
 1
-spaceships_in_each_base_city:
-number: 2 name: DeathStar
-number: 2 name: DeathStar
+spaceships_in_each_base_city_respectively:
+number: 2 
+name: DeathStar DeathStar
+number: 2 
+name: DeathStar DeathStar
 number_of_civil_citys: 2
 civil_city_coordinates: 
 100 100
 400 400 
-number_of_spys_in_each_civil_city:
+number_of_spys_in_each_civil_city_respectively:
 0
 1
 number_of_enemy_citys: 3
@@ -20,7 +23,7 @@ enemy_city_coordinates:
 700 450
 500 500
 900 50
-number_of_spys_in_each_enemy_city:
+number_of_spys_in_each_enemy_city_respectively:
 0
 0
 0
