@@ -580,51 +580,6 @@ void Control::clearAllAStarRelatedData()
     trackedCitiesForEachSpaceship.clear();
     reachedSpaceshipsToEachDestination.clear();
 }
-void Control::routingForFifthScenario(AStar aStar)
-{
-    IdentifyPriorityEnemyTarget(aStar);
-    std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(reachedSpaceshipsToEachDestination.begin(), reachedSpaceshipsToEachDestination.end());
-
-    std::sort(reachedSpaceshipsToEachDestinationTmp.begin(), reachedSpaceshipsToEachDestinationTmp.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
-    std::shared_ptr<City> finalDestinationForCurrentSpaceship;
-    for (auto &[des, spaceships] : reachedSpaceshipsToEachDestination)
-    {
-        finalDestinationForCurrentSpaceship = des;
-        sortSpaceshipsBasedOnDestructionInAscendingOrder(spaceships);
-
-        for (auto spaceshipIt = spaceships.begin(); spaceshipIt != spaceships.end();)
-        {
-            if (!ifDestinationHasDefenseRatio(des))
-            {
-                std::cout << spaceships.back()->getNameOfSpaceship() << std::endl;
-                std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceships.back()->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[spaceships.back()]);
-
-                controlDestructions(spaceships.back()->getDestruction());
-
-                displayTheFinalResult(finalpathResult, spaceships.back()); // display the final path and destruction
-                spaceships.pop_back();
-                return;
-            }
-            else
-            {
-                // the spaceship has reached the destination being seen while that enemy destination has still got defense so the spaceship is missed
-                if (isSpaceshipRadarResistant((*spaceshipIt), aStar.getNumOfSpiesForEachDestinationOfEachSpaceship()[(*spaceshipIt)][des]))
-                {
-                    // std::cout << " too isSpaceshipRadarResistant" << std::endl;
-                    std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[(*spaceshipIt)->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[(*spaceshipIt)]);
-
-                    controlDestructions((*spaceshipIt)->getDestruction());
-
-                    displayTheFinalResult(finalpathResult, (*spaceshipIt)); // display the final path and destruction
-                    spaceshipIt = spaceships.erase(spaceshipIt);
-                    return;
-                }
-                updateCurrentDefenseRatio(finalDestinationForCurrentSpaceship);
-                spaceshipIt = spaceships.erase(spaceshipIt);
-            }
-        }
-    }
-}
 
 void Control::routing(AStar aStar)
 {

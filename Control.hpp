@@ -98,7 +98,7 @@ public:
     void displayTheFinalResult(const std::vector<std::shared_ptr<City>> &finalRes, const std::shared_ptr<Spaceship> &spaceship);
     void setAStarResults(std::vector<PathResult> pathResults);
     void routingForThirdScenario(AStar aStar);
-    void routingForFifthScenario(AStar aStar);
+    
     void routing(AStar aStar);
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
     void sortSpaceshipsBasedOnDestructionInAscendingOrder(std::vector<std::shared_ptr<Spaceship>> &);
