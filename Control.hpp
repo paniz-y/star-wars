@@ -156,7 +156,7 @@ private:
             return spaceshipType::XwingStarFighter;
         return spaceshipType::UNKNOWN;
     }
-    std::vector<std::shared_ptr<Spaceship>> allSpaceships;
+    std::vector<std::shared_ptr<Spaceship>> listOfSpaceships;
     std::vector<std::shared_ptr<EnemyCity>> listOfEnemyCities;
     std::unordered_map<std::shared_ptr<Spaceship>, int> spaceshipPrices;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> AStarPathsForEachSpaceship;

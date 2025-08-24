@@ -50,7 +50,7 @@ std::vector<std::shared_ptr<City>> Control::initializeAllBaseCitiesInAllScenario
     }
     else
     {
-        allSpaceships = initializeUnknownSpaceships(dataFile.getSpaceshipsToBeDivided());
+        listOfSpaceships = initializeUnknownSpaceships(dataFile.getSpaceshipsToBeDivided());
         baseCityForMap = initializeBaseCitiesWithOutSpaceships(dataFile.getBaseCityCoodinates(), dataFile.getBaseCitySpies());
     }
     return baseCityForMap;
@@ -257,15 +257,15 @@ void Control::initializeMap()
 
 void Control::initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates)
 {
-    int allSpaceshipsSize = allSpaceships.size();
+    int listOfSpaceshipsSize = listOfSpaceships.size();
 
     for (int i{}; i < spaceships.size(); i++)
     {
-        allSpaceships.emplace_back(spaceships[i]);
+        listOfSpaceships.emplace_back(spaceships[i]);
     }
     for (int i{}; i < spaceships.size(); i++)
     {
-        allSpaceships[allSpaceshipsSize + i]->setCoordinates(coordinates);
+        listOfSpaceships[listOfSpaceshipsSize + i]->setCoordinates(coordinates);
     }
 }
 
@@ -491,7 +491,7 @@ void Control::findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spacesh
 }
 void Control::routingForThirdScenario(AStar aStar)
 {
-    for (auto &spaceship : allSpaceships)
+    for (auto &spaceship : listOfSpaceships)
     {
         for (auto &base : listOfBaseCities)
         {
@@ -710,7 +710,7 @@ void Control::routingForSixthScenario(AStar aStar)
 
 void Control::IdentifyPriorityEnemyTarget(AStar aStar)
 {
-    for (auto spaceship : allSpaceships)
+    for (auto spaceship : listOfSpaceships)
     {
         aStar.AStarSearch(mapWithSpies, coordsToCityPtr[spaceship->getCoordinates()], allCities[allCities.size() - 1], spaceship);
         setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
@@ -767,7 +767,7 @@ void Control::initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spac
 void Control::routing(AStar aStar)
 {
     int cnt = 0;
-    for (auto spaceship : allSpaceships)
+    for (auto spaceship : listOfSpaceships)
     {
         AStarResults.clear();
         PathResult finalResultForCurrentSpaceship;
