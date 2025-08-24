@@ -566,8 +566,9 @@ void Control::controlingNightsForFifthScenario()
 {
     for (int i = 0; i < 5; i++)
     {
+        std::cout << i + 1 << " : " << std::endl;
         AStar aStar;
-        routingForFifthScenario(aStar);
+        routing(aStar);
         clearAllAStarRelatedData();
         updateSpiesAndDefenseRatiosForEachNight();
     }
@@ -655,6 +656,10 @@ void Control::routing(AStar aStar)
                         itrTmp++;
                     }
                     spaceships.erase(itrTmp);
+                    if (dataFile.getScenario() == 5)
+                    {
+                        return;
+                    }
                 }
                 else
                 {
@@ -669,6 +674,10 @@ void Control::routing(AStar aStar)
                         (*spaceshipIt)->setHasReachedDestination(true);
 
                         spaceshipIt = spaceships.erase(spaceshipIt);
+                        if (dataFile.getScenario() == 5)
+                        {
+                            return;
+                        }
                     }
                     else
                     {
@@ -762,8 +771,8 @@ int main()
     c.initializeMap();
     // c.routing();
     // c.routingForFifthScenario();
-    // c.controlingNightsForFifthScenario();
-    AStar aStar;
-    c.routing(aStar);
-    // c.routingForThirdScenario(aStar);
+     AStar aStar;
+    //c.controlingNightsForFifthScenario();
+     c.routing(aStar);
+    //  c.routingForThirdScenario(aStar);
 }
