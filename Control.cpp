@@ -689,63 +689,24 @@ void Control::routingForSixthScenario(AStar aStar)
     std::vector<std::pair<std::shared_ptr<City>, int>> reachedSpaceshipsToEachDestination(numOfReachedSpaceshipsToEachDestination.begin(), numOfReachedSpaceshipsToEachDestination.end());
     std::vector<std::pair<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>>> reachedSpaceshipsToEachDestinationTmp(ReachedSpaceshipsToEachDestination.begin(), ReachedSpaceshipsToEachDestination.end());
 
-    // std::cout << "ghbl reached\n";
     std::sort(reachedSpaceshipsToEachDestinationTmp.begin(), reachedSpaceshipsToEachDestinationTmp.end(), compareTwoRoutsBasedOnSpaceshipsThatCausedDestroction);
     std::shared_ptr<City> finalDestinationForCurrentSpaceship;
-    // for (auto &[des, spaceships] : ReachedSpaceshipsToEachDestination)
-    // {
-    //     std::cout << des->getCoordinates().first << " has aval " << spaceships.size() << std::endl;
-    //     for (auto q : spaceships)
-    //     {
-    //         std::cout << q->getNameOfSpaceship() << " , " << q << std::endl;
-    //     }
-    // }
+  
     for (auto &[des, spaceships] : ReachedSpaceshipsToEachDestination)
     {
-        // std::cout << des->getCoordinates().first << " has dovom " << spaceships.size() << std::endl;
-        // for (auto &x : spaceships)
-        // {
-        //     std::cout << "vay " << x->getNameOfSpaceship() << std::endl;
-        // }
-
+     
         finalDestinationForCurrentSpaceship = des;
-        // std::cout << "ghabl sort\n";
         sortSpaceshipsBasedOnDestructionInAscendingOrder(spaceships);
 
         for (auto spaceshipIt = spaceships.begin(); spaceshipIt != spaceships.end();)
         {
-            // std::cout << "(*spaceshipIt)->getHasReachedDestination() " << (*spaceshipIt)->getNameOfSpaceship() << (*spaceshipIt) << " " << (*spaceshipIt)->getHasReachedDestination() << std::endl;
             if (!((*spaceshipIt)->getHasReachedDestination()))
             {
-                // std::cout << des->getCoordinates().first << " has sevom " << spaceships.size() << std::endl;
-
-                // std::cout << (*spaceshipIt)->getNameOfSpaceship() << " (*spaceshipIt) 1 " << (*spaceshipIt) << std::endl;
-                // std::cout << "ghab; aval if" << std::endl;
                 if (!ifDestinationHasDefenseRatio(des))
                 {
-                    // std::cout << (*spaceshipIt)->getNameOfSpaceship() << " (*spaceshipIt) 2 " << (*spaceshipIt) << std::endl;
-
-                    // std::cout << "ghabl backtrack\n";
-                    // std::cout << "inja " << (*spaceshipIt)->getNameOfSpaceship() << std::endl;
                     std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceships.back()->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[spaceships.back()]);
-                    // std::cout << finalpathResult.back()->getCoordinates().first << std::endl;
                     controlDestructions(spaceships.back()->getDestruction());
-
-                    // std::cout << "inja" << std::endl;
                     displayTheFinalResult(finalpathResult, spaceships.back()); // display the final path and destruction
-
-                    // std::cout << "ghab index\n";
-                    // auto index = std::distance(spaceships.begin(), spaceshipIt);
-
-                    // spaceships.pop_back();
-
-                    // if (index < spaceships.size())
-                    // {
-                    //     spaceshipIt = spaceships.begin() + index;
-                    //     // spaceshipIt++;
-                    // }
-                    // else
-                    //     spaceshipIt = spaceships.end();
                     spaceships.back()->setHasReachedDestination(true);
                     auto itrTmp = spaceshipIt;
                     while (itrTmp != spaceships.end())
@@ -756,46 +717,27 @@ void Control::routingForSixthScenario(AStar aStar)
                 }
                 else
                 {
-                    // std::cout << (*spaceshipIt)->getNameOfSpaceship() << " (*spaceshipIt) 3 " << (*spaceshipIt) << std::endl;
-
-                    // std::cout << (*spaceshipIt)->getNameOfSpaceship() << " (*spaceshipIt)" << std::endl;
-                    // numOfSpiesForEachDestinationOfEachSpaceship[spaceship][result.destination]
-                    // the spaceship has reached the destination being seen while that enemy destination has still got defense so the spaceship is missed
                     if (isSpaceshipRadarResistant((*spaceshipIt), numOfSpiesForEachDestinationOfEachSpaceship[(*spaceshipIt)][des]))
                     {
-                        std::cout << (*spaceshipIt)->getNameOfSpaceship() << " (*spaceshipIt) 4 " << std::endl;
-
-                        // std::cout << "here " << (*spaceshipIt)->getNameOfSpaceship() << " spies " << numOfSpiesForEachDestinationOfEachSpaceship[(*spaceshipIt)][des] << std::endl;
                         std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[(*spaceshipIt)->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[(*spaceshipIt)]);
 
-                        // std::cout << "control destruction" << std::endl;
                         controlDestructions((*spaceshipIt)->getDestruction());
 
-                        // std::cout << "displayTheFinalResult" << std::endl;
                         displayTheFinalResult(finalpathResult, (*spaceshipIt)); // display the final path and destruction
 
                         (*spaceshipIt)->setHasReachedDestination(true);
 
                         spaceshipIt = spaceships.erase(spaceshipIt);
-                        // spaceshipIt++;
                     }
                     else
                     {
-                        // std::cout << (*spaceshipIt)->getNameOfSpaceship() << " (*spaceshipIt) 5 " << (*spaceshipIt) << std::endl;
-
                         (*spaceshipIt)->setHasReachedDestination(true);
                         std::cout << (*spaceshipIt)->getNameOfSpaceship() << " at " << (*spaceshipIt)->getCoordinates().first << " " << (*spaceshipIt)->getCoordinates().second << " has been hit by a defense." << std::endl;
 
-                        // std::cout << "update defense\n";
                         updateCurrentDefenseRatio(finalDestinationForCurrentSpaceship);
-                        // std::cout << "earse dige\n";
                         spaceshipIt = spaceships.erase(spaceshipIt);
-                        // spaceshipIt++;
-
-                        // std::cout << "bade earse\n";
                     }
                 }
-                // std::cout << "bade else\n";
             }
             else
             {
@@ -803,14 +745,7 @@ void Control::routingForSixthScenario(AStar aStar)
             }
         }
     }
-    for (auto &[des, spaceships] : ReachedSpaceshipsToEachDestination)
-    {
-        for (auto &spaceship : spaceships)
-        {
-            if (!spaceship->getHasReachedDestination())
-                std::cout << spaceship->getNameOfSpaceship() << " has been missed " << std::endl;
-        }
-    }
+    
 }
 
 void Control::IdentifyPriorityEnemyTarget(AStar aStar)
