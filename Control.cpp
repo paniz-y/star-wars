@@ -611,7 +611,8 @@ void Control::routing(AStar aStar)
                         itrTmp++;
                     }
                     spaceships.erase(itrTmp);
-                    if (dataFile.getScenario() == 5)
+                
+                    if (isFifthScenario())
                     {
                         return;
                     }
@@ -629,7 +630,8 @@ void Control::routing(AStar aStar)
                         (*spaceshipIt)->setHasReachedDestination(true);
 
                         spaceshipIt = spaceships.erase(spaceshipIt);
-                        if (dataFile.getScenario() == 5)
+                    
+                        if (isFifthScenario())
                         {
                             return;
                         }
@@ -650,6 +652,14 @@ void Control::routing(AStar aStar)
             }
         }
     }
+}
+bool Control::isFifthScenario()
+{
+    if (dataFile.getScenario() == 5)
+    {
+        return true;
+    }
+    return false;
 }
 
 void Control::IdentifyPriorityEnemyTarget(AStar aStar)
@@ -726,8 +736,8 @@ int main()
     c.initializeMap();
     // c.routing();
     // c.routingForFifthScenario();
-     AStar aStar;
-    //c.controlingNightsForFifthScenario();
-     c.routing(aStar);
+    //AStar aStar;
+     c.controlingNightsForFifthScenario();
+    //c.routing(aStar);
     //  c.routingForThirdScenario(aStar);
 }
