@@ -580,6 +580,96 @@ void Control::clearAllAStarRelatedData()
     trackedCitiesForEachSpaceship.clear();
     reachedSpaceshipsToEachDestination.clear();
 }
+void Control::hasReachedDestinationWithNoDefenseRatio(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, const std::shared_ptr<City> &des, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached)
+{
+    std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceships.back()->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[spaceships.back()]);
+    controlDestructions(spaceships.back()->getDestruction());
+    displayTheFinalResult(finalpathResult, spaceships.back()); // display the final path and destruction
+    spaceships.back()->setHasReachedDestination(true);
+    auto itrTmp = spaceshipIt;
+    while (itrTmp != spaceships.end())
+    {
+        itrTmp++;
+    }
+    spaceships.erase(itrTmp);
+    hasPreviouseSpaceshipReached = true;
+}
+void Control::hasReachedDestinationWithDefenseRatio(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, const std::shared_ptr<City> &des, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached)
+{
+    if (isSpaceshipRadarResistant((*spaceshipIt), numOfSpiesForEachDestinationOfEachSpaceship[(*spaceshipIt)][des]))
+    {
+
+        reachedWhileBeingRadarResistant(aStar, spaceshipIt, spaceships, finalDestinationForCurrentSpaceship, hasPreviouseSpaceshipReached);
+        if (isFifthScenario() && hasPreviouseSpaceshipReached)
+        {
+            return;
+        }
+    }
+    else
+    {
+        reachedWhileNotBeingRadarResistant(spaceshipIt, spaceships, finalDestinationForCurrentSpaceship);
+        if (isFifthScenario() && hasPreviouseSpaceshipReached)
+        {
+            return;
+        }
+    }
+}
+
+void Control::reachedWhileBeingRadarResistant(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached)
+{
+    std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[(*spaceshipIt)->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[(*spaceshipIt)]);
+
+    controlDestructions((*spaceshipIt)->getDestruction());
+
+    displayTheFinalResult(finalpathResult, (*spaceshipIt)); // display the final path and destruction
+
+    (*spaceshipIt)->setHasReachedDestination(true);
+
+    spaceshipIt = spaceships.erase(spaceshipIt);
+    hasPreviouseSpaceshipReached = true;
+}
+void Control::reachedWhileNotBeingRadarResistant(std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship)
+{
+    (*spaceshipIt)->setHasReachedDestination(true);
+    std::cout << (*spaceshipIt)->getNameOfSpaceship() << " placed at " << "(" << (*spaceshipIt)->getCoordinates().first << " , " << (*spaceshipIt)->getCoordinates().second << ")" << " has been hit by a defense." << std::endl;
+
+    updateCurrentDefenseRatio(finalDestinationForCurrentSpaceship);
+    spaceshipIt = spaceships.erase(spaceshipIt);
+}
+void Control::findDestinationDefenseRatioStatus(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &des, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached)
+{
+    if (!ifDestinationHasDefenseRatio(des))
+    {
+        hasReachedDestinationWithNoDefenseRatio(aStar, spaceshipIt, des, spaceships, finalDestinationForCurrentSpaceship, hasPreviouseSpaceshipReached);
+        if (isFifthScenario() && hasPreviouseSpaceshipReached)
+        {
+            return;
+        }
+    }
+    else
+    {
+        hasReachedDestinationWithDefenseRatio(aStar, spaceshipIt, des, spaceships, finalDestinationForCurrentSpaceship, hasPreviouseSpaceshipReached);
+        if (isFifthScenario() && hasPreviouseSpaceshipReached)
+        {
+            return;
+        }
+    }
+}
+void Control::findSpaceshipHasReachedStatus(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &des, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached)
+{
+    if (!((*spaceshipIt)->getHasReachedDestination()))
+    {
+        findDestinationDefenseRatioStatus(aStar, spaceshipIt, spaceships, des, finalDestinationForCurrentSpaceship, hasPreviouseSpaceshipReached);
+        if (isFifthScenario() && hasPreviouseSpaceshipReached)
+        {
+            return;
+        }
+    }
+    else
+    {
+        spaceshipIt = spaceships.erase(spaceshipIt);
+    }
+}
 
 void Control::routing(AStar aStar)
 {
@@ -591,64 +681,15 @@ void Control::routing(AStar aStar)
 
     for (auto &[des, spaceships] : reachedSpaceshipsToEachDestination)
     {
-
         finalDestinationForCurrentSpaceship = des;
         sortSpaceshipsBasedOnDestructionInAscendingOrder(spaceships);
-
+        bool hasPreviouseSpaceshipReached = false;
         for (auto spaceshipIt = spaceships.begin(); spaceshipIt != spaceships.end();)
         {
-            if (!((*spaceshipIt)->getHasReachedDestination()))
+            findSpaceshipHasReachedStatus(aStar, spaceshipIt, spaceships, des, finalDestinationForCurrentSpaceship, hasPreviouseSpaceshipReached);
+            if (isFifthScenario() && hasPreviouseSpaceshipReached)
             {
-                if (!ifDestinationHasDefenseRatio(des))
-                {
-                    std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceships.back()->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[spaceships.back()]);
-                    controlDestructions(spaceships.back()->getDestruction());
-                    displayTheFinalResult(finalpathResult, spaceships.back()); // display the final path and destruction
-                    spaceships.back()->setHasReachedDestination(true);
-                    auto itrTmp = spaceshipIt;
-                    while (itrTmp != spaceships.end())
-                    {
-                        itrTmp++;
-                    }
-                    spaceships.erase(itrTmp);
-                
-                    if (isFifthScenario())
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    if (isSpaceshipRadarResistant((*spaceshipIt), numOfSpiesForEachDestinationOfEachSpaceship[(*spaceshipIt)][des]))
-                    {
-                        std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[(*spaceshipIt)->getCoordinates()], finalDestinationForCurrentSpaceship, trackedCitiesForEachSpaceship[(*spaceshipIt)]);
-
-                        controlDestructions((*spaceshipIt)->getDestruction());
-
-                        displayTheFinalResult(finalpathResult, (*spaceshipIt)); // display the final path and destruction
-
-                        (*spaceshipIt)->setHasReachedDestination(true);
-
-                        spaceshipIt = spaceships.erase(spaceshipIt);
-                    
-                        if (isFifthScenario())
-                        {
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        (*spaceshipIt)->setHasReachedDestination(true);
-                        std::cout << (*spaceshipIt)->getNameOfSpaceship() << " placed at " << "(" << (*spaceshipIt)->getCoordinates().first << " , " << (*spaceshipIt)->getCoordinates().second << ")" << " has been hit by a defense." << std::endl;
-
-                        updateCurrentDefenseRatio(finalDestinationForCurrentSpaceship);
-                        spaceshipIt = spaceships.erase(spaceshipIt);
-                    }
-                }
-            }
-            else
-            {
-                spaceshipIt = spaceships.erase(spaceshipIt);
+                return;
             }
         }
     }
@@ -736,8 +777,8 @@ int main()
     c.initializeMap();
     // c.routing();
     // c.routingForFifthScenario();
-    //AStar aStar;
-     c.controlingNightsForFifthScenario();
-    //c.routing(aStar);
-    //  c.routingForThirdScenario(aStar);
+    // AStar aStar;
+    c.controlingNightsForFifthScenario();
+    // c.routing(aStar);
+    //    c.routingForThirdScenario(aStar);
 }

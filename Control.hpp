@@ -38,7 +38,7 @@ struct HashForPair
     {
         std::size_t h1 = std::hash<T1>{}(p.first);
         std::size_t h2 = std::hash<T2>{}(p.second);
-        return h1 ^ (h2 << 1); 
+        return h1 ^ (h2 << 1);
     }
 };
 struct SharedPtrPairHash
@@ -98,7 +98,7 @@ public:
     void displayTheFinalResult(const std::vector<std::shared_ptr<City>> &finalRes, const std::shared_ptr<Spaceship> &spaceship);
     void setAStarResults(std::vector<PathResult> pathResults);
     void routingForThirdScenario(AStar aStar);
-    
+
     void routing(AStar aStar);
     bool ifDestinationHasDefenseRatio(const std::shared_ptr<City> &destination);
     void sortSpaceshipsBasedOnDestructionInAscendingOrder(std::vector<std::shared_ptr<Spaceship>> &);
@@ -114,6 +114,12 @@ public:
     void displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base);
     bool canSpaceshipReachDestinationFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base, AStar aStar);
     bool isFifthScenario();
+    void hasReachedDestinationWithNoDefenseRatio(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, const std::shared_ptr<City> &des, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
+    void hasReachedDestinationWithDefenseRatio(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, const std::shared_ptr<City> &des, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
+    void reachedWhileBeingRadarResistant(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
+    void reachedWhileNotBeingRadarResistant(std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship);
+    void findDestinationDefenseRatioStatus(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &des, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
+    void findSpaceshipHasReachedStatus(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &des, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
 
 private:
     int amountOfDestruction;
