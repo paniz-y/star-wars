@@ -77,7 +77,6 @@ public:
     std::vector<std::shared_ptr<Spaceship>> initializeUnknownSpaceships(std::vector<std::string> spaceships);
     void setMapMaxSize(int size);
     void initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> spaceships, std::pair<int, int> coordinates);
-    void initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> base, std::vector<std::shared_ptr<City>> civil);
     void collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
     void routing(AStar aStar);
     bool isSpaceshipRadarResistant(std::shared_ptr<Spaceship> spaceship, int numOfSpies);
@@ -160,9 +159,7 @@ private:
     std::vector<std::shared_ptr<Spaceship>> allSpaceships;
     std::vector<std::shared_ptr<EnemyCity>> listOfEnemyCities;
     std::unordered_map<std::shared_ptr<Spaceship>, int> spaceshipPrices;
-    std::vector<std::shared_ptr<City>> enemiesAsCity;
     std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> AStarPathsForEachSpaceship;
-    std::vector<std::shared_ptr<City>> listOfBaseAndCivilCities;
     std::unordered_map<std::pair<int, int>, std::shared_ptr<City>, HashForPair> coordsToCityPtr;
     std::vector<std::shared_ptr<City>> allCities;
     std::vector<PathResult> AStarResults;

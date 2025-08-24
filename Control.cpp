@@ -114,7 +114,6 @@ std::vector<std::shared_ptr<City>> Control::readCivilCitysFromFile()
 std::vector<std::shared_ptr<City>> Control::readEnemyCitysFromFile()
 {
     std::vector<std::shared_ptr<City>> enemyCitiesMadeForMap = initializeEnemyCities(dataFile.getEnemyCityCoordinates(), dataFile.getEnemyCitySpies(), dataFile.getEnemyCitiesDefense());
-    enemiesAsCity = enemyCitiesMadeForMap;
 
     return enemyCitiesMadeForMap;
 }
@@ -250,7 +249,6 @@ void Control::initializeMap()
 
     setMapMaxSize(dataFile.getMaxMapSize());
 
-    initializeListOfBaseAndCivilCities(baseCities, civilCities);
     initializeListOfBaseCities(baseCities);
 
     collectAllCities(baseCities, civilCities, enemyCities);
@@ -271,11 +269,7 @@ void Control::initializeAllSpaceships(std::vector<std::shared_ptr<Spaceship>> sp
     }
 }
 
-void Control::initializeListOfBaseAndCivilCities(std::vector<std::shared_ptr<City>> baseCities, std::vector<std::shared_ptr<City>> civilCities)
-{
-    listOfBaseAndCivilCities.insert(listOfBaseAndCivilCities.end(), baseCities.begin(), baseCities.end());
-    listOfBaseAndCivilCities.insert(listOfBaseAndCivilCities.end(), civilCities.begin(), civilCities.end());
-}
+
 void Control::initializeListOfBaseCities(const std::vector<std::shared_ptr<City>> &baseCities)
 {
     listOfBaseCities.insert(listOfBaseCities.end(), baseCities.begin(), baseCities.end());
