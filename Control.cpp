@@ -470,25 +470,8 @@ bool Control::compareSpaceshipsBasedOnDestructionInAscendingOrder(const std::sha
     return first->getDestruction() < second->getDestruction();
 }
 
-bool Control::compareSpaceshipsBasedOnDestructionInDescendingOrder(const std::shared_ptr<Spaceship> &first, const std::shared_ptr<Spaceship> &second)
-{
-    return first->getDestruction() > second->getDestruction();
-}
 
-void Control::findPathBasedOnMaxLength(const std::shared_ptr<Spaceship> &spaceship)
-{
-    for (std::vector<PathResult>::iterator it = AStarResults.begin(); it != AStarResults.end();)
-    {
-        if (it->maxPathLengthWithNoReprogram <= spaceship->getUncontrolledDistance())
-        {
-            it++;
-        }
-        else
-        {
-            it = AStarResults.erase(it); // deleting the pathes that exceeded the max length a spaceship can take without being reprogrammed
-        }
-    }
-}
+
 void Control::routingForThirdScenario(AStar aStar)
 {
     for (auto &spaceship : listOfSpaceships)
@@ -744,10 +727,7 @@ void Control::sortSpaceshipsBasedOnDestructionInAscendingOrder(std::vector<std::
 {
     std::sort(spaceships.begin(), spaceships.end(), compareSpaceshipsBasedOnDestructionInAscendingOrder);
 }
-void Control::sortSpaceshipsBasedOnDestructionInDecendingOrder(std::vector<std::shared_ptr<Spaceship>> spaceships)
-{
-    std::sort(spaceships.begin(), spaceships.end(), compareSpaceshipsBasedOnDestructionInDescendingOrder);
-}
+
 
 void Control::incrementReachedSpaceshipsToEachDestination()
 {
