@@ -1,0 +1,42 @@
+scenario: 5
+number_of_base_citys: 3
+base_city_coordinates: 
+0 0
+23 59
+45 96
+number_of_spys_in_each_base_city:
+1
+0
+0
+spaceships_in_each_base_city:
+number: 4
+names: Awing XwingStarFighter StarDestroyer StarDestroyer
+number: 2
+names: Awing Mantis
+number: 4
+names: MillenniumFalcon Mantis MillenniumFalcon StarDestroyer
+number_of_civil_citys: 5
+civil_city_coordinates: 
+105 136
+201 265
+297 299
+354 378
+401 450
+number_of_spys_in_each_civil_city:
+1
+0 
+1
+1
+0
+number_of_enemy_citys: 2
+enemy_city_coordinates:
+904 920
+640 600
+number_of_spys_in_each_enemy_city:
+0
+0
+number_of_ratio_each_defense_has:
+2
+1
+max_size_of_map:
+1000

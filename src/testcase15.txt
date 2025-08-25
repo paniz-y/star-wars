@@ -5,22 +5,22 @@ base_city_coordinates:
 200 200
 220 220
 number_of_spys_in_each_base_city:
-1
-1
+0
+0
 0
 each_base_capacity_number:
-2
+1
 3
 1
 spaceships_existing_in_base_cities:
 total_number: 4
-names: Awing XwingStarFighter Mantis RazorCrest
+names: Awing Mantis Mantis RazorCrest
 number_of_civil_citys: 0
 civil_city_coordinates: 
 number_of_spys_in_each_civil_city:
 number_of_enemy_citys: 1
 enemy_city_coordinates:
-600 600
+400 400
 number_of_spys_in_each_enemy_city:
 0
 number_of_ratio_each_defense_has:

@@ -1,0 +1,45 @@
+scenario: 1
+number_of_base_citys: 4
+base_city_coordinates: 
+10 20
+140 100
+236 250
+365 457
+number_of_spys_in_each_base_city_respectively:
+1
+1
+0
+0
+spaceships_in_each_base_city_respectively:
+number: 2 
+name: XwingStarFighter DeathStar
+number: 2 
+name: DeathStar XwingStarFighter
+number: 2 
+name: Mantis MillenniumFalcon
+number: 1 
+name: StarDestroyer
+number_of_civil_citys: 3
+civil_city_coordinates: 
+400 501
+523 697
+670 600 
+number_of_spys_in_each_civil_city_respectively:
+0
+1
+0
+number_of_enemy_citys: 3
+enemy_city_coordinates:
+700 963
+999 1023
+1423 1407
+number_of_spys_in_each_enemy_city_respectively:
+0
+1
+0
+number_of_ratio_each_defense_has:
+1
+7
+1
+max_size_of_map:
+2000
