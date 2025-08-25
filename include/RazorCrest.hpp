@@ -7,6 +7,7 @@ class RazorCrest : public Spaceship
 
 public:
     RazorCrest();
+    ~RazorCrest();
 
 private:
 };

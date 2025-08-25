@@ -7,6 +7,8 @@ class Mantis : public Spaceship
 
 public:
     Mantis();
+    ~Mantis();
+
 
 private:
 };

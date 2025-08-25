@@ -7,6 +7,7 @@ class TieFighter : public Spaceship
 
 public:
     TieFighter();
+    ~TieFighter();
 private:
 };
 #endif

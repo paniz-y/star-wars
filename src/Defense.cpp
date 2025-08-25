@@ -14,3 +14,7 @@ void Defense::defend()
 {
     defenseRatio--;
 }
+
+Defense::~Defense()
+{
+}

@@ -7,6 +7,7 @@ class DeathStar : public Spaceship
 
 public:
     DeathStar();
+    ~DeathStar();
 
 private:
 };

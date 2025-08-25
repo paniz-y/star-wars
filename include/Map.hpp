@@ -17,6 +17,7 @@ public:
     int getMaxSize();
     void setMaxSize(int sizeOfMap);
     int calculateWeightForSpys(std::shared_ptr<City> firstVertex, std::shared_ptr<City> secondVertex); // calculates edge weights based on spys along the way
+    ~Map();
 private:
     std::unordered_map<std::shared_ptr<City>, std::vector<std::pair<std::shared_ptr<City>, double>>> locationsGraph;
     int maxSize;

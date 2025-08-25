@@ -4,3 +4,7 @@ MillenniumFalcon::MillenniumFalcon() : Spaceship(2500, 3, 100, 500, "A1")
 {
     setName("MillenniumFalcon");
 }
+
+MillenniumFalcon::~MillenniumFalcon()
+{
+}

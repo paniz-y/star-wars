@@ -6,6 +6,7 @@ class MillenniumFalcon : public Spaceship
 {
 public:
     MillenniumFalcon();
+    ~MillenniumFalcon();
 
 private:
 };

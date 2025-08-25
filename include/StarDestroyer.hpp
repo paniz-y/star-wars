@@ -7,6 +7,7 @@ class StarDestroyer : public Spaceship
 
 public:
     StarDestroyer();
+    ~StarDestroyer();
 
 private:
 };

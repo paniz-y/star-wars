@@ -7,6 +7,7 @@ class XwingStarFighter : public Spaceship
 
 public:
     XwingStarFighter();
+    ~XwingStarFighter();
 private:
 };
 #endif

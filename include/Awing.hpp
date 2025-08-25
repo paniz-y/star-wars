@@ -7,6 +7,7 @@ class Awing : public Spaceship
 
 public:
     Awing();
+    ~Awing();
 
 private:
 };

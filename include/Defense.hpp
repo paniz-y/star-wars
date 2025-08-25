@@ -8,6 +8,7 @@ public:
     void setRatio(int ratio);
     int getRatio() const;
     void defend();
+    ~Defense();
 
 private:
     std::pair<int, int> coordinatesForDefense;

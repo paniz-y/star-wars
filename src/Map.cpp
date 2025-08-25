@@ -23,6 +23,10 @@ int Map::calculateWeightForSpys(std::shared_ptr<City> firstVertex, std::shared_p
     return 0;
 }
 
+Map::~Map()
+{
+}
+
 void Map::graphMap(std::vector<std::shared_ptr<City>> cities)
 {
     for (int i = 0; i < cities.size() - 1; i++)
