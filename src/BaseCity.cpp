@@ -22,3 +22,6 @@ void BaseCity::setCapacity(int capacity)
 {
     baseCapacity = capacity;
 }
+
+BaseCity::~BaseCity()
+{}

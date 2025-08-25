@@ -25,11 +25,3 @@ bool City::getExistenceOfSpy()
     return spyExistence;
 }
 
-bool City::getHasDefense() const
-{
-    return hasDefense;
-}
-void City::setDefense(bool defense)
-{
-    hasDefense = defense;
-}

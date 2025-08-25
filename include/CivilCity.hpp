@@ -7,6 +7,8 @@ class CivilCity : public City
 {
 public:
 CivilCity(std::pair<int , int> , bool);
+int getCapacity() const override;
+~CivilCity() override;
 private:
 
     

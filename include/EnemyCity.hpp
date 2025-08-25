@@ -8,12 +8,12 @@
 class EnemyCity : public City
 {
 public:
-    EnemyCity(std::pair<int, int> coords, bool spy, Defense defense, bool defenceCheck);
+    EnemyCity(std::pair<int, int> coords, bool spy, Defense defense);
     const Defense &getDefense() const;
     Defense &defenseForChange();
-    bool getHasDefense() const override;
-    void setDefense(bool defense) override;
+    int getCapacity() const override;
     void setDefenseForRatio(int ratio);
+    ~EnemyCity() override;
 
 private:
     Defense defense;
