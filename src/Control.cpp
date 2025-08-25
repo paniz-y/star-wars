@@ -43,7 +43,7 @@ std::vector<std::shared_ptr<City>> Control::initializeAllBaseCitiesInAllScenario
     else
     {
         listOfSpaceships = initializeUnknownSpaceships(dataFile.getSpaceshipsToBeDivided());
-        baseCityForMap = initializeBaseCitiesWithoutSpaceships(dataFile.getBaseCityCoodinates(), dataFile.getBaseCitySpies());
+        baseCityForMap = initializeBaseCitiesWithoutSpaceships(dataFile.getBaseCityCoodinates(), dataFile.getBaseCitySpies(), dataFile.getBasesCapacity());
     }
     return baseCityForMap;
 }
