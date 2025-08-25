@@ -79,12 +79,12 @@ std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> AStar::getExi
     return existingPathsForEachBaseCity;
 }
 
-int AStar::backTrackToFindSpies(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, std::unordered_map<std::shared_ptr <City> , std::shared_ptr <City>> trackedCities)
+int AStar::backTrackToFindSpies(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities)
 {
     std::vector<std::shared_ptr<City>> path;
     std::shared_ptr<City> curr = destination;
     int spiesAtThePath = 0;
-    
+
     while (curr != nullptr)
     {
         path.push_back(curr); // add current city to path
@@ -95,11 +95,7 @@ int AStar::backTrackToFindSpies(const std::shared_ptr<City> start, const std::sh
         }
 
         curr = trackedCities.at(curr); // move to parent
-        
     }
-    // if (spiesAtThePath)
-        // std::cout << "spies in back " << spiesAtThePath << " for " << destination->getCoordinates().first << std::endl;
-    // std::reverse(path.begin(), path.end());
     return spiesAtThePath;
 }
 
@@ -118,10 +114,9 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
 
         if (currNode.currCity == destination)
         {
-            // backTrackToFindSpies(start, destination, &spiesAtThePath);
-            spiesAtThePath = increaseRadarResistant(currNode.currCity , spiesAtThePath);
+            spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath);
             PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
-            setReachedPathFromBaseCity(start , result);
+            setReachedPathFromBaseCity(start, result);
         }
 
         if (visitedNodeCities.find(currNode.currCity) != visitedNodeCities.end())
@@ -144,27 +139,23 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
                 {
                     if (std::shared_ptr<EnemyCity> neighborEnemy = std::dynamic_pointer_cast<EnemyCity>(neighbor.first))
                     {
-                        // backTrackToFindSpies(start, currNode.currCity, &spiesAtThePath);
-                        spiesAtThePath = increaseRadarResistant(currNode.currCity , spiesAtThePath);
+                        spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath);
                         PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
-                        // spiesAtThePath = 0;
-                        setReachedPathFromBaseCity(start , result);
+                        setReachedPathFromBaseCity(start, result);
                         continue; // for the current city there is no need to continue the rest of algorithm
                     }
                 }
 
                 shortestDistance[neighbor.first] = neighborGScore;
-                
+
                 setTrackNodesInAstar(neighbor.first, currNode.currCity);
 
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
 
-                // backTrackToFindSpies(start, currNode.currCity, &spiesAtThePath);
-                spiesAtThePath = increaseRadarResistant(currNode.currCity , spiesAtThePath);
+                spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath);
                 PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
-                // spiesAtThePath = 0;
-                setReachedPathFromBaseCity(start , result);
+                setReachedPathFromBaseCity(start, result);
             }
         }
     }
@@ -192,3 +183,4 @@ std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_p
 
     return path;
 }
+AStar::~AStar() {}

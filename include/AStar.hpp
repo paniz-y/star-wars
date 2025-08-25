@@ -63,6 +63,7 @@ public:
     PathResult hasReachedADestination(const Node &currNode, int spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     PathResult hasNotReachedDestination(const std::shared_ptr<City> &currCity, int spiesAtThePath, const std::shared_ptr<Spaceship> &spaceship);
     std::unordered_map<std::shared_ptr<City>, std::vector<PathResult>> getExistingPathsForEachBaseCity();
+    ~AStar();
 
 private:
     std::priority_queue<Node, std::vector<Node>, CompareNode> nodes;
