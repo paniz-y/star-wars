@@ -164,9 +164,9 @@ std::vector<std::shared_ptr<City>> Control::initializeEnemyCities(const std::vec
     std::vector<std::shared_ptr<City>> enemyCities;
     for (int i = 0; i < enemyCityCoordinatesFromFile.size(); i++)
     {
-        std::shared_ptr<EnemyCity> enemyCityTmp = std::make_shared<EnemyCity>(enemyCityCoordinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i], true);
+        std::shared_ptr<EnemyCity> enemyCityTmp = std::make_shared<EnemyCity>(enemyCityCoordinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
         listOfEnemyCities.emplace_back(enemyCityTmp);
-        std::shared_ptr<EnemyCity> enemyPtrTmp = std::make_shared<EnemyCity>(enemyCityCoordinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i], true);
+        std::shared_ptr<EnemyCity> enemyPtrTmp = std::make_shared<EnemyCity>(enemyCityCoordinatesFromFile[i], enemyCitySpyFromFile[i], enemyCitiesDefense[i]);
         enemyCities.emplace_back(enemyPtrTmp);
         coordsToCityPtr[enemyCityCoordinatesFromFile[i]] = enemyCities.back();
     }
