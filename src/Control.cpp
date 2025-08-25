@@ -675,6 +675,7 @@ bool Control::isThirdScenario()
 {
     if (dataFile.getScenario() == 3)
     {
+        std::cout << "third" << std::endl;
         return true;
     }
     return false;
@@ -746,16 +747,42 @@ void Control::setAStarResults(const std::vector<PathResult> &pathResults)
 {
     AStarResults = pathResults;
 }
-
-int main()
+void Control::run()
 {
-    Control c;
-    // c.initializePriceFile();
-    c.initializeMap();
-    // c.routing();
-    // c.routingForFifthScenario();
-    AStar aStar;
-    // c.controlingNightsForFifthScenario();
-    //  c.routing(aStar);
-    c.routingForThirdScenario(aStar);
+    initializeMap();
+    std::cout << "run" << std::endl;
+    if (isThirdScenario())
+    {
+        std::cout << "3" << std::endl;
+        AStar aStar;
+        routingForThirdScenario(aStar);
+        std::cout << "3" << std::endl;
+    }
+    else if (isFifthScenario())
+    {
+        std::cout << "5" << std::endl;
+
+        controlingNightsForFifthScenario();
+        std::cout << "5" << std::endl;
+    }
+    else
+    {
+        std::cout << "else" << std::endl;
+
+        AStar aStar;
+        routing(aStar);
+        std::cout << "else" << std::endl;
+    }
 }
+// int main()
+// {
+//     Control c;
+//     // c.initializePriceFile();
+//     c.initializeMap();
+//     // c.routing();
+//     // c.routingForFifthScenario();
+//     AStar aStar;
+//     // c.controlingNightsForFifthScenario();
+//     //  c.routing(aStar);
+//     c.routingForThirdScenario(aStar);
+// }
