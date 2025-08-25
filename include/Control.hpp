@@ -73,7 +73,7 @@ public:
     void updateSpiesAndDefenseRatiosForEachNight();
     void removeAllSpiesAfterEachNight();
     void updateSpiesCoordinatesAfterEachNight(const std::vector<std::pair<int, int>> &spies);
-    std::vector<std::shared_ptr<City>> initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &coorrdinates, const std::vector<int> &spies , const std::optional<std::vector <int>>&baseCapacity = std::nullopt);
+    std::vector<std::shared_ptr<City>> initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &coorrdinates, const std::vector<int> &spies, const std::optional<std::vector<int>> &baseCapacity = std::nullopt);
     std::vector<std::shared_ptr<Spaceship>> initializeUnknownSpaceships(const std::vector<std::string> &spaceships);
     void setMapMaxSize(const int &size);
     void setMaxDamageForSeventhScenario();
@@ -104,7 +104,7 @@ public:
     void initializeTrackedCitiesForEachSpaceship(const std::shared_ptr<Spaceship> &spaceship, AStar aStar);
     void controlingNightsForFifthScenario();
     void clearAllAStarRelatedData();
-    void initializeListOfBaseCities(const std::vector<std::shared_ptr<City>> &baseCities);
+    void initializeListOfBaseCities(const std::vector<std::shared_ptr<BaseCity>> &baseCities);
     void setAStarResultsForEachSpaceship(const std::unordered_map<std::shared_ptr<Spaceship>, std::vector<PathResult>> &existingPathsForEachSpaceship);
     std::shared_ptr<Spaceship> findSuitableSpaceshipForThisPath(const std::shared_ptr<Spaceship> &spaceship, const int &pathIdx);
     int findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceship, std::shared_ptr<Spaceship> &bestChoiceSpaceshipForThisPath);
@@ -121,10 +121,11 @@ public:
     void findDestinationDefenseRatioStatus(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &des, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
     void findSpaceshipHasReachedStatus(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &des, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
     void run();
-    ~Control(){}
+    ~Control() {}
+
 private:
     int amountOfDestruction;
-    int maxDamage; //used in seventh scenario
+    int maxDamage; // used in seventh scenario
     std::fstream mapFile;
     std::fstream priceFile;
     Map mapWithSpies;
@@ -171,6 +172,8 @@ private:
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, int>> numOfSpiesForEachDestinationOfEachSpaceship;
     std::unordered_map<std::shared_ptr<Spaceship>, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>>> trackedCitiesForEachSpaceship;
     std::unordered_map<std::shared_ptr<City>, std::vector<std::shared_ptr<Spaceship>>> reachedSpaceshipsToEachDestination;
+    std::vector<std::shared_ptr<BaseCity>> baseCitiesForUnkownSpaceship;
+
     std::vector<PathResult> AStarResults;
 };
 #endif
