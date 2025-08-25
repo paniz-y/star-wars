@@ -114,7 +114,6 @@ void AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, co
 
         if (currNode.currCity == destination)
         {
-            spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath);
             PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
             setReachedPathFromBaseCity(start, result);
         }
@@ -139,7 +138,6 @@ void AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, co
                 {
                     if (std::shared_ptr<EnemyCity> neighborEnemy = std::dynamic_pointer_cast<EnemyCity>(neighbor.first))
                     {
-                        spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath);
                         PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
                         setReachedPathFromBaseCity(start, result);
                         continue; // for the current city there is no need to continue the rest of algorithm
@@ -153,7 +151,6 @@ void AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, co
                 double neighborHScore = heuristic(neighbor.first, destination);
                 nodes.push({neighbor.first, currNode.currCity, neighborGScore, neighborGScore + neighborHScore});
 
-                spiesAtThePath = increaseRadarResistant(currNode.currCity, spiesAtThePath);
                 PathResult result = hasReachedADestination(currNode, spiesAtThePath, spaceship);
                 setReachedPathFromBaseCity(start, result);
             }
