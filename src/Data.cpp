@@ -1,7 +1,7 @@
 #include "Data.hpp"
 void Data::readMapFromFile()
 {
-    mapFile.open("../src/testcase8.txt", std::ios::in);
+    mapFile.open("src/testcase1.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
