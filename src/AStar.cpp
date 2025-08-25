@@ -99,7 +99,7 @@ int AStar::backTrackToFindSpies(const std::shared_ptr<City> start, const std::sh
     return spiesAtThePath;
 }
 
-PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
+void AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship)
 {
     std::unordered_set<std::shared_ptr<City>> visitedNodeCities; // stores each city that has been visited as a node
     nodes.push({start, nullptr, 0, heuristic(start, destination)});
@@ -161,7 +161,7 @@ PathResult AStar::AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &sta
     }
 
     PathResult result = hasNotReachedDestination(start, 0, spaceship);
-    return result; // no rout found
+    return; // no rout found
 }
 std::vector<std::shared_ptr<City>> AStar::backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities)
 {

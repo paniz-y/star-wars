@@ -37,7 +37,6 @@ struct PathResult
     std::shared_ptr<City> destination;
     int numOfSpies; // stores the number of spies along the way
     double costOfPath;
-    std::optional<int> maxPathLengthWithNoReprogram; // stores the maximum path length an spaceship must take without being reprogrammed
     bool operator==(const PathResult &path)
     {
         if (path.destination == destination && path.numOfSpies == numOfSpies, path.costOfPath == costOfPath)
@@ -52,7 +51,7 @@ public:
     void setTrackNodesInAstar(std::shared_ptr<City> neighbor, std::shared_ptr<City> curr);
     void setReachedPathFromBaseCity(std::shared_ptr<City> start, PathResult res);
     int increaseRadarResistant(std::shared_ptr<City> city, int spaceshipRadarResistance);
-    PathResult AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
+    void AStarSearch(Map mapWithSpies, const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::shared_ptr<Spaceship> spaceship);
     int backTrackToFindSpies(const std::shared_ptr<City> start, const std::shared_ptr<City> destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities);
     std::vector<std::shared_ptr<City>> backtrackAStarPath(const std::shared_ptr<City> &start, const std::shared_ptr<City> &destination, std::unordered_map<std::shared_ptr<City>, std::shared_ptr<City>> trackedCities);
     double heuristic(const std::shared_ptr<City> &first, const std::shared_ptr<City> &second); // calculates heuristic for A* search algorithm
