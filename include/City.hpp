@@ -14,8 +14,9 @@ public:
 
     bool getExistenceOfSpy();
     virtual int getCapacity() const = 0;
+    virtual void decrementCapacity() = 0;
     virtual ~City() = default;
- 
+
 protected:
     std::pair<int, int> coordinates;
     bool spyExistence;

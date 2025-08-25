@@ -25,5 +25,10 @@ void EnemyCity::setDefenseForRatio(int ratio)
     defense.setRatio(ratio);
 }
 
+void EnemyCity::decrementCapacity()
+{
+    return; // to avoid the class become abstract
+}
+
 EnemyCity::~EnemyCity()
 {}

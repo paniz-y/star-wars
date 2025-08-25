@@ -13,6 +13,7 @@ public:
     Defense &defenseForChange();
     int getCapacity() const override;
     void setDefenseForRatio(int ratio);
+    void decrementCapacity() override;
     ~EnemyCity() override;
 
 private:
