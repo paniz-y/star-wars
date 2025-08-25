@@ -5,18 +5,10 @@ Control::Control()
     amountOfDestruction = 0;
 }
 
-void Control::initializePriceFile()
+void Control::initializeSpaceshipPrice()
 {
-    priceFile.open("price.txt", std::ios::in);
-    if (!priceFile.is_open())
-    {
-        std::cerr << "Unable to the price open file" << std::endl;
-        return;
-    }
-    std::vector<std::pair<std::string, int>> spaceshipPrices(8);
-    spaceshipPrices = readPricesFromFile();
-    initializeSpaceshipsWithPrices(spaceshipPrices);
-    priceFile.close();
+    dataFile.initializePriceFile();
+    initializeSpaceshipsWithPrices(dataFile.getSpaceshipPrices());
 }
 std::vector<std::pair<std::string, int>> Control::readPricesFromFile()
 {
@@ -205,12 +197,16 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(const std::vect
     }
     return baseCities;
 }
-std::vector<std::shared_ptr<City>> Control::initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &baseCityCoodinatesFromFile, const std::vector<int> &baseCitySpyFromFile)
+std::vector<std::shared_ptr<City>> Control::initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &baseCityCoodinatesFromFile, const std::vector<int> &baseCitySpyFromFile , const std::optional<std::vector <int>>&baseCitiesCapacity)
 {
     std::vector<std::shared_ptr<City>> baseCities;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
     {
         std::shared_ptr<BaseCity> basePtrTmp = std::make_shared<BaseCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i]);
+        if(baseCitiesCapacity)
+        {
+            basePtrTmp->setCapacity(baseCitiesCapacity->at(i));
+        }
         baseCities.emplace_back(basePtrTmp);
         coordsToCityPtr[baseCityCoodinatesFromFile[i]] = baseCities.back();
     }
@@ -671,6 +667,15 @@ bool Control::isFifthScenario()
     return false;
 }
 
+bool Control::isSeventhScenario()
+{
+    if (dataFile.getScenario() == 7)
+    {
+        return true;
+    }
+    return false;
+}
+
 bool Control::isThirdScenario()
 {
     if (dataFile.getScenario() == 3)
@@ -750,39 +755,35 @@ void Control::setAStarResults(const std::vector<PathResult> &pathResults)
 void Control::run()
 {
     initializeMap();
-    std::cout << "run" << std::endl;
     if (isThirdScenario())
     {
-        std::cout << "3" << std::endl;
         AStar aStar;
         routingForThirdScenario(aStar);
-        std::cout << "3" << std::endl;
     }
     else if (isFifthScenario())
     {
-        std::cout << "5" << std::endl;
-
         controlingNightsForFifthScenario();
-        std::cout << "5" << std::endl;
+    }
+    else if(isSeventhScenario())
+    {
+        initializeSpaceshipPrice();
     }
     else
     {
-        std::cout << "else" << std::endl;
-
         AStar aStar;
         routing(aStar);
-        std::cout << "else" << std::endl;
     }
 }
-// int main()
-// {
-//     Control c;
-//     // c.initializePriceFile();
-//     c.initializeMap();
-//     // c.routing();
-//     // c.routingForFifthScenario();
-//     AStar aStar;
-//     // c.controlingNightsForFifthScenario();
-//     //  c.routing(aStar);
-//     c.routingForThirdScenario(aStar);
-// }
+int main()
+{
+    Control c;
+    // c.initializeSpaceshipPrice();
+    // c.initializeMap();
+    // c.routing();
+    // c.routingForFifthScenario();
+    // AStar aStar;
+    // c.controlingNightsForFifthScenario();
+    //  c.routing(aStar);
+    // c.routingForThirdScenario(aStar);
+    c.run();
+}

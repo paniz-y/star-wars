@@ -63,7 +63,7 @@ public:
     std::vector<std::shared_ptr<City>> initializeBaseCities(const std::vector<std::pair<int, int>> &baseCityCoodinatesFromFile, const std::vector<int> &baseCitySpyFromFile, const std::vector<std::pair<int, std::vector<std::string>>> &spaceshipsInBaseCities);
     std::vector<std::shared_ptr<City>> initializeCivilCities(const std::vector<std::pair<int, int>> &civilCityCoodinatesFromFile, const std::vector<int> &civilCitySpyFromFile);
     std::vector<std::shared_ptr<City>> initializeEnemyCities(const std::vector<std::pair<int, int>> &enemyCityCoodinatesFromFile, const std::vector<int> &enemyCitySpyFromFile, const std::vector<Defense> &enemyCitiesDefense);
-    void initializePriceFile();
+    void initializeSpaceshipPrice();
     std::vector<std::pair<std::string, int>> readPricesFromFile();
     void initializeSpaceshipsWithPrices(std::vector<std::pair<std::string, int>> spaceships);
     std::vector<std::pair<int, int>> updateSpiesAfterEachNight();
@@ -73,7 +73,7 @@ public:
     void updateSpiesAndDefenseRatiosForEachNight();
     void removeAllSpiesAfterEachNight();
     void updateSpiesCoordinatesAfterEachNight(const std::vector<std::pair<int, int>> &spies);
-    std::vector<std::shared_ptr<City>> initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &coorrdinates, const std::vector<int> &spies);
+    std::vector<std::shared_ptr<City>> initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &coorrdinates, const std::vector<int> &spies , const std::optional<std::vector <int>>&baseCapacity = std::nullopt);
     std::vector<std::shared_ptr<Spaceship>> initializeUnknownSpaceships(const std::vector<std::string> &spaceships);
     void setMapMaxSize(const int &size);
     void initializeAllSpaceships(const std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::pair<int, int> &coordinates);
@@ -111,6 +111,7 @@ public:
     void displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base);
     bool canSpaceshipReachDestinationFromThisBase(const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<City> &base, AStar aStar);
     bool isFifthScenario();
+    bool isSeventhScenario();
     bool isThirdScenario();
     void hasReachedDestinationWithNoDefenseRatio(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, const std::shared_ptr<City> &des, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
     void hasReachedDestinationWithDefenseRatio(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, const std::shared_ptr<City> &des, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
