@@ -269,8 +269,12 @@ std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForThisPath(const std::
         {
             return spaceship;
         }
+        else
+        {
+            updateCurrentDefenseRatio(AStarPathsForEachSpaceship[spaceship].at(pathIdx).destination);
+        }
     }
-    return nullptr; // both spaceships are missed in this path
+    return nullptr; // there is no valid path for this spaceship
 }
 int Control::findPathForThisSpaceship(const std::shared_ptr<Spaceship> &spaceship, std::shared_ptr<Spaceship> &bestChoiceSpaceshipForThisPath)
 {
@@ -294,7 +298,7 @@ bool Control::canSpaceshipReachDestinationFromThisBase(const std::shared_ptr<Spa
 
     if (pathFoundIdx != -1) // this path is valid for this spaceship
     {
-        attributePathToSpaceship(pathFoundIdx, spaceship, selectedSpaceshipForThisPath, aStar);
+        attributePathToSpaceship(pathFoundIdx, spaceship, selectedSpaceshipForThisPath, aStar, base);
         return true;
     }
     displayMissedSpaceshipFromThisBase(spaceship, base);
@@ -307,11 +311,11 @@ void Control::displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship
               << "(" << base->getCoordinates().first << " , " << base->getCoordinates().second << ")" << std::endl;
 }
 
-void Control::attributePathToSpaceship(const int &pathFoundIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar)
+void Control::attributePathToSpaceship(const int &pathFoundIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar, const std::shared_ptr<City> &base)
 {
     reachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination].emplace_back(selectedSpaceshipForThisPath);
 
-    std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(coordsToCityPtr[spaceship->getCoordinates()], coordsToCityPtr[((AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination)->getCoordinates())], trackedCitiesForEachSpaceship[spaceship]);
+    std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(base, coordsToCityPtr[((AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination)->getCoordinates())], trackedCitiesForEachSpaceship[spaceship]);
     controlDestructions(spaceship->getDestruction());
     displayTheFinalResult(finalpathResult, spaceship);
 }
@@ -354,7 +358,7 @@ void Control::findValidReachedDestinations()
                 pathIt = (*spaceshipIt).second.erase(pathIt); // remove the path not reaching the enemy city
             }
         }
-        if ((*spaceshipIt).second.empty())
+        if ((*spaceshipIt).second.empty() && !isThirdScenario())
         {
             std::cout << (*spaceshipIt).first->getNameOfSpaceship() << " placed at " << "(" << (*spaceshipIt).first->getCoordinates().first << " , " << (*spaceshipIt).first->getCoordinates().second << ")" << " could not reach a destination." << std::endl;
             spaceshipIt = AStarPathsForEachSpaceship.erase(spaceshipIt); // remove the spaceship that has no path left
@@ -399,7 +403,7 @@ void Control::findPathBasedOnTotalDistance(AStar aStar)
                 it = (*spaceshipIt).second.erase(it); // deleting the pathes that exceeded the total distance of this spaceship
             }
         }
-        if ((*spaceshipIt).second.empty())
+        if ((*spaceshipIt).second.empty() && !isThirdScenario())
         {
             std::cout << (*spaceshipIt).first->getNameOfSpaceship() << " placed at " << "(" << (*spaceshipIt).first->getCoordinates().first << " , " << (*spaceshipIt).first->getCoordinates().second << ")" << " exceeded the total distance and could not reach a destination." << std::endl;
             spaceshipIt = AStarPathsForEachSpaceship.erase(spaceshipIt); // deleting the spaceship that has no path left
@@ -667,6 +671,15 @@ bool Control::isFifthScenario()
     return false;
 }
 
+bool Control::isThirdScenario()
+{
+    if (dataFile.getScenario() == 3)
+    {
+        return true;
+    }
+    return false;
+}
+
 void Control::IdentifyPriorityEnemyTarget(AStar aStar)
 {
     for (auto spaceship : listOfSpaceships)
@@ -741,8 +754,8 @@ int main()
     c.initializeMap();
     // c.routing();
     // c.routingForFifthScenario();
-    // AStar aStar;
-    c.controlingNightsForFifthScenario();
-    // c.routing(aStar);
-    //    c.routingForThirdScenario(aStar);
+    AStar aStar;
+    // c.controlingNightsForFifthScenario();
+    //  c.routing(aStar);
+    c.routingForThirdScenario(aStar);
 }
