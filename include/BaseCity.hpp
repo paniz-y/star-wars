@@ -13,11 +13,15 @@ public:
     std::vector<std::shared_ptr<Spaceship>> getListOfSpaceships();
     int getCapacity() const override;
     void setCapacity(int capacity);
+    int getSize() const;
+    void setSize(int size);
+    void incrementSize();
     ~BaseCity() override;
 
 private:
     std ::vector<std::shared_ptr<Spaceship>> listOfSpaceships;
     int baseCapacity;
+    int baseSize;
 };
 
 #endif
