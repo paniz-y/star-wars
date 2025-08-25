@@ -33,6 +33,8 @@ public:
     void readUnknownSpaceshipesFromFile();
     void readEnemyCitiesDefenseRatioFromFile();
     void setEnemyCitiesDefenseFromFile();
+    void initializePriceFile();
+    void readPricesFromFile();
     int readTotalNumberOfUnknownSpaceshipsFromFile();
     std::vector<std::string> extractUnknownSpaceshipNamesFromFile(int totalNumberOfSpaceships);
     std::vector<int> getBaseCitySpies() const;
@@ -42,6 +44,7 @@ public:
     std::vector<std::pair<int, int>> getCivilCityCoodinates() const;
     std::vector<std::pair<int, int>> getEnemyCityCoordinates() const;
     std::vector<std::pair<int, std::vector<std::string>>> getSpaceshipsInBaseCities() const;
+    std::vector<std::pair<std::string, int>> getSpaceshipPrices() const;
     std::vector<int> getBasesCapacity() const;
     std::vector<int> getEnemyCityDefenseRatio() const;
     std::vector<std::string> getSpaceshipsToBeDivided() const;
@@ -72,8 +75,8 @@ private:
     std::vector<Defense> enemyCitiesDefense;
     std::vector<std::string> spaceshipsToBeDivided;
     std::vector<std::shared_ptr<EnemyCity>> listOfEnemyCities;
+    std::vector<std::pair<std::string, int>> spaceshipPrices;
     std::vector<std::pair<int, std::vector<std::string>>> spaceshipsInBaseCities;
-    std::unordered_map<std::shared_ptr<Spaceship>, int> spaceshipPrices;
     std::vector<std::shared_ptr<City>> enemiesAsCity;
 };
 #endif

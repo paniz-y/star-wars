@@ -1,7 +1,7 @@
 #include "Data.hpp"
 void Data::readMapFromFile()
 {
-    mapFile.open("../src/testcase7.txt", std::ios::in);
+    mapFile.open("../src/testcase8.txt", std::ios::in);
     if (!mapFile.is_open())
     {
         std::cerr << "Unable to open file" << std::endl;
@@ -121,7 +121,6 @@ void Data::readUnknownSpaceshipesFromFile()
 
     spaceshipsToBeDivided.resize(totalNumberOfSpaceships);
     extractUnknownSpaceshipNamesFromFile(totalNumberOfSpaceships);
-  
 }
 
 int Data::readTotalNumberOfUnknownSpaceshipsFromFile()
@@ -177,6 +176,11 @@ std::vector<std::pair<int, int>> Data::getEnemyCityCoordinates() const
 std::vector<std::pair<int, std::vector<std::string>>> Data::getSpaceshipsInBaseCities() const
 {
     return spaceshipsInBaseCities;
+}
+
+std::vector<std::pair<std::string, int>> Data::getSpaceshipPrices() const
+{
+    return spaceshipPrices;
 }
 
 std::vector<int> Data::getBasesCapacity() const
@@ -299,5 +303,27 @@ void Data::setEnemyCitiesDefenseFromFile()
     for (int i = 0; i < numOfEnemyCities; i++)
     {
         enemyCitiesDefense[i].setRatio(enemyCityDefenseRatioFromFile[i]);
+    }
+}
+void Data::initializePriceFile()
+{
+    priceFile.open("price.txt", std::ios::in);
+    if (!priceFile.is_open())
+    {
+        std::cerr << "Unable to the price open file" << std::endl;
+        return;
+    }
+
+    readPricesFromFile();//get the spaceships' prices out of file
+
+    priceFile.close();
+}
+void Data::readPricesFromFile()
+{
+    std::string nameOfSpaceshipString, priceOfSpaceshipString;
+    spaceshipPrices.resize(8);
+    for (int i = 0; i < 8; i++)
+    {
+        priceFile >> nameOfSpaceshipString >> spaceshipPrices[i].first >> priceOfSpaceshipString >> spaceshipPrices[i].second;
     }
 }
