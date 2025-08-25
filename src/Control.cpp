@@ -51,6 +51,10 @@ void Control::setMapMaxSize(const int &maxMapSize)
 {
     mapWithSpies.setMaxSize(maxMapSize);
 }
+void Control::setMaxDamageForSeventhScenario()
+{
+    maxDamage = dataFile.getMaxDamage();
+}
 std::shared_ptr<Spaceship> Control::findSuitableSpaceshipForBaseCities(const std::string &spaceshipsInBaseCities)
 {
     spaceshipType type = stringToSpaceshipType(spaceshipsInBaseCities);
@@ -232,6 +236,8 @@ void Control::initializeMap()
     std::vector<std::shared_ptr<City>> enemyCities = readEnemyCitysFromFile();
 
     setMapMaxSize(dataFile.getMaxMapSize());
+    if(isSeventhScenario())
+        setMaxDamageForSeventhScenario();
 
     initializeListOfBaseCities(baseCities);
 

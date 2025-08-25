@@ -76,6 +76,7 @@ public:
     std::vector<std::shared_ptr<City>> initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &coorrdinates, const std::vector<int> &spies , const std::optional<std::vector <int>>&baseCapacity = std::nullopt);
     std::vector<std::shared_ptr<Spaceship>> initializeUnknownSpaceships(const std::vector<std::string> &spaceships);
     void setMapMaxSize(const int &size);
+    void setMaxDamageForSeventhScenario();
     void initializeAllSpaceships(const std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::pair<int, int> &coordinates);
     void collectAllCities(const std::vector<std::shared_ptr<City>> &baseCities, const std::vector<std::shared_ptr<City>> &civilCities, const std::vector<std::shared_ptr<City>> &enemyCities);
     bool isSpaceshipRadarResistant(const std::shared_ptr<Spaceship> &spaceship, const int &numOfSpies);
@@ -120,8 +121,10 @@ public:
     void findDestinationDefenseRatioStatus(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &des, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
     void findSpaceshipHasReachedStatus(AStar aStar, std::vector<std::shared_ptr<Spaceship>>::iterator &spaceshipIt, std::vector<std::shared_ptr<Spaceship>> &spaceships, const std::shared_ptr<City> &des, const std::shared_ptr<City> &finalDestinationForCurrentSpaceship, bool &hasPreviouseSpaceshipReached);
     void run();
+    ~Control(){}
 private:
     int amountOfDestruction;
+    int maxDamage; //used in seventh scenario
     std::fstream mapFile;
     std::fstream priceFile;
     Map mapWithSpies;
