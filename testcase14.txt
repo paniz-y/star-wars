@@ -1,0 +1,41 @@
+scenario: 2
+number_of_base_citys: 3
+base_city_coordinates:
+0 0
+401 412
+500 607
+number_of_spys_in_each_base_city_respectively:
+0
+0
+1
+spaceships_in_each_base_city_respectively:
+number: 2 
+name: TieFighter XwingStarFighter
+number: 1
+name: MillenniumFalcon
+number: 2
+name: TieFighter TieFighter
+number_of_civil_citys: 3
+civil_city_coordinates: 
+610 636
+741 513
+789 834
+number_of_spys_in_each_civil_city_respectively:
+1
+0
+0
+number_of_enemy_citys: 3
+enemy_city_coordinates:
+914 902
+1456 1756
+1570 1813
+number_of_spys_in_each_enemy_city_respectively:
+1
+0
+0
+number_of_ratio_each_defense_has_respectively:
+1
+3
+0
+max_size_of_map:
+2000
