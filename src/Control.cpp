@@ -201,13 +201,13 @@ std::vector<std::shared_ptr<City>> Control::initializeBaseCities(const std::vect
     }
     return baseCities;
 }
-std::vector<std::shared_ptr<City>> Control::initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &baseCityCoodinatesFromFile, const std::vector<int> &baseCitySpyFromFile , const std::optional<std::vector <int>>&baseCitiesCapacity)
+std::vector<std::shared_ptr<City>> Control::initializeBaseCitiesWithoutSpaceships(const std::vector<std::pair<int, int>> &baseCityCoodinatesFromFile, const std::vector<int> &baseCitySpyFromFile, const std::optional<std::vector<int>> &baseCitiesCapacity)
 {
     std::vector<std::shared_ptr<City>> baseCities;
     for (int i = 0; i < baseCityCoodinatesFromFile.size(); i++)
     {
         std::shared_ptr<BaseCity> basePtrTmp = std::make_shared<BaseCity>(baseCityCoodinatesFromFile[i], baseCitySpyFromFile[i]);
-        if(baseCitiesCapacity)
+        if (baseCitiesCapacity)
         {
             basePtrTmp->setCapacity(baseCitiesCapacity->at(i));
         }
@@ -236,7 +236,7 @@ void Control::initializeMap()
     std::vector<std::shared_ptr<City>> enemyCities = readEnemyCitysFromFile();
 
     setMapMaxSize(dataFile.getMaxMapSize());
-    if(isSeventhScenario())
+    if (isSeventhScenario())
         setMaxDamageForSeventhScenario();
 
     initializeListOfBaseCities(baseCities);
@@ -316,7 +316,10 @@ void Control::displayMissedSpaceshipFromThisBase(const std::shared_ptr<Spaceship
 void Control::attributePathToSpaceship(const int &pathFoundIdx, const std::shared_ptr<Spaceship> &spaceship, const std::shared_ptr<Spaceship> &selectedSpaceshipForThisPath, AStar aStar, const std::shared_ptr<City> &base)
 {
     reachedSpaceshipsToEachDestination[AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination].emplace_back(selectedSpaceshipForThisPath);
-
+    if (std::shared_ptr<BaseCity> baseCity = std::dynamic_pointer_cast<BaseCity>(base))
+    {
+        baseCity->incrementSize();
+    }
     std::vector<std::shared_ptr<City>> finalpathResult = aStar.backtrackAStarPath(base, coordsToCityPtr[((AStarPathsForEachSpaceship[spaceship][pathFoundIdx].destination)->getCoordinates())], trackedCitiesForEachSpaceship[spaceship]);
     controlDestructions(spaceship->getDestruction());
     displayTheFinalResult(finalpathResult, spaceship);
@@ -443,18 +446,24 @@ void Control::routingForThirdScenario(AStar aStar)
 {
     for (auto &spaceship : listOfSpaceships)
     {
-        for (auto &base : listOfBaseCities)
+        for (std::shared_ptr<City> base : listOfBaseCities)
         {
-            aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], listOfAllCities[listOfAllCities.size() - 1], spaceship);
-            setAStarResults(aStar.getPathResults()); // set the results collected by Astar
-            setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
-
-            initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
-            findValidReachedDestinations();
-            findPathBasedOnTotalDistance(aStar);
-            if (canSpaceshipReachDestinationFromThisBase(spaceship, base, aStar))
+            if (std::shared_ptr<BaseCity> baseCity = std::dynamic_pointer_cast<BaseCity>(base))
             {
-                break;
+                if (baseCity->getSize() <= baseCity->getCapacity())
+                {
+                    aStar.AStarSearch(mapWithSpies, coordsToCityPtr[base->getCoordinates()], listOfAllCities[listOfAllCities.size() - 1], spaceship);
+                    setAStarResults(aStar.getPathResults()); // set the results collected by Astar
+                    setAStarResultsForEachSpaceship(aStar.getExistingPathsForEachSpaceship());
+
+                    initializeTrackedCitiesForEachSpaceship(spaceship, aStar);
+                    findValidReachedDestinations();
+                    findPathBasedOnTotalDistance(aStar);
+                    if (canSpaceshipReachDestinationFromThisBase(spaceship, base, aStar))
+                    {
+                        break;
+                    }
+                }
             }
         }
     }
@@ -686,7 +695,6 @@ bool Control::isThirdScenario()
 {
     if (dataFile.getScenario() == 3)
     {
-        std::cout << "third" << std::endl;
         return true;
     }
     return false;
@@ -770,7 +778,7 @@ void Control::run()
     {
         controlingNightsForFifthScenario();
     }
-    else if(isSeventhScenario())
+    else if (isSeventhScenario())
     {
         initializeSpaceshipPrice();
     }
@@ -779,17 +787,4 @@ void Control::run()
         AStar aStar;
         routing(aStar);
     }
-}
-int main()
-{
-    Control c;
-    // c.initializeSpaceshipPrice();
-    // c.initializeMap();
-    // c.routing();
-    // c.routingForFifthScenario();
-    // AStar aStar;
-    // c.controlingNightsForFifthScenario();
-    //  c.routing(aStar);
-    // c.routingForThirdScenario(aStar);
-    c.run();
 }
